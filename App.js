@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
+import {Platform, StyleSheet, Text, View, DrawerLayoutAndroid, TouchableHighlight} from 'react-native';
 
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
@@ -8,15 +8,58 @@ const instructions = Platform.select({
     'Shake or press menu button for dev menu',
 });
 
+class MyDrawer extends Component{
+  openDrawer() {
+    this.refs['MYDRAWER'].openDrawer()
+}
+
+  closeDrawer() {
+  this.refs['MYDRAWER'].closeDrawer()
+}
+
+  render() {
+    var navigationView = (
+      <View style={{flex: 1, backgroundColor: '#3d87ff'}}>
+        <Text style={{margin: 10, fontSize: 15, textAlign: 'left'}}>I'm in the Drawer!</Text>
+        <TouchableHighlight onPress={()=>this.closeDrawer()}>
+                <Text>{'Close Drawer'}</Text>
+          </TouchableHighlight>
+      </View>
+    );
+    return (
+      <DrawerLayoutAndroid
+        drawerWidth={300}
+        drawerPosition={DrawerLayoutAndroid.positions.Left}
+        renderNavigationView={() => navigationView}
+        ref={'MYDRAWER'}>
+        <View style={{flex: 1, alignItems: 'center'}}>
+          <Text style={{margin: 10, fontSize: 15, textAlign: 'right'}}>Hello</Text>
+          <Text style={{margin: 10, fontSize: 15, textAlign: 'right'}}>World!</Text>
+          
+          <TouchableHighlight onPress={()=>this.openDrawer()}>
+                <Text>{'Open Drawer'}</Text>
+          </TouchableHighlight>
+
+          
+        </View>
+      </DrawerLayoutAndroid>
+    );
+  }
+}
+
 type Props = {};
 export default class App extends Component<Props> {
   render() {
     return (
-      <View style={styles.container}>
+      <MyDrawer>
+        <View style={styles.container}>
         <Text style={styles.welcome}>Welcome to React Native!</Text>
         <Text style={styles.instructions}>To get started, edit App.js</Text>
         <Text style={styles.instructions}>{instructions}</Text>
+        
       </View>
+      </MyDrawer>
+      
     );
   }
 }
