@@ -33,14 +33,13 @@ class MyDrawer extends Component{
         renderNavigationView={() => navigationView}
         ref={'MYDRAWER'}>
         <View style={{flex: 1, alignItems: 'center'}}>
-          <Text style={{margin: 10, fontSize: 15, textAlign: 'right'}}>Hello</Text>
-          <Text style={{margin: 10, fontSize: 15, textAlign: 'right'}}>World!</Text>
-          
           <TouchableHighlight onPress={()=>this.openDrawer()}>
                 <Text>{'Open Drawer'}</Text>
           </TouchableHighlight>
-
-          
+        </View>
+        <View style={{flex: 1, flexDirection: 'row'}}>
+          <View style={{width: 50, height: 50, backgroundColor:'powderblue', margin: 0}}></View>
+          <View style={{width: 50, height: 50, backgroundColor:'skyblue', margin: 0}}></View>
         </View>
       </DrawerLayoutAndroid>
     );
