@@ -1,0 +1,9 @@
+-If you haven't installed react-native-video, install it by running the command:
+    npm install --save react-native-video 
+    npm install -g rnpm
+    rnpm link react-native-video
+
+-If after install react-native-video, you run into the problem: "TypeError: undefined is not an object (...)", try below:
+    open android/app/src/main/java/com/app_name/MainApplication.java in the top section of the file (where all the imports are) 
+    add import com.brentvatne.react.ReactVideoPackage; 
+    and then in the getPackages() method add new ReactVideoPackage(), build again and run.
