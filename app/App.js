@@ -1,5 +1,18 @@
 import React, { Component } from 'react';
 import Player from './Player';
+import {createStore} from 'redux';
+import {Provider} from 'react-redux'
+
+const defaultState = {};
+const reducer = (state = defaultState, action) => {
+  switch(action.type)
+  {
+     case "Something": return {/*newState*/};
+     default: return state;
+  }; 
+};
+const reduxStore = createStore(reducer);
+
 
 export const TRACKS = [
   {
@@ -24,6 +37,10 @@ export const TRACKS = [
 
 export default class App extends Component {
   render() {
-    return <Player tracks={TRACKS} />
+    return (
+      <Provider store = {reduxStore}>
+        <Player tracks={TRACKS} />
+      </Provider>
+    )
   }
 }
