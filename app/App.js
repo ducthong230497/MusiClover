@@ -2,18 +2,7 @@ import React, { Component } from 'react';
 import SongPlayer from './components/songplayerscene/SongPlayer';
 import {Provider} from 'react-redux'
 import reduxStore from './redux/store' 
-
-// //redux
-// const defaultState = {};
-// const reducer = (state = defaultState, action) => {
-//   switch(action.type)
-//   {
-//      case "Something": return {/*newState*/};
-//      default: return state;
-//   }; 
-// };
-// const reduxStore = createStore(reducer);
-
+import {createBottomTabNavigator} from 'react-navigation'
 
 export const TRACKS = [
   {
@@ -36,7 +25,7 @@ export const TRACKS = [
   },
 ];
 
-export default class App extends Component {
+class SongScene extends Component {
   render() {
     return (
       <Provider store = {reduxStore}>
@@ -45,3 +34,31 @@ export default class App extends Component {
     )
   }
 }
+
+
+export default createBottomTabNavigator(
+  {
+    Home: {
+      screen: SongScene,
+      navigationOptions:{
+        tabBarLabel: 'Home',
+      }
+    },
+    Test: {
+      screen: SongScene,
+      navigationOptions:{
+        tabBarLabel: 'Home',
+      }
+    }
+  },
+  { //router config
+    navigationOptions:{
+      tabBarVisible: true
+    },
+    tabBarOptions:{
+      activeTintColor: 'red',
+      inactiveTintColor: 'grey'
+    }
+
+  }
+);
