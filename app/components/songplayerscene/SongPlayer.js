@@ -1,29 +1,25 @@
 import React, { Component } from 'react';
-import {
-  View,
-  Text,
-  StatusBar,
-} from 'react-native';
+import {View, Text, StatusBar} from 'react-native';
 import Header from './Header';
 import AlbumArt from './AlbumArt';
 import TrackDetails from './TrackDetails';
 import SeekBar from './SeekBar';
 import Controls from './Controls';
 import Video from 'react-native-video';
+import {connect} from 'react-redux';
 
-export default class Player extends Component {
-  constructor(props) {
+class SongPlayer extends Component {
+  constructor(props)
+  {
     super(props);
 
     this.state = {
-      paused: true,
       totalLength: 1,
       currentPosition: 0,
       selectedTrack: 0,
-      repeatOn: false,
-      shuffleOn: false,
     };
   }
+
 
   setDuration(data) {
     // console.log(totalLength);
@@ -122,6 +118,16 @@ export default class Player extends Component {
     );
   }
 }
+
+function mapStateToProps(state){
+  return {
+        paused: state.paused,
+        repeatOn: state.repeatOn,
+        shuffleOn: state,shuffleOn,
+  };
+}
+
+export default connect(mapStateToProps)(SongPlayer);
 
 const styles = {
   container: {

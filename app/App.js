@@ -1,17 +1,18 @@
 import React, { Component } from 'react';
-import Player from './Player';
-import {createStore} from 'redux';
+import SongPlayer from './components/songplayerscene/SongPlayer';
 import {Provider} from 'react-redux'
+import reduxStore from './redux/store' 
 
-const defaultState = {};
-const reducer = (state = defaultState, action) => {
-  switch(action.type)
-  {
-     case "Something": return {/*newState*/};
-     default: return state;
-  }; 
-};
-const reduxStore = createStore(reducer);
+// //redux
+// const defaultState = {};
+// const reducer = (state = defaultState, action) => {
+//   switch(action.type)
+//   {
+//      case "Something": return {/*newState*/};
+//      default: return state;
+//   }; 
+// };
+// const reduxStore = createStore(reducer);
 
 
 export const TRACKS = [
@@ -39,7 +40,7 @@ export default class App extends Component {
   render() {
     return (
       <Provider store = {reduxStore}>
-        <Player tracks={TRACKS} />
+        <SongPlayer tracks={TRACKS} />
       </Provider>
     )
   }
