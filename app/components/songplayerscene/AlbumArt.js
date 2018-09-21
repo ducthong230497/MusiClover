@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import {View,Text,StyleSheet,Image,TouchableHighlight,TouchableOpacity,Dimensions} from 'react-native';
+import {View,StyleSheet,Image,TouchableOpacity,Dimensions} from 'react-native';
 
 class AlbumArt extends Component {
 
@@ -8,10 +8,10 @@ class AlbumArt extends Component {
 
     return (
       <View style={styles.container}>
-        <TouchableOpacity onPress={onPress}>
+        <TouchableOpacity>
           <Image
             style={styles.image}
-            source={{uri: ""}}
+            source={{uri: this.props.url}}
           />
         </TouchableOpacity>
       </View>

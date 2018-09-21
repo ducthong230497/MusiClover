@@ -6,7 +6,6 @@ import TrackDetails from './TrackDetails';
 import SeekBar from './SeekBar';
 import Controls from './Controls';
 import Video from 'react-native-video';
-import {connect} from 'react-redux';
 
 class SongPlayer extends Component {
   constructor(props)
@@ -16,13 +15,19 @@ class SongPlayer extends Component {
     this.state = {
       totalLength: 1,
       currentPosition: 0,
-      selectedTrack: 0,
+      paused: false,
+      repeatOn: false,
+      shuffleOn: false,
+      selectedTrack: 0
     };
+
+    this.video = React.createRef();
+
   }
 
 
   setDuration(data) {
-    // console.log(totalLength);
+    // console.log("dsads " + data.duration);
     this.setState({totalLength: Math.floor(data.duration)});
   }
 
@@ -33,7 +38,7 @@ class SongPlayer extends Component {
 
   seek(time) {
     time = Math.round(time);
-    this.refs.audioElement && this.refs.audioElement.seek(time);
+    this.video.current && this.video.current.seek(time);
     this.setState({
       currentPosition: time,
       paused: false,
@@ -42,7 +47,7 @@ class SongPlayer extends Component {
 
   onBack() {
     if (this.state.currentPosition < 10 && this.state.selectedTrack > 0) {
-      this.refs.audioElement && this.refs.audioElement.seek(0);
+      this.video.current && this.video.current.seek(0);
       this.setState({ isChanging: true });
       setTimeout(() => this.setState({
         currentPosition: 0,
@@ -52,7 +57,7 @@ class SongPlayer extends Component {
         selectedTrack: this.state.selectedTrack - 1,
       }), 0);
     } else {
-      this.refs.audioElement.seek(0);
+      this.video.current.seek(0);
       this.setState({
         currentPosition: 0,
       });
@@ -61,7 +66,7 @@ class SongPlayer extends Component {
 
   onForward() {
     if (this.state.selectedTrack < this.props.tracks.length - 1) {
-      this.refs.audioElement && this.refs.audioElement.seek(0);
+      this.video.current && this.video.current.seek(0);
       this.setState({ isChanging: true });
       setTimeout(() => this.setState({
         currentPosition: 0,
@@ -79,7 +84,7 @@ class SongPlayer extends Component {
     const track = this.props.tracks[this.state.selectedTrack];
     const video = this.state.isChanging ? null : (
       <Video source={{uri: track.audioUrl}} // Can be a URL or a local file.
-        ref="audioElement"
+        ref={this.video}
         paused={this.state.paused}               // Pauses playback entirely.
         resizeMode="cover"           // Fill the whole screen at aspect ratio.
         repeat={true}                // Repeat forever.
@@ -119,15 +124,7 @@ class SongPlayer extends Component {
   }
 }
 
-function mapStateToProps(state){
-  return {
-        paused: state.paused,
-        repeatOn: state.repeatOn,
-        shuffleOn: state,shuffleOn,
-  };
-}
-
-export default connect(mapStateToProps)(SongPlayer);
+export default SongPlayer;
 
 const styles = {
   container: {

@@ -1,32 +1,28 @@
 import React, { Component } from 'react';
 
-import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-} from 'react-native';
+import {View,Text,StyleSheet,Image,TouchableOpacity} from 'react-native';
 
-const Header = ({
-  message,
-  onDownPress,
-  onQueuePress,
-  onMessagePress,
-}) => (
-  <View style={styles.container}>
-    <TouchableOpacity onPress={onDownPress}>
-      <Image style={styles.button}
-        source={require('../img/ic_keyboard_arrow_down_white.png')} />
-    </TouchableOpacity>
-    <Text onPress={onMessagePress}
-      style={styles.message}>{message.toUpperCase()}</Text>
-    <TouchableOpacity onPress={onQueuePress}>
-      <Image style={styles.button}
-        source={require('../img/ic_queue_music_white.png')} />
-    </TouchableOpacity>
-  </View>
-);
+class Header extends Component{
+  render(){
+    let imgFolderPath = '../../../resources/img/'; 
+
+    return(
+      <View style={styles.container}>
+        <TouchableOpacity>
+          <Image style={styles.button}
+            source={require(imgFolderPath + 'ic_keyboard_arrow_down_white.png')} />
+        </TouchableOpacity>
+        <Text 
+          style={styles.message}>{this.props.message.toUpperCase()}
+        </Text>
+        <TouchableOpacity>
+          <Image style={styles.button}
+            source={require(imgFolderPath + 'ic_queue_music_white.png')} />
+        </TouchableOpacity>
+      </View>
+      );
+    }
+}
 
 export default Header;
 

@@ -20,7 +20,7 @@ export const TRACKS = [
     title: 'Stressed Out',
     artist: 'Twenty One Pilots',
     albumArtUrl: "http://36.media.tumblr.com/14e9a12cd4dca7a3c3c4fe178b607d27/tumblr_nlott6SmIh1ta3rfmo1_1280.jpg",
-    audioUrl: "https://c1-sd-vdc.nixcdn.com/NhacCuaTui968/MinhChiaTayDi-ERIK-5612413.mp3?st=oudJiZyCW1sHRwo0j0hZ2A&e=1537332948&t=1537246548162",
+    audioUrl: "https://aredir.nixcdn.com/NhacCuaTui968/CoAySeKhongYeuAnhNhuEm-ThuMinh-5662334.mp3?st=0VXfsGDoDfGZC0ueE5-DZQ&e=1537547254",
   },
   {
     title: 'Love Yourself',
