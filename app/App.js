@@ -1,8 +1,13 @@
 import React, { Component } from 'react';
-import SongPlayer from './components/songplayerscene/SongPlayer';
 import {Provider} from 'react-redux'
 import reduxStore from './redux/store' 
 import {createBottomTabNavigator} from 'react-navigation'
+
+//scenes
+import SongPlayer from './scenes/songplayerscene/SongPlayer';
+import Search from './scenes/searchscene/Search'
+import Personal from './scenes/personalscene/Personal'
+
 
 export const TRACKS = [
   {
@@ -35,6 +40,25 @@ class SongScene extends Component {
   }
 }
 
+class SearchScene extends Component {
+  render() {
+    return (
+      <Provider store = {reduxStore}>
+        <Search />
+      </Provider>
+    )
+  }
+}
+
+class PersonalScene extends Component {
+  render() {
+    return (
+      <Provider store = {reduxStore}>
+        <Personal />
+      </Provider>
+    )
+  }
+}
 
 export default createBottomTabNavigator(
   {
@@ -44,10 +68,16 @@ export default createBottomTabNavigator(
         tabBarLabel: 'Home',
       }
     },
-    Test: {
-      screen: SongScene,
+    Personal: {
+      screen: PersonalScene,
       navigationOptions:{
-        tabBarLabel: 'Home',
+        tabBarLabel: 'Personal',
+      }
+    },
+    Search: {
+      screen: SearchScene,
+      navigationOptions:{
+        tabBarLabel: 'Search',
       }
     }
   },
