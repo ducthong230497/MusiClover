@@ -7,6 +7,7 @@ import {createBottomTabNavigator} from 'react-navigation'
 import SongPlayer from './scenes/songplayerscene/SongPlayer';
 import Search from './scenes/searchscene/Search'
 import Personal from './scenes/personalscene/Personal'
+import Test from './scenes/testscene/Test'
 
 
 export const TRACKS = [
@@ -60,6 +61,16 @@ class PersonalScene extends Component {
   }
 }
 
+class TestScene extends Component{
+  render(){
+    return (
+      <Provider> 
+        <Test/>
+      </Provider>
+    )
+  }
+}
+
 export default createBottomTabNavigator(
   {
     Home: {
@@ -79,6 +90,10 @@ export default createBottomTabNavigator(
       navigationOptions:{
         tabBarLabel: 'Search',
       }
+    },
+    Test:{
+      screen: Test,
+      
     }
   },
   { //router config
