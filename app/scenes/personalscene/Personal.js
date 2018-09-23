@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
-import {View,Text,StyleSheet,TouchableHighlight ,StatusBar} from 'react-native'
-
+import {View,Text,StyleSheet,StatusBar} from 'react-native'
+import CategoryButton from './CategoryButton.js'
 
 export default class Personal extends Component{
 
@@ -9,13 +9,14 @@ export default class Personal extends Component{
         return (
             <View style = {styles.container} >
                 <View style ={styles.subcontainer}>
-                    <Text style = {styles.header}>Online</Text>
-                    <TouchableHighlight>
-                        <Text style = {styles.subheader}>Playlists</Text>
-                    </TouchableHighlight>
+                    <Text style = {styles.header}>ONLINE MUSIC</Text>
+                    <CategoryButton text = 'Playlists' iconName = 'queue-music'></CategoryButton>
+                    <CategoryButton text = 'Songs' iconName = 'music-note'></CategoryButton>
                 </View>
                 <View style ={styles.subcontainer}>
-                    <Text style = {styles.header}>Offline</Text>
+                    <Text style = {styles.header}>OFFLINE MUSIC</Text>
+                    <CategoryButton text = 'Playlists' iconName = 'queue-music'></CategoryButton>
+                    <CategoryButton text = 'Songs' iconName = 'music-note'></CategoryButton>
                 </View>
             </View>
         )
@@ -29,7 +30,6 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgb(4,4,4)'
     },
     subcontainer:{
-        flex: 1,
         justifyContent: 'flex-start',
     },
     header:{
@@ -39,14 +39,9 @@ const styles = StyleSheet.create({
         fontSize: 40,
         paddingTop: 20,
         paddingLeft: 20,
-        paddingBottom: 20
-    },
-    subheader:{
-        textAlign: 'left',
-        color: 'rgba(255, 255, 255, 150)',
-        fontWeight: 'bold',
-        fontSize: 20,
-        paddingLeft: 25
+        paddingBottom: 10,
+        borderBottomColor: 'white',
+        borderBottomWidth: 0.4,
     }
 });
 
