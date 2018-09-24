@@ -35,21 +35,21 @@ export default class Search extends Component {
 
                 <View style={styles.topContainer}>
 
-</View>
-<View style={styles.toprightContainer}>
+                </View>
+                <View style={styles.toprightContainer}>
 
-</View>
+                </View>
 
                 <View style={styles.topleftContainer}>
 
-</View>
+                </View>
 
-<View style={styles.topContainer}>
+                <View style={styles.topContainer}>
 
-</View>
-<View style={styles.toprightContainer}>
+                </View>
+                <View style={styles.toprightContainer}>
 
-</View>
+                </View>
             </View>
 
 
@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
         marginTop: 15,
         marginLeft: 15,
     },
-    topContainer:{
+    topContainer: {
         flexDirection: 'row',
         width: 100,
         height: 100,
@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
         marginLeft: 15,
         marginRight: 15,
     },
-    toprightContainer:{
+    toprightContainer: {
         flexDirection: 'row',
         width: 100,
         height: 100,
