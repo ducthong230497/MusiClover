@@ -7,7 +7,7 @@ export default class Search extends Component {
     componentDidMount() {
         return fetch('https://www.nhaccuatui.com/flash/xml?html5=true&key1=1086ec88341c5050fc515be71ec1b844')
             .then((response) => {
-                console.log(response._bodyInit)
+                //console.log(response._bodyInit)
                 let re = /<location>\n\s\s\s\s\s\s\s\s(.*)\n\s\s\s\s<\/location>/ig;
 
                 let result = response._bodyInit.match(re);
