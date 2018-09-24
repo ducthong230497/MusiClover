@@ -1,8 +1,8 @@
 import React, {Component} from 'react'
 import {View,Text, TouchableHighlight, StyleSheet, Image} from 'react-native'
 import {Icon} from 'react-native-elements'
-export default class Playlist extends Component{
 
+export default class Playlist extends Component{
     render(){
 
         return (

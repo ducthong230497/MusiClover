@@ -5,7 +5,7 @@ import {createStackNavigator} from 'react-navigation'
 import {Icon} from 'react-native-elements'
 
 import OnlinePlaylists from './OnlinePlaylists'
-import OfflinePlaylists from './OfflinePlaylists'
+import OfflinePlaylists from './OfflinePlaylists.js'
 import OnlineSongs from './OnlineSongs'
 import OfflineSongs from './OfflineSongs'
 

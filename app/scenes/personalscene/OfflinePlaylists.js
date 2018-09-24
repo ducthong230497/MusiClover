@@ -1,7 +1,8 @@
 import React, {Component} from 'react'
 import {View,Text, TouchableHighlight, StyleSheet, FlatList} from 'react-native'
 import {Icon} from 'react-native-elements'
-import Playlist from './Playlists';
+import Playlist from './Playlist';
+import PlaylistCreateView from './PlaylistCreateView';
 
 export default class OfflinePlaylists extends Component{
     
@@ -9,6 +10,9 @@ export default class OfflinePlaylists extends Component{
     {
         super(props);
         this.state = {
+            isCreateViewVisible: false,
+            showError: false,
+            newPlaylistName: '',
             playlists: [
                 {
                     url: 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg',
@@ -26,7 +30,7 @@ export default class OfflinePlaylists extends Component{
 
     onAddPlaylistButtonPress()
     {
-
+        this.setState({isCreateViewVisible: true});
     }
 
     _renderPlaylist = ({item}) => (
@@ -37,23 +41,37 @@ export default class OfflinePlaylists extends Component{
         </Playlist>
     );
 
-    render(){
+    onCreatePlaylistPress()
+    {
+        if(this.state.playlists.findIndex(playlist=>playlist.name === this.state.newPlaylistName.trim()) === -1 && /\S/.test(this.state.newPlaylistName))
+        {
+            this.setState({
+                playlists: [...this.state.playlists,{
+                    url: 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg',
+                    name: this.state.newPlaylistName.trim(),
+                    songCount: 0
+                }],
+                isCreateViewVisible: false
+            });
+        }
+        else
+        {
+            this.setState({showError: true})
+            setTimeout(() => {
+                this.setState({showError: false})
+            }, 2000);
+        }
+    }
+    onCancelCreatingPlaylistPress()
+    {
+        this.setState({isCreateViewVisible: false});
+    }
 
-        let playlists = this.state.playlists.map((playlist, index)=>{
-            return(
-            <li key ={index}>
-                <Playlist 
-                    url = {playlist.url}
-                    name = {playlist.name}
-                    songCount = {playlist.songCount}>
-                </Playlist>)
-            </li>
-            )
-        });
+    render(){
 
         return (
             <View style={styles.container}>
-                <TouchableHighlight underlayColor = 'rgb(150,150,150)'  onPress = {this.props.onPress}>
+                <TouchableHighlight underlayColor = 'rgb(150,150,150)'  onPress = {this.onAddPlaylistButtonPress.bind(this)}>
                     <View style = {styles.button}>
                         <Icon name = 'add-circle' size = {24} color = 'white' containerStyle={{paddingRight:5}}></Icon>
                         <Text style = {styles.buttonText}>Create Playlist</Text>
@@ -62,8 +80,15 @@ export default class OfflinePlaylists extends Component{
                 <FlatList
                     data={this.state.playlists}
                     renderItem={this._renderPlaylist}
-                    keyExtractor = {(item,index)=>index}
-                />
+                    keyExtractor = {(item)=>item.name}>
+                </FlatList>
+                <PlaylistCreateView 
+                    isVisible = {this.state.isCreateViewVisible} 
+                    showError ={this.state.showError}
+                    onCancelButtonPress ={this.onCancelCreatingPlaylistPress.bind(this)} 
+                    onCreateButtonPress = {this.onCreatePlaylistPress.bind(this)}
+                    onChangeText = {(text) => this.setState({newPlaylistName: text})}>
+                </PlaylistCreateView>
             </View>
         )
 
