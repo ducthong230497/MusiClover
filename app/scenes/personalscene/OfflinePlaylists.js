@@ -1,11 +1,55 @@
 import React, {Component} from 'react'
-import {View,Text, TouchableHighlight, StyleSheet} from 'react-native'
+import {View,Text, TouchableHighlight, StyleSheet, FlatList} from 'react-native'
 import {Icon} from 'react-native-elements'
 import Playlist from './Playlists';
 
 export default class OfflinePlaylists extends Component{
+    
+    constructor(props)
+    {
+        super(props);
+        this.state = {
+            playlists: [
+                {
+                    url: 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg',
+                    name: 'MyPlaylist',
+                    songCount: 2
+                },
+                {
+                    url: 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg',
+                    name: 'MyPlaylist2',
+                    songCount: 5
+                }
+            ]
+        };
+    }
+
+    onAddPlaylistButtonPress()
+    {
+
+    }
+
+    _renderPlaylist = ({item}) => (
+        <Playlist 
+            url = {item.url}
+            name = {item.name}
+            songCount = {item.songCount}>
+        </Playlist>
+    );
 
     render(){
+
+        let playlists = this.state.playlists.map((playlist, index)=>{
+            return(
+            <li key ={index}>
+                <Playlist 
+                    url = {playlist.url}
+                    name = {playlist.name}
+                    songCount = {playlist.songCount}>
+                </Playlist>)
+            </li>
+            )
+        });
 
         return (
             <View style={styles.container}>
@@ -15,7 +59,11 @@ export default class OfflinePlaylists extends Component{
                         <Text style = {styles.buttonText}>Create Playlist</Text>
                     </View>
                 </TouchableHighlight>
-                <Playlist url = 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg' name = 'MyPlaylist' songCount = {2}></Playlist>
+                <FlatList
+                    data={this.state.playlists}
+                    renderItem={this._renderPlaylist}
+                    keyExtractor = {(item,index)=>index}
+                />
             </View>
         )
 

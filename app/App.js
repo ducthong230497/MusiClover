@@ -6,7 +6,7 @@ import {Icon} from 'react-native-elements'
 //scenes
 import SongPlayer from './scenes/songplayerscene/SongPlayer';
 import Search from './scenes/searchscene/Search'
-import Personal from './scenes/personalscene/Personal'
+import PersonalScene from './scenes/personalscene/Personal'
 import Test from './scenes/testscene/Test'
 
 
@@ -46,16 +46,6 @@ class SearchScene extends Component {
     return (
       <Provider store = {reduxStore}>
         <Search />
-      </Provider>
-    )
-  }
-}
-
-class PersonalScene extends Component {
-  render() {
-    return (
-      <Provider store = {reduxStore}>
-        <Personal />
       </Provider>
     )
   }

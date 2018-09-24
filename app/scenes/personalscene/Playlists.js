@@ -23,7 +23,8 @@ export default class Playlist extends Component{
 
 const styles = StyleSheet.create({
     container:{
-        flex: 1
+        paddingLeft: 20,
+        paddingTop: 20
     },
     image:{
         width: 70,
@@ -33,8 +34,6 @@ const styles = StyleSheet.create({
         height: 70,
         flexDirection: 'row',
         alignItems: 'center',
-        paddingLeft: 20,
-        paddingTop: 20
     },
     playlistName:{
         fontSize: 20,
