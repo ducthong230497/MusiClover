@@ -1,18 +1,21 @@
 import React, {Component} from 'react'
-import {View,Text, TouchableHighlight, StyleSheet, Image} from 'react-native'
+import {View,Text, TouchableHighlight, StyleSheet, FlatList} from 'react-native'
 import {Icon} from 'react-native-elements'
 
 export default class Playlist extends Component{
-    render(){
+    
+    onPress()
+    {
+        
+    }
 
+    render(){
         return (
             <View style={styles.container}>
-                <TouchableHighlight underlayColor = 'rgb(150,150,150)'  onPress = {this.props.onPress}>
+                <TouchableHighlight underlayColor = 'rgb(150,150,150)' onPress = {this.onPress}>
                     <View style = {styles.button}>
-                        <Image source={{uri: this.props.url}} style={styles.image}></Image>
-                        <Text style = {styles.playlistName}>{this.props.name}</Text>
-                        <Text style = {styles.songCountText}>{this.props.songCount} songs</Text>
-                        <Icon name ='keyboard-arrow-right' size = {30} color ='gray' ></Icon>
+                        <Icon name = 'add-circle' size = {24} color = 'white' containerStyle={{paddingRight:5}}></Icon>
+                        <Text style = {styles.buttonText}>Add Songs</Text>
                     </View>
                 </TouchableHighlight>
             </View>
@@ -23,29 +26,20 @@ export default class Playlist extends Component{
 
 const styles = StyleSheet.create({
     container:{
-        paddingLeft: 20,
-        paddingTop: 20
-    },
-    image:{
-        width: 70,
-        height: 70
+        flex: 1,
+        backgroundColor: 'rgb(4,4,4)',
     },
     button:{
-        height: 70,
+        height: 50,
         flexDirection: 'row',
         alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'rgba(0,102,128,255)',
+        paddingLeft: 20
     },
-    playlistName:{
+    buttonText:{
         fontSize: 20,
         color: 'white',
-        paddingLeft: 20,
-        flex:1
-    },
-    songCountText:{
-        fontSize: 15,
-        color: 'white',
-        paddingLeft: 20,
-        flex: 1
     }
 });
 

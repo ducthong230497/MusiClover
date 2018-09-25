@@ -1,13 +1,14 @@
 import React, {Component} from 'react'
 import {View,Text,StyleSheet} from 'react-native'
-import CategoryButton from './CategoryButton.js'
+import CategoryButton from './components/CategoryButton'
 import {createStackNavigator} from 'react-navigation'
 import {Icon} from 'react-native-elements'
 
 import OnlinePlaylists from './OnlinePlaylists'
-import OfflinePlaylists from './OfflinePlaylists.js'
+import OfflinePlaylists from './OfflinePlaylists'
 import OnlineSongs from './OnlineSongs'
 import OfflineSongs from './OfflineSongs'
+import APlaylist from './Playlist' 
 
 class Personal extends Component{
 
@@ -77,6 +78,12 @@ export default StackNavigator = createStackNavigator({
         screen: OfflineSongs,
         navigationOptions: ()=>({
             headerTitle:'Offline Songs',     
+        })
+    },
+    APlaylist:{
+        screen: APlaylist,
+        navigationOptions: ()=>({
+            headerTitle:'Playlist',     
         })
     }
 },
