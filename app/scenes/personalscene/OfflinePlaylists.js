@@ -13,8 +13,8 @@ export default class OfflinePlaylists extends Component{
     {
         super(props);
         this.state = {
-            isCreateViewVisible: false,
-            isDeleteViewVisible: false,
+            isCreatePlaylistViewVisible: false,
+            isDeletePlaylistViewVisible: false,
             deletedPlaylistName: '',
             showError: false,
             newPlaylistName: '',
@@ -26,24 +26,24 @@ export default class OfflinePlaylists extends Component{
     //callback 
     componentDidMount()
     {
-        this._retrieveData();
+        this.retrieveData();
     }
 
-    _storeData = async (name, value) => {
+    storeData = async (name, value) => {
         try {
           await AsyncStorage.setItem(name, value);
         } catch (error) {
           console.log('Something went wrong!');
         }
     }
-    _removeData = async (name) => {
+    removeData = async (name) => {
         try {
           await AsyncStorage.removeItem(name);
         } catch (error) {
           console.log('Something went wrong!');
         }
     }
-    _retrieveData = async () => {
+    retrieveData = async () => {
         try {
           let playlists = await AsyncStorage.getItem('playlists');
           if(playlists !==null)
@@ -57,7 +57,7 @@ export default class OfflinePlaylists extends Component{
 
     onAddPlaylistButtonPress()
     {
-        this.setState({isCreateViewVisible: true});
+        this.setState({isCreatePlaylistViewVisible: true});
     }
 
     onCreatePlaylistPress()
@@ -65,18 +65,18 @@ export default class OfflinePlaylists extends Component{
         if(this.state.playlists.findIndex(playlist=>playlist.name === this.state.newPlaylistName.trim()) === -1 && /\S/.test(this.state.newPlaylistName))
         {
             let newPlaylists = [...this.state.playlists,{
-                url: 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg',
+                imgUrl: 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg',
                 name: this.state.newPlaylistName.trim(),
                 songCount: 0
             }];
             //create new playlist
             this.setState({
                 playlists: newPlaylists,
-                isCreateViewVisible: false
+                isCreatePlaylistViewVisible: false
             });
 
             //save new playlist to local
-            this._storeData('playlists', JSON.stringify(newPlaylists));
+            this.storeData('playlists', JSON.stringify(newPlaylists));
         }
         else
         {
@@ -88,7 +88,7 @@ export default class OfflinePlaylists extends Component{
     }
     onCancelCreatingPlaylistPress()
     {
-        this.setState({isCreateViewVisible: false});
+        this.setState({isCreatePlaylistViewVisible: false});
     }
 
     onDeletePlaylistPress()
@@ -102,18 +102,18 @@ export default class OfflinePlaylists extends Component{
             //create new playlist
             this.setState({
                 playlists: newPlaylists,
-                isDeleteViewVisible: false,
+                isDeletePlaylistViewVisible: false,
                 deletedPlaylistName: ''
             });
 
             //save new playlist to local
-            this._storeData('playlists', JSON.stringify(newPlaylists));
+            this.storeData('playlists', JSON.stringify(newPlaylists));
         }
     }
 
     onCancelDeletingPlaylistPress()
     {
-        this.setState({isDeleteViewVisible: false, deletedPlaylistName: ''});
+        this.setState({isDeletePlaylistViewVisible: false, deletedPlaylistName: ''});
     }
 
     onPlaylistButtonPress()
@@ -121,13 +121,13 @@ export default class OfflinePlaylists extends Component{
         this.props.navigation.navigate('APlaylist')
     }
  
-    _renderPlaylist = ({item}) => (
+    renderPlaylist = ({item}) => (
         <PlaylistButton 
-            url = {item.url}
+            imgUrl = {item.imgUrl}
             name = {item.name}
             songCount = {item.songCount}
             onPlaylistButtonPress = {this.onPlaylistButtonPress.bind(this)}
-            onDeleteButtonPress = {() => this.setState({isDeleteViewVisible: true, deletedPlaylistName: item.name})}>
+            onDeleteButtonPress = {() => this.setState({isDeletePlaylistViewVisible: true, deletedPlaylistName: item.name})}>
         </PlaylistButton>
     );
 
@@ -142,11 +142,11 @@ export default class OfflinePlaylists extends Component{
                 </TouchableHighlight>
                 <FlatList
                     data={this.state.playlists}
-                    renderItem={this._renderPlaylist}
+                    renderItem={this.renderPlaylist.bind(this)}
                     keyExtractor = {(item)=>item.name}>
                 </FlatList>
                 <PlaylistCreateView 
-                    isVisible = {this.state.isCreateViewVisible} 
+                    isVisible = {this.state.isCreatePlaylistViewVisible} 
                     showError ={this.state.showError}
                     onCancelButtonPress ={this.onCancelCreatingPlaylistPress.bind(this)} 
                     onCreateButtonPress = {this.onCreatePlaylistPress.bind(this)}
@@ -154,7 +154,7 @@ export default class OfflinePlaylists extends Component{
                 </PlaylistCreateView>
                 <PlaylistDeleteView
                     name = {this.state.deletedPlaylistName}
-                    isVisible = {this.state.isDeleteViewVisible} 
+                    isVisible = {this.state.isDeletePlaylistViewVisible} 
                     onCancelButtonPress ={this.onCancelDeletingPlaylistPress.bind(this)} 
                     onDeleteButtonPress = {this.onDeletePlaylistPress.bind(this)}
                 ></PlaylistDeleteView>
