@@ -8,7 +8,7 @@ class Header extends Component{
 
     return(
       <View style={styles.container}>
-        <TouchableOpacity>
+        <TouchableOpacity onPress = {this.props.onHideButtonPress}>
           <Image style={styles.button}
             source={require(imgFolderPath + 'ic_keyboard_arrow_down_white.png')} />
         </TouchableOpacity>

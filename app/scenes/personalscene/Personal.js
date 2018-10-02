@@ -90,7 +90,7 @@ export default StackNavigator = createStackNavigator({
     SongPlayer:{
         screen: SongPlayer,
         navigationOptions: ()=>({
-            headerTitle:'SongPlayer',     
+            header: null,     
         })
     }
 },
