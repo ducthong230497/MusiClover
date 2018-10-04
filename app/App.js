@@ -5,45 +5,17 @@ import {createBottomTabNavigator} from 'react-navigation'
 import {Icon} from 'react-native-elements'
 //scenes
 import SongPlayer from './scenes/songplayerscene/SongPlayer';
-import Search from './scenes/searchscene/Search'
+import SearchScene from './scenes/searchscene/Search'
 import PersonalScene from './scenes/personalscene/Personal'
-import Test from './scenes/testscene/Test'
+import TestScene from './scenes/testscene/Test'
 import SongPlayerAnimation from './scenes/songplayerscene/SongPlayerAnimation'
+import HomeScene from './scenes/homescene/Home'
 
-class SongScene extends Component {
-  render() {
-    return (
-      <Provider store = {reduxStore}>
-        <SongPlayer tracks={null} />
-      </Provider>
-    )
-  }
-}
-
-class SearchScene extends Component {
-  render() {
-    return (
-      <Provider store = {reduxStore}>
-        <Search />
-      </Provider>
-    )
-  }
-}
-
-class TestScene extends Component{
-  render(){
-    return (
-      <Provider> 
-        <Test/>
-      </Provider>
-    )
-  }
-}
 
 export default createBottomTabNavigator(
   {
     Home: {
-      screen: SongPlayerAnimation,
+      screen: HomeScene,
       navigationOptions:{
         tabBarLabel: 'Home',
         tabBarIcon: ({tintColor}) => (
@@ -70,7 +42,7 @@ export default createBottomTabNavigator(
       }
     },
     Test:{
-      screen: Test,
+      screen: TestScene,
       
     }
   },

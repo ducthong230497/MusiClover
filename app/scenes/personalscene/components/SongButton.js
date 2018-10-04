@@ -4,6 +4,8 @@ import {Icon} from 'react-native-elements'
 
 export default class SongButton extends Component{
 
+    
+
     render(){
         return (
             <View style={styles.container}>
