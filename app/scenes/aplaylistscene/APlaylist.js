@@ -1,8 +1,8 @@
 import React, {Component} from 'react'
 import {View,Text, TouchableHighlight, StyleSheet, FlatList} from 'react-native'
 import {Icon} from 'react-native-elements'
-import SongAddView from './components/SongAddView'
-import SongButton from './components/SongButton'
+import SongAddView from '../_components/SongAddView'
+import SongButton from '../_components/SongButton'
 
 export default class APlaylist extends Component{
     

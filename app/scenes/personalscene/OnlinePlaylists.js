@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { View, Text, StyleSheet, FlatList } from 'react-native'
-import SongButton from './components/SongButton'
+import SongButton from '../_components/SongButton'
 import {connect} from 'react-redux'
 
 import {getTop100NhacTre} from '../../connector/connector'
