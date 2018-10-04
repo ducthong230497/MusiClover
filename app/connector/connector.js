@@ -11,7 +11,7 @@ export function getTop100NhacTre()
 
             let regexListSong = /<li([\s\S]*?)<\/li>/ig
             let listItemSong = result[0].toString().match(regexListSong)
-            console.log(listItemSong[0])
+            //console.log(listItemSong[0])
 
             let regexSongItem = /<meta content="(.*?)"/ig
 
@@ -24,6 +24,10 @@ export function getTop100NhacTre()
                 let songName = match[0].toString().replace("<meta content=\"", "").replace("\"", "")
                 let songURL = match[1].toString().replace("<meta content=\"", "").replace("\"", "")
                 
+                GetXmlURL(songURL).then(xmlURL=>{
+                    console.log(xmlURL)
+                })
+
                 let songInfo = { 
                     songName: songName, 
                     artist: singerName, 
@@ -32,10 +36,22 @@ export function getTop100NhacTre()
                 }
                 listSong.push(songInfo)
             });
-            console.log(listSong)
+           
         }).catch((error) => {
             console.error(error);
         });
 
         return listSong;
+}
+
+async function GetXmlURL(url){
+    let xmlURL
+    //console.log("url: "+url)
+    await fetch(url).then((response) => {
+        let regXmlURL = /xmlURL = "(.*)"/ig
+        xmlURL = (response._bodyInit.toString().match(regXmlURL).toString().replace("xmlURL = \"", "").replace("\"", ""));
+        //console.log("inside: "+xmlURL)
+    }).catch(err=>console.error(err))
+    //console.log("before return:"+ xmlURL)
+    return xmlURL
 }
