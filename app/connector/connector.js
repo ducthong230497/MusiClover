@@ -23,8 +23,13 @@ export function getTop100NhacTre()
                 let match = element.toString().match(regexSongItem)
                 let songName = match[0].toString().replace("<meta content=\"", "").replace("\"", "")
                 let songURL = match[1].toString().replace("<meta content=\"", "").replace("\"", "")
-
-                let songInfo = { song: songName, singer: singerName, URL: songURL }
+                
+                let songInfo = { 
+                    songName: songName, 
+                    artist: singerName, 
+                    albumArtUrl: 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg', 
+                    audioUrl: songURL 
+                }
                 listSong.push(songInfo)
             });
             console.log(listSong)

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { View } from 'react-native';
 import {Provider} from 'react-redux'
 import reduxStore from './redux/store' 
 import {createBottomTabNavigator} from 'react-navigation'
@@ -11,8 +12,20 @@ import TestScene from './scenes/testscene/Test'
 import SongPlayerAnimation from './scenes/songplayerscene/SongPlayerAnimation'
 import HomeScene from './scenes/homescene/Home'
 
+export default class App extends Component{
 
-export default createBottomTabNavigator(
+  render()
+  {
+    return (
+      <Provider store = {reduxStore}>	
+        <AppNavigator></AppNavigator>
+      </Provider>
+    );
+  }
+
+}
+
+const AppNavigator = createBottomTabNavigator(
   {
     Home: {
       screen: HomeScene,
