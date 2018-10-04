@@ -3,9 +3,9 @@ import {View,Text, TouchableHighlight, StyleSheet, FlatList} from 'react-native'
 import {Icon} from 'react-native-elements'
 import {AsyncStorage} from 'react-native'
 
-import PlaylistButton from '../_components/PlaylistButton';
-import PlaylistCreateView from '../_components/PlaylistCreateView';
-import PlaylistDeleteView from '../_components/PlaylistDeleteView';
+import PlaylistButton from './PlaylistButton';
+import PlaylistCreateView from './PlaylistCreateView';
+import PlaylistDeleteView from './PlaylistDeleteView';
 
 export default class OfflinePlaylists extends Component{
     
@@ -118,7 +118,7 @@ export default class OfflinePlaylists extends Component{
 
     onPlaylistButtonPress()
     {
-        this.props.navigation.navigate('APlaylist')
+        this.props.navigation.navigate('APlaylist', {canAddSong: true, songs: []})
     }
  
     renderPlaylist = ({item}) => (

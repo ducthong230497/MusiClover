@@ -1,9 +1,12 @@
 import React, {Component} from 'react'
 import {View,Text,StyleSheet, ScrollView, FlatList} from 'react-native'
 import {connect} from 'react-redux'
+import {createStackNavigator} from 'react-navigation'
+import {Icon} from 'react-native-elements'
 
-import TopPlaylistButton from './TopPlaylistButton'
 import {getTop100NhacTre} from '../../connector/connector'
+import TopPlaylistButton from './TopPlaylistButton'
+import APlaylist from '../aplaylistscene/APlaylist'
 
 class Home extends Component{
 
@@ -15,42 +18,43 @@ class Home extends Component{
                 {
                     name : 'Top 100 Nhạc Trẻ',
                     imgUrl : 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg',
-                    playlistFetcher: () => getTop100NhacTre()
+                    songsFetcher: () => getTop100NhacTre()
                 },
                 {
                     name : 'Top 100 Nhạc Trẻ',
                     imgUrl : 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg',
-                    playlistFetcher: () => getTop100NhacTre()
+                    songsFetcher: () => getTop100NhacTre()
                 },
                 {
                     name : 'Top 100 Nhạc Trẻ',
                     imgUrl : 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg',
-                    playlistFetcher: () => getTop100NhacTre()
+                    songsFetcher: () => getTop100NhacTre()
                 },
                 {
                     name : 'Top 100 Nhạc Trẻ',
                     imgUrl : 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg',
-                    playlistFetcher: () => getTop100NhacTre()
+                    songsFetcher: () => getTop100NhacTre()
                 },
                 {
                     name : 'Top 100 Nhạc Trẻ',
                     imgUrl : 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg',
-                    playlistFetcher: () => getTop100NhacTre()
+                    songsFetcher: () => getTop100NhacTre()
                 },
             ]
         }
     }
 
-    onTopPlaylistPress(playlistFetcher)
+    onTopPlaylistPress(songsFetcher)
     {
-        const playList = playlistFetcher()
+        const songs = songsFetcher()
+        this.props.navigation.navigate('APlaylist', {canAddSong: false, songs: songs});
     }
 
     renderTopPlaylists = ({item}) => (
         <TopPlaylistButton
             name = {item.name}
             imgUrl = {item.imgUrl}
-            playlistFetcher = {item.playlistFetcher}
+            songsFetcher = {item.songsFetcher}
             onPress = {this.onTopPlaylistPress.bind(this)}
         />
     )
@@ -78,7 +82,38 @@ function mapStateToProps(state)
     }
 }
 
-export default connect(mapStateToProps)(Home);
+const HomeScene =  connect(mapStateToProps)(Home);
+
+export default StackNavigator = createStackNavigator({
+    Main: {
+        screen: HomeScene,
+        navigationOptions: ()=>({
+            header:null,      
+
+        })
+    },
+    APlaylist:{
+        screen: APlaylist,
+        navigationOptions: ()=>({
+            headerTitle:'Playlist',     
+        })
+    }
+},
+{ //router config
+    navigationOptions:{
+        headerTitleStyle:{
+            color: 'white'
+        },
+        headerStyle:{
+            backgroundColor: 'rgba(30,30,30,255)',
+        },
+        headerBackImage: () => (
+            <Icon name = 'keyboard-arrow-left' color = 'white'></Icon>
+          )     
+    },
+    headerLayoutPreset: 'center' 
+}
+);
 
 const styles = StyleSheet.create({
     container:{

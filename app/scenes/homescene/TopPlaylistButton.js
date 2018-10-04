@@ -7,12 +7,12 @@ export default class TopPlaylist extends Component{
     constructor(props)
     {
         super(props);     
-        this.playlistFetcher = this.props.playlistFetcher;
+        this.songsFetcher = this.props.songsFetcher;
     }
 
     onPress()
     {
-        this.props.onPress(this.playlistFetcher);
+        this.props.onPress(this.songsFetcher);
     }
     
 

@@ -3,7 +3,7 @@ import {View,Text,StyleSheet} from 'react-native'
 import {createStackNavigator} from 'react-navigation'
 import {Icon} from 'react-native-elements'
 
-import CategoryButton from '../_components/CategoryButton'
+import CategoryButton from './CategoryButton'
 import APlaylist from '../aplaylistscene/APlaylist' 
 import OnlinePlaylists from './OnlinePlaylists'
 import OfflinePlaylists from './OfflinePlaylists'
