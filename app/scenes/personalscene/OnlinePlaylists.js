@@ -1,27 +1,28 @@
-import React, {Component} from 'react'
-import {View,Text,StyleSheet} from 'react-native'
+import React, { Component } from 'react'
+import { View, Text, StyleSheet, FlatList } from 'react-native'
+import {connect} from 'react-redux'
 
-export default class OnlinePlaylists extends Component{
+class OnlinePlaylists extends Component {
 
-    render(){
-
+    render() {
         return (
             <View style={styles.container}>
-                <Text style = {{color: 'white'}}>This is ONLINEPLAYLISTS scene</Text>
+
             </View>
         )
 
     }
 }
 
+
+export default connect()(OnlinePlaylists);
+
 const styles = StyleSheet.create({
-    container:{
+    container: {
         flex: 1,
         backgroundColor: 'rgb(4,4,4)',
-        alignItems:'center',
-        justifyContent: 'center'
     },
-    
+
 });
 
 

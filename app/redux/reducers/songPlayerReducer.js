@@ -1,25 +1,14 @@
 const initialState = {
-    paused: true,
-    repeatOn: false,
-    shuffleOn: false,
-    selectedTrack: 0
+    tracks: [],
+    initialTrackIndex: 0
 }
 export default (state=initialState, action) => {
     switch (action.type) {
-        case 'TogglePause' :
+        case 'SetupTrackList' :
         return {
             ...state,
-            paused: !state.paused
-        }
-        case 'GoNextTrack' :
-        return {
-            ...state,
-            selectedTrack: state.selectedTrack + 1
-        }
-        case 'GoPreviousTrack' :
-        return {
-            ...state,
-            selectedTrack: state.selectedTrack - 1
+            tracks: action.tracks,
+            initialTrackIndex: action.initialTrackIndex
         }
         default:
             return state

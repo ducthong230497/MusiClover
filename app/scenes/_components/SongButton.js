@@ -4,10 +4,22 @@ import {Icon} from 'react-native-elements'
 
 export default class SongButton extends Component{
 
+    constructor(props)
+    {
+        super(props);
+        this.songIndex = this.props.songIndex;
+    }
+
+    onPress()
+    {
+        this.props.onSongButtonPress(this.songIndex);
+    }
+    
+
     render(){
         return (
             <View style={styles.container}>
-                <TouchableHighlight underlayColor = 'rgb(150,150,150)'  onPress = {this.props.onSongButtonPress}>
+                <TouchableHighlight underlayColor = 'rgb(150,150,150)'  onPress = {this.onPress.bind(this)}>
                     <View style = {styles.songButton}>
                         <Image source={{uri: this.props.imgUrl}} style={styles.image}></Image>
                         <View style = {styles.songInfo}>

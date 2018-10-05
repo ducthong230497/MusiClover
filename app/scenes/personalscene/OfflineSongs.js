@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {View,FlatList,StyleSheet} from 'react-native'
-import SongButton from './components/SongButton'
+import SongButton from '../_components/SongButton'
 
 export default class OfflineSongs extends Component{
 

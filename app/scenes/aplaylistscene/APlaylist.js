@@ -1,10 +1,11 @@
 import React, {Component} from 'react'
 import {View,Text, TouchableHighlight, StyleSheet, FlatList} from 'react-native'
 import {Icon} from 'react-native-elements'
-import SongAddView from './components/SongAddView'
-import SongButton from './components/SongButton'
+import SongAddView from './SongAddView'
+import SongButton from '../_components/SongButton'
+import {connect} from 'react-redux'
 
-export default class APlaylist extends Component{
+class APlaylist extends Component{
     
     constructor(props)
     {
@@ -12,27 +13,10 @@ export default class APlaylist extends Component{
         this.state = {
             isAddSongViewVisisble: false,
             isDeleteSongViewVisible: false,
-            deletedSong: '',
-            songs: [
-                {
-                    imgUrl: 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg',
-                    songName: "FirstSong",
-                    artistName: "Adele"
-                },
-                {
-                    imgUrl: 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg',
-                    songName: "SecondSong",
-                    artistName: "Super"
-                },
-            ]
+            deletedSong: ''
         }
     }
-
-    componentDidMount()
-    {
-        //Load all playlist's songs
-    }
-    
+  
     
     onOpenAddSongViewButtonPress()
     {
@@ -49,32 +33,41 @@ export default class APlaylist extends Component{
         
     }
 
-    onSongButtonPress()
+    onSongButtonPress(trackIndex)
     {
+        this.props.dispatch({type: 'SetupTrackList', tracks: this.props.navigation.getParam('songs'),initialTrackIndex: trackIndex})
         this.props.navigation.navigate('SongPlayer');
     }
 
-    renderSongs = ({item}) => (
+    renderSongs = ({index, item}) => (
         <SongButton 
-            imgUrl = {item.imgUrl}
+            imgUrl = {item.albumArtUrl}
             songName = {item.songName}
-            artistName = {item.artistName}
+            artistName = {item.artist}
+            songIndex = {index}
             onSongButtonPress = {this.onSongButtonPress.bind(this)}
             onDeleteButtonPress = {() => this.setState({isDeleteSongViewVisible: true, deletedSong: item.songName})}>
         </SongButton>
     );
 
     render(){
+
+        const songs = this.props.navigation.getParam('songs');
+
         return (
             <View style={styles.container}>
-                <TouchableHighlight underlayColor = 'rgb(150,150,150)' onPress = {this.onOpenAddSongViewButtonPress.bind(this)}>
-                    <View style = {styles.button}>
-                        <Icon name = 'add-circle' size = {24} color = 'white' containerStyle={{paddingRight:5}}></Icon>
-                        <Text style = {styles.buttonText}>Add Songs</Text>
-                    </View>
-                </TouchableHighlight>
+                {
+                    this.props.navigation.getParam('canAddSong')?
+                    (<TouchableHighlight underlayColor = 'rgb(150,150,150)' onPress = {this.onOpenAddSongViewButtonPress.bind(this)}>
+                        <View style = {styles.button}>
+                            <Icon name = 'add-circle' size = {24} color = 'white' containerStyle={{paddingRight:5}}></Icon>
+                            <Text style = {styles.buttonText}>Add Songs</Text>
+                        </View>
+                    </TouchableHighlight>)
+                    :null
+                }
                 <FlatList
-                    data={this.state.songs}
+                    data={songs}
                     renderItem={this.renderSongs.bind(this)}
                     keyExtractor = {(item)=>item.songName}>
                 </FlatList>
@@ -88,6 +81,8 @@ export default class APlaylist extends Component{
 
     }
 }
+
+export default connect()(APlaylist);
 
 const styles = StyleSheet.create({
     container:{

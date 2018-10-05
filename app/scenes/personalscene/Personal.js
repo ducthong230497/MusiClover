@@ -1,14 +1,14 @@
 import React, {Component} from 'react'
 import {View,Text,StyleSheet} from 'react-native'
-import CategoryButton from './components/CategoryButton'
 import {createStackNavigator} from 'react-navigation'
 import {Icon} from 'react-native-elements'
 
+import CategoryButton from './CategoryButton'
+import APlaylist from '../aplaylistscene/APlaylist' 
 import OnlinePlaylists from './OnlinePlaylists'
 import OfflinePlaylists from './OfflinePlaylists'
 import OnlineSongs from './OnlineSongs'
 import OfflineSongs from './OfflineSongs'
-import APlaylist from './APlaylist' 
 import SongPlayer from "../songplayerscene/SongPlayer"
 
 class Personal extends Component{
