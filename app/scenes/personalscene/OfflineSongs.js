@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
-import {View,FlatList,StyleSheet} from 'react-native'
-import SongButton from '../_components/SongButton'
+import {StyleSheet} from 'react-native'
+
+import Songs from './children/Songs'
 
 export default class OfflineSongs extends Component{
 
@@ -23,42 +24,23 @@ export default class OfflineSongs extends Component{
         }
     }
 
-    onSongButtonPress()
+    onSongButtonPress(trackIndex)
     {
-
+        this.props.dispatch({type: 'SetupTrackList', tracks: null,initialTrackIndex: trackIndex})
+        this.props.navigation.navigate('SongPlayer');
     }
-
-    renderSongs = ({item}) => (
-        <SongButton 
-            imgUrl = {item.imgUrl}
-            songName = {item.songName}
-            artistName = {item.artistName}
-            onSongButtonPress = {this.onSongButtonPress.bind(this)}
-            onDeleteButtonPress = {() => this.setState({isDeleteSongViewVisible: true, deletedSong: item.songName})}>
-        </SongButton>
-    );
 
     render(){
 
         return (
-            <View style={styles.container}>
-                <FlatList
-                    data={this.state.songs}
-                    renderItem={this.renderSongs.bind(this)}
-                    keyExtractor = {(item)=>item.songName}>
-                </FlatList>
-            </View>
+            <Songs
+                songs = {this.state.songs}
+                onSongButtonPress = {this.onSongButtonPress.bind(this)}
+            >
+            </Songs>
         )
-
     }
 }
 
-const styles = StyleSheet.create({
-    container:{
-        flex: 1,
-        backgroundColor: 'rgb(4,4,4)'
-    },
-    
-});
 
 

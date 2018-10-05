@@ -1,27 +1,36 @@
 import React, {Component} from 'react'
-import {View,Text,StyleSheet} from 'react-native'
+
+import Songs from './children/Songs'
 
 export default class OnlineSongs extends Component{
+
+    constructor(props)
+    {
+        super(props);
+        this.state = {
+            songs: [
+               
+            ]
+        }
+    }
+
+    onSongButtonPress(trackIndex)
+    {
+        this.props.dispatch({type: 'SetupTrackList', tracks: null,initialTrackIndex: trackIndex})
+        this.props.navigation.navigate('SongPlayer');
+    }
 
     render(){
 
         return (
-            <View style={styles.container}>
-                <Text style = {{color: 'white'}}>This is ONLINESONGS scene</Text>
-            </View>
+            <Songs
+                songs = {this.state.songs}
+                onSongButtonPress = {this.onSongButtonPress.bind(this)}
+            >
+            </Songs>
         )
-
     }
 }
 
-const styles = StyleSheet.create({
-    container:{
-        flex: 1,
-        backgroundColor: 'rgb(4,4,4)',
-        alignItems:'center',
-        justifyContent: 'center'
-    },
-    
-});
 
 

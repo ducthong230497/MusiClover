@@ -1,28 +1,52 @@
 import React, { Component } from 'react'
-import { View, Text, StyleSheet, FlatList } from 'react-native'
-import {connect} from 'react-redux'
+import { View, StyleSheet } from 'react-native'
+import Playlists from './children/Playlists'
 
-class OnlinePlaylists extends Component {
+export default class OnlinePlaylists extends Component {
+
+    constructor(props)
+    {
+        super(props);
+        this.state = {
+            playlists: []
+        };
+
+    }
+
+    //callback 
+    componentDidMount()
+    {
+        //retrieve all online playlists here
+    }
+
+    onCreatePlaylistPress(newPlaylistName)
+    {
+
+    }
+
+    onDeletePlaylistPress(deletedPlaylistName)
+    {
+
+    }
+
+    onPlaylistButtonPress(playlist)
+    {
+        this.props.navigation.navigate('APlaylist', {canAddSong: true, songs: []})
+    }
 
     render() {
         return (
-            <View style={styles.container}>
-
-            </View>
+            <Playlists
+                playlists = {this.state.playlists}
+                onCreatePlaylistPress = {this.onCreatePlaylistPress.bind(this)}
+                onDeletePlaylistPress = {this.onDeletePlaylistPress.bind(this)}
+                onPlaylistButtonPress = {this.onPlaylistButtonPress.bind(this)}
+            >
+            </Playlists>
         )
 
     }
 }
 
-
-export default connect()(OnlinePlaylists);
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: 'rgb(4,4,4)',
-    },
-
-});
 
 

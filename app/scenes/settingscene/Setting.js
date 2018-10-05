@@ -4,7 +4,9 @@ import {createStackNavigator} from 'react-navigation'
 import {Icon} from 'react-native-elements'
 
 import SettingButton from './SettingButton'
+
 import Login from '../loginscene/Login'
+import Register from '../loginscene/Register'
 
 
 class Settings extends Component{
@@ -14,6 +16,10 @@ class Settings extends Component{
         this.props.navigation.navigate('Login');
     }
 
+    onVersionButtonPress()
+    {
+        
+    }
 
     render(){
 
@@ -31,7 +37,8 @@ class Settings extends Component{
                     <Text style = {styles.header}>APPLICATION</Text>
                     <SettingButton
                         iconName = 'info'
-                        text = 'Version'
+                        text = 'Version 1.0'
+                        onPress = {this.onVersionButtonPress.bind(this)}
                     />
                 </View>
             </View>
@@ -52,6 +59,12 @@ export default StackNavigator = createStackNavigator({
         screen: Login,
         navigationOptions: ()=>({
             headerTitle:'Login',     
+        })
+    },
+    Register: {
+        screen: Register,
+        navigationOptions: ()=>({
+            headerTitle:'Register',     
         })
     },
 },

@@ -31,7 +31,7 @@ export default class PlaylistCreateView extends Component{
                         color="#841584"
                         />
                     </View>
-                    {this.props.showError?(<Text style={styles.error}>The playlist has already existed</Text>):null}
+                    {this.props.showError?(<Text style={styles.error}>Existed or invalid name</Text>):null}
                 </View>
             </View>    
             ):null
