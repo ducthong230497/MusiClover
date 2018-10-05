@@ -3,6 +3,7 @@ import { View } from 'react-native';
 import {Provider} from 'react-redux'
 import reduxStore from './redux/store' 
 import {createBottomTabNavigator} from 'react-navigation'
+import {createStackNavigator} from 'react-navigation'
 import {Icon} from 'react-native-elements'
 //scenes
 import SongPlayer from './scenes/songplayerscene/SongPlayer';
@@ -11,6 +12,7 @@ import PersonalScene from './scenes/personalscene/Personal'
 import TestScene from './scenes/testscene/Test'
 import SongPlayerAnimation from './scenes/songplayerscene/SongPlayerAnimation'
 import HomeScene from './scenes/homescene/Home'
+import SettingScene from './scenes/settingscene/Setting'
 
 export default class App extends Component{
 
@@ -25,7 +27,7 @@ export default class App extends Component{
 
 }
 
-const AppNavigator = createBottomTabNavigator(
+const BottomNavigator = createBottomTabNavigator(
   {
     Home: {
       screen: HomeScene,
@@ -54,12 +56,22 @@ const AppNavigator = createBottomTabNavigator(
         )
       }
     },
+    Settings: {
+      screen: SettingScene,
+      navigationOptions:{
+        tabBarLabel: 'Settings',
+        tabBarIcon: ({tintColor}) => (
+          <Icon name = 'settings' color = {tintColor}></Icon>
+        )
+      }
+    },
     Test:{
       screen: TestScene,
       
     }
   },
   { //router config
+    initialRouteName: 'Home',
     navigationOptions:{
       tabBarVisible: true,
     },
@@ -69,7 +81,23 @@ const AppNavigator = createBottomTabNavigator(
       style: {
         backgroundColor: 'rgba(30,30,30,255)',
       },
-    }
-
+    },
   }
+);
+
+const AppNavigator = createStackNavigator({
+  Main: {
+      screen: BottomNavigator,
+      navigationOptions: ()=>({
+          header:null,      
+
+      })
+  },
+  SongPlayer: {
+      screen: SongPlayer,
+      navigationOptions: ()=>({
+          header: null,
+      })
+  },
+},
 );

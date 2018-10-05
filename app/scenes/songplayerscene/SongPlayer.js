@@ -58,13 +58,14 @@ class SongPlayer extends Component {
     this.setState({currentPosition: Math.floor(data.currentTime)});
   }
 
-  seek(time) {
-    time = Math.round(time);
-    this.video.current && this.video.current.seek(time);
-    this.setState({
-      currentPosition: time,
-      paused: false,
-    });
+  onSeek(position) {
+    // time = Math.round(time);
+    // this.video.current && this.video.current.seek(time);
+    // this.setState({
+    //   currentPosition: time,
+    //   paused: false,
+    // });
+    this.video.current && this.video.current.seek(position);
   }
 
   onBack() {
@@ -103,7 +104,7 @@ class SongPlayer extends Component {
 
   onHideButtonPress()
   {
-      this.props.navigation.pop();
+      this.props.navigation.navigate('Main');
   }
 
   render() {
@@ -132,7 +133,7 @@ class SongPlayer extends Component {
         <AlbumArt url={track.albumArtUrl} />
         <TrackDetails title={track.songName} artist={track.artist} />
         <SeekBar
-          onSeek={this.seek.bind(this)}
+          onSeek={this.onSeek.bind(this)}
           trackLength={this.state.totalLength}
           onSlidingStart={() => this.setState({paused: true})}
           currentPosition={this.state.currentPosition} />

@@ -9,7 +9,6 @@ import OnlinePlaylists from './OnlinePlaylists'
 import OfflinePlaylists from './OfflinePlaylists'
 import OnlineSongs from './OnlineSongs'
 import OfflineSongs from './OfflineSongs'
-import SongPlayer from "../songplayerscene/SongPlayer"
 
 class Personal extends Component{
 
@@ -50,7 +49,7 @@ class Personal extends Component{
 }
 
 export default StackNavigator = createStackNavigator({
-    Main: {
+    Personal: {
         screen: Personal,
         navigationOptions: ()=>({
             header:null,      
@@ -85,12 +84,6 @@ export default StackNavigator = createStackNavigator({
         screen: APlaylist,
         navigationOptions: ()=>({
             headerTitle:'Playlist',     
-        })
-    },
-    SongPlayer:{
-        screen: SongPlayer,
-        navigationOptions: ()=>({
-            header: null,     
         })
     }
 },

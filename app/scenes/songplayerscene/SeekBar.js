@@ -12,6 +12,11 @@ class SeekBar extends Component{
     return [this.pad(Math.floor(position / 60), 2),this.pad(position % 60, 2)];
   }
 
+  onValueChange(position)
+  {
+    this.props.onSeek(position);
+  }
+
   render(){
     let elapsed = this.minutesAndSeconds(this.props.currentPosition);
     let remaining = this.minutesAndSeconds(this.props.trackLength - this.props.currentPosition);
@@ -30,6 +35,7 @@ class SeekBar extends Component{
         <Slider
           maximumValue={this.props.trackLength}
           onSlidingStart={this.props.onSlidingStart}
+          onValueChange = {this.onValueChange.bind(this)}
           value={this.props.currentPosition}
           style={styles.slider}
           minimumTrackTintColor='#fff'
