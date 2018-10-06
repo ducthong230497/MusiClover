@@ -9,6 +9,10 @@ export default class SongButton extends Component{
         this.props.onSongButtonPress(this.props.songIndex);
     }
     
+    onMoreButtonPress()
+    {
+        this.props.onMoreButtonPress(this.props.songIndex);
+    }
 
     render(){
         return (
@@ -21,8 +25,8 @@ export default class SongButton extends Component{
                             <Text style = {styles.songName}>{this.props.songName}</Text>
                             <Text style = {styles.artistName}>{this.props.artistName}</Text>
                         </View>
-                        <TouchableOpacity  style = {styles.settingButton} onPress ={this.props.onDeleteButtonPress}>
-                            <Icon name ='delete-forever' size = {20} color ='gray' ></Icon>
+                        <TouchableOpacity  style = {styles.settingButton} onPress ={this.onMoreButtonPress.bind(this)}>
+                            <Icon name ='more-horiz' size = {20} color ='white' ></Icon>
                         </TouchableOpacity>
                     </View>
                 </TouchableHighlight>

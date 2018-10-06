@@ -4,15 +4,9 @@ import {Icon} from 'react-native-elements'
 
 export default class TopPlaylist extends Component{
 
-    constructor(props)
-    {
-        super(props);     
-        this.songsFetcher = this.props.songsFetcher;
-    }
-
     onPress()
     {
-        this.props.onPress(this.songsFetcher);
+        this.props.onPress(this.props.songsFetcher);
     }
     
 
@@ -35,18 +29,19 @@ const SCREEN_HEIGHT = Dimensions.get('window').height
 const styles = StyleSheet.create({
     container:{
         paddingTop: 20,
-        paddingRight: 10,
-        paddingLeft: 20,
         flexDirection: 'column',
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        width: SCREEN_WIDTH/2,
+        height: SCREEN_WIDTH/2,
     },
     image:{
-        width: SCREEN_WIDTH/2 - 40,
-        height: SCREEN_WIDTH/2 -40
+        width: SCREEN_WIDTH/2 - 30,
+        height: SCREEN_WIDTH/2 -30,
+        borderRadius: 10
     },
     title:{
-        fontSize: 10,
+        fontSize: 12,
         marginTop: 5,
         marginBottom: 2,
         color: 'white',
