@@ -1,9 +1,9 @@
 
-export function getTop100NhacTre()
+export function getTop100NhacTre(url)
 {
     let listSong = [];
-
-    fetch('https://www.nhaccuatui.com/playlist/top-100-nhac-tre-hay-nhat-va.m3liaiy6vVsF.html').then((response) => {
+    url = url == null ? 'https://www.nhaccuatui.com/playlist/top-100-nhac-tre-hay-nhat-va.m3liaiy6vVsF.html' : url 
+    fetch(url).then((response) => {
             let re = /<ul class="list_song_in_album">([\s\S]*?)<\/ul>/ig;
 
             let result = response._bodyInit.match(re)
