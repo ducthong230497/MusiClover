@@ -23,23 +23,25 @@ export function getTop100NhacTre()
                 let match = element.toString().match(regexSongItem)
                 let songName = match[0].toString().replace("<meta content=\"", "").replace("\"", "")
                 let songURL = match[1].toString().replace("<meta content=\"", "").replace("\"", "")
-                var mp3URL
-                var avatar
-                
-                GetXmlURL(songURL).then(xmlURL=>{
-                    //console.log(xmlURL)
-                    GetData(xmlURL).then(data => {
-                        mp3URL = data.mp3URL
-                        avatar = data.img
-                    })
-                })
-                console.log(mp3URL)
-                console.log(avatar)
+
+                // let xmlURL = GetXmlURL(songURL)
+                // console.log(xmlURL)
+                // GetXmlURL(songURL).then(xmlURL=>{
+                //     //console.log(xmlURL)
+                //     GetData(xmlURL).then(data => {
+                //         mp3URL = data.mp3URL
+                //         avatar = data.img
+                //         Test(mp3URL, avatar, data.mp3URL, data.img)
+                //     })
+                // })
+
+                //console.log(mp3URL)
+                //console.log(avatar)
                 let songInfo = { 
                     songName: songName, 
-                    artist: singerName, 
-                    albumArtUrl: avatar, 
-                    audioUrl: mp3URL
+                    artist: singerName,
+                    albumArtUrl: 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg', 
+                    audioURL: songURL
                 }
                 listSong.push(songInfo)
             });
@@ -51,10 +53,10 @@ export function getTop100NhacTre()
         return listSong;
 }
 
-async function GetXmlURL(url){
+function GetXmlURL(url){
     let xmlURL
     //console.log("url: "+url)
-    await fetch(url).then((response) => {
+    fetch(url).then((response) => {
         let regXmlURL = /xmlURL = "(.*)"/ig
         xmlURL = (response._bodyInit.toString().match(regXmlURL).toString().replace("xmlURL = \"", "").replace("\"", ""));
         //console.log("inside: "+xmlURL)
@@ -63,17 +65,23 @@ async function GetXmlURL(url){
     return xmlURL
 }
 
-async function GetData(url){
+//
+function GetDataFromXmlURL(xmlURL){
     let data = {}
-    await fetch(url).then(response => {
+    fetch(xmlURL).then(response => {
         let regexLocation = /<location([\s\S]*?)<\/location>/ig
         let regexAvatar = /<avatar([\s\S]*?)<\/avatar>/ig
         let regexCDATA = /<!\[CDATA\[([\s\S]*?)\]\]>/ig
 
         let mp3URL = response._bodyInit.toString().match(regexLocation).toString().match(regexCDATA).toString().replace("<![CDATA[", "").replace("]]>", "")
         let avatar = response._bodyInit.toString().match(regexAvatar).toString().match(regexCDATA).toString().replace("<![CDATA[", "").replace("]]>", "")
-        
+        console.log(mp3URL)
         data = {URL: mp3URL, img: avatar}
     }).catch(err=>console.error(err))
     return data
+}
+
+function Test(link, img, mp3URL, avatar){
+    link = mp3URL
+    img = avatar
 }
