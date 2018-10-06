@@ -4,7 +4,7 @@ import {connect} from 'react-redux'
 import {createStackNavigator} from 'react-navigation'
 import {Icon} from 'react-native-elements'
 
-import {getTop100NhacTre} from '../../connector/connector'
+import {getTop100} from '../../connector/connector'
 import TopPlaylistButton from './TopPlaylistButton'
 import APlaylist from '../aplaylistscene/APlaylist'
 
@@ -16,29 +16,39 @@ class Home extends Component{
         this.state = {
             topPlaylists: [
                 {
-                    name : 'Top 100 Nhạc Trẻ',
+                    name : 'Top 100 Nhạc Trẻ Việt',
                     imgUrl : 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg',
-                    songsFetcher: () => getTop100NhacTre()
+                    songsFetcher: () => getTop100('https://www.nhaccuatui.com/playlist/top-100-nhac-tre-hay-nhat-va.m3liaiy6vVsF.html?st=1')
                 },
                 {
-                    name : 'Top 100 Nhạc Trẻ',
+                    name : 'Top 100 Pop USUK',
                     imgUrl : 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg',
-                    songsFetcher: () => getTop100NhacTre()
+                    songsFetcher: () => getTop100('https://www.nhaccuatui.com/playlist/top-100-pop-usuk-hay-nhat-va.zE23R7bc8e9X.html?st=1')
                 },
                 {
-                    name : 'Top 100 Nhạc Trẻ',
+                    name : 'Top 100 Electronica/Dance USUK',
                     imgUrl : 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg',
-                    songsFetcher: () => getTop100NhacTre()
+                    songsFetcher: () => getTop100('https://www.nhaccuatui.com/playlist/top-100-electronicadance-hay-nhat-va.ippIsiqacmnE.html?st=1')
                 },
                 {
-                    name : 'Top 100 Nhạc Trẻ',
+                    name : 'Top 100 Nhạc Hàn',
                     imgUrl : 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg',
-                    songsFetcher: () => getTop100NhacTre()
+                    songsFetcher: () => getTop100('https://www.nhaccuatui.com/playlist/top-100-nhac-han-hay-nhat-va.iciV0mD8L9Ed.html?st=1')
                 },
                 {
-                    name : 'Top 100 Nhạc Trẻ',
+                    name : 'Top 100 Nhạc Hoa',
                     imgUrl : 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg',
-                    songsFetcher: () => getTop100NhacTre()
+                    songsFetcher: () => getTop100('https://www.nhaccuatui.com/playlist/top-100-nhac-hoa-hay-nhat-va.g4Y7NTPP9exf.html?st=1')
+                },
+                {
+                    name : 'Top 100 Nhạc Nhật',
+                    imgUrl : 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg',
+                    songsFetcher: () => getTop100('https://www.nhaccuatui.com/playlist/top-100-nhac-nhat-hay-nhat-va.aOokfjySrloy.html?st=1')
+                },
+                {
+                    name : 'Top 100 Nhạc Không Lời',
+                    imgUrl : 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg',
+                    songsFetcher: () => getTop100('https://www.nhaccuatui.com/top100/top-100-khong-loi.kr9KYNtkzmnA.html')
                 },
             ]
         }

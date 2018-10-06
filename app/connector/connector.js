@@ -1,5 +1,5 @@
 
-export function getTop100NhacTre(url)
+export function getTop100(url)
 {
     let listSong = [];
     url = url == null ? 'https://www.nhaccuatui.com/playlist/top-100-nhac-tre-hay-nhat-va.m3liaiy6vVsF.html' : url 
@@ -40,8 +40,7 @@ export function getTop100NhacTre(url)
                 let songInfo = { 
                     songName: songName, 
                     artist: singerName,
-                    albumArtUrl: 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg', 
-                    audioURL: songURL
+                    songURL: songURL
                 }
                 listSong.push(songInfo)
             });
@@ -53,10 +52,10 @@ export function getTop100NhacTre(url)
         return listSong;
 }
 
-function GetXmlURL(url){
+export async function getXmlURL(url){
     let xmlURL
     //console.log("url: "+url)
-    fetch(url).then((response) => {
+    await fetch(url).then((response) => {
         let regXmlURL = /xmlURL = "(.*)"/ig
         xmlURL = (response._bodyInit.toString().match(regXmlURL).toString().replace("xmlURL = \"", "").replace("\"", ""));
         //console.log("inside: "+xmlURL)
@@ -66,9 +65,9 @@ function GetXmlURL(url){
 }
 
 //
-function GetDataFromXmlURL(xmlURL){
+export async function getDataFromXmlURL(xmlURL){
     let data = {}
-    fetch(xmlURL).then(response => {
+    await fetch(xmlURL).then(response => {
         let regexLocation = /<location([\s\S]*?)<\/location>/ig
         let regexAvatar = /<avatar([\s\S]*?)<\/avatar>/ig
         let regexCDATA = /<!\[CDATA\[([\s\S]*?)\]\]>/ig

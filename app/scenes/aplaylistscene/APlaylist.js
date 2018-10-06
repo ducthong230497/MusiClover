@@ -35,13 +35,13 @@ class APlaylist extends Component{
 
     onSongButtonPress(trackIndex)
     {
-        this.props.dispatch({type: 'SetupTrackList', tracks: null,initialTrackIndex: trackIndex})
+        this.props.dispatch({type: 'SetupTrackList', tracks: this.props.navigation.getParam('songs'),initialTrackIndex: trackIndex})
         this.props.navigation.navigate('SongPlayer');
     }
 
     renderSongs = ({index, item}) => (
         <SongButton 
-            imgUrl = {item.albumArtUrl}
+            // imgUrl = {item.albumArtUrl}
             songName = {item.songName}
             artistName = {item.artist}
             songIndex = {index}

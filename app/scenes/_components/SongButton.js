@@ -4,15 +4,9 @@ import {Icon} from 'react-native-elements'
 
 export default class SongButton extends Component{
 
-    constructor(props)
-    {
-        super(props);
-        this.songIndex = this.props.songIndex;
-    }
-
     onPress()
     {
-        this.props.onSongButtonPress(this.songIndex);
+        this.props.onSongButtonPress(this.props.songIndex);
     }
     
 
@@ -21,7 +15,8 @@ export default class SongButton extends Component{
             <View style={styles.container}>
                 <TouchableHighlight underlayColor = 'rgb(150,150,150)'  onPress = {this.onPress.bind(this)}>
                     <View style = {styles.songButton}>
-                        <Image source={{uri: this.props.imgUrl}} style={styles.image}></Image>
+                        <Text style = {styles.songIndex}>{this.props.songIndex + 1}</Text>
+                        {/* <Image source={{uri: this.props.imgUrl}} style={styles.image}></Image> */}
                         <View style = {styles.songInfo}>
                             <Text style = {styles.songName}>{this.props.songName}</Text>
                             <Text style = {styles.artistName}>{this.props.artistName}</Text>
@@ -62,6 +57,10 @@ const styles = StyleSheet.create({
         color: 'white',
         paddingLeft: 20,
         flex:1
+    },
+    songIndex:{
+        fontSize: 15,
+        color: 'white',
     },
     artistName:{
         fontSize: 15,

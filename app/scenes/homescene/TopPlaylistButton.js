@@ -46,8 +46,9 @@ const styles = StyleSheet.create({
         height: SCREEN_WIDTH/2 -40
     },
     title:{
-        fontSize: 15,
-        fontWeight: 'bold',
+        fontSize: 10,
+        marginTop: 5,
+        marginBottom: 2,
         color: 'white',
     },
 });
