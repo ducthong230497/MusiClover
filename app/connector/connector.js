@@ -48,7 +48,7 @@ export function getTop100(url)
         }).catch((error) => {
             console.error(error);
         });
-        getTop100Avatar(url)
+        //getTop100Avatar(url)
         return listSong;
 }
 
