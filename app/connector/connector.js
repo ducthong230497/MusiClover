@@ -48,7 +48,7 @@ export function getTop100(url)
         }).catch((error) => {
             console.error(error);
         });
-
+        getTop100Avatar(url)
         return listSong;
 }
 
@@ -56,8 +56,9 @@ export async function getXmlURL(url){
     let xmlURL
     //console.log("url: "+url)
     await fetch(url).then((response) => {
-        let regXmlURL = /xmlURL = "(.*)"/ig
-        xmlURL = (response._bodyInit.toString().match(regXmlURL).toString().replace("xmlURL = \"", "").replace("\"", ""));
+        let regXmlURL = /xmlURL = "(.*)"/
+        //xmlURL = (response._bodyInit.toString().match(regXmlURL).toString().replace("xmlURL = \"", "").replace("\"", ""));
+        xmlURL = response._bodyInit.toString().match(regXmlURL)[1].toString()
         //console.log("inside: "+xmlURL)
     }).catch(err=>console.error(err))
     //console.log("before return:"+ xmlURL)
@@ -68,19 +69,27 @@ export async function getXmlURL(url){
 export async function getDataFromXmlURL(xmlURL){
     let data = {}
     await fetch(xmlURL).then(response => {
-        let regexLocation = /<location([\s\S]*?)<\/location>/ig
-        let regexAvatar = /<avatar([\s\S]*?)<\/avatar>/ig
-        let regexCDATA = /<!\[CDATA\[([\s\S]*?)\]\]>/ig
+        let regexLocation = /<location>([\s\S]*?)<\/location>/
+        let regexAvatar = /<avatar([\s\S]*?)<\/avatar>/
+        let regexCDATA = /<!\[CDATA\[([\s\S]*?)\]\]>/
 
-        let mp3URL = response._bodyInit.toString().match(regexLocation).toString().match(regexCDATA).toString().replace("<![CDATA[", "").replace("]]>", "")
-        let avatar = response._bodyInit.toString().match(regexAvatar).toString().match(regexCDATA).toString().replace("<![CDATA[", "").replace("]]>", "")
-        console.log(mp3URL)
+        //let mp3URL = response._bodyInit.toString().match(regexLocation).toString().match(regexCDATA)[1].toString().replace("<![CDATA[", "").replace("]]>", "")
+        //let avatar = response._bodyInit.toString().match(regexAvatar).toString().match(regexCDATA)[1].toString().replace("<![CDATA[", "").replace("]]>", "")
+        let mp3URL = response._bodyInit.toString().match(regexLocation).toString().match(regexCDATA)[1].toString()
+        let avatar = response._bodyInit.toString().match(regexAvatar).toString().match(regexCDATA)[1].toString()
+        console.log("location: " +mp3URL+ " end")
         data = {URL: mp3URL, img: avatar}
     }).catch(err=>console.error(err))
     return data
 }
 
-function Test(link, img, mp3URL, avatar){
-    link = mp3URL
-    img = avatar
+export async function getTop100Avatar(url){
+    let avatar
+     await fetch(url).then(response => {
+        let regexAvatar = /<link rel="image_src" href="([\s\S]*?)"/;
+        
+        avatar = response._bodyInit.toString().match(regexAvatar)[1].toString()
+    }).catch(err=>console.error(err))
+    console.log("avatar: "+avatar)
+    return avatar
 }
