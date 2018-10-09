@@ -1,9 +1,9 @@
 
-export function getTop100(url)
+export async function getTop100(url)
 {
     let listSong = [];
     url = url == null ? 'https://www.nhaccuatui.com/playlist/top-100-nhac-tre-hay-nhat-va.m3liaiy6vVsF.html' : url 
-    fetch(url).then((response) => {
+    await fetch(url).then((response) => {
             let re = /<ul class="list_song_in_album">([\s\S]*?)<\/ul>/ig;
 
             let result = response._bodyInit.match(re)

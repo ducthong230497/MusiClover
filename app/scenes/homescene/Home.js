@@ -14,72 +14,79 @@ class Home extends Component{
     {
         super(props);
         this.state = {
+            currentSongLists: [],
             topPlaylists: [
                 {
                     name : 'Top 100 Nhạc Trẻ Việt',
                     imgUrl : 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg',
-                    songsFetcher: () => getTop100('https://www.nhaccuatui.com/playlist/top-100-nhac-tre-hay-nhat-va.m3liaiy6vVsF.html?st=1')
+                    link: 'https://www.nhaccuatui.com/playlist/top-100-nhac-tre-hay-nhat-va.m3liaiy6vVsF.html?st=1'
                 },
                 {
                     name : 'Top 100 Pop USUK',
                     imgUrl : 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg',
-                    songsFetcher: () => getTop100('https://www.nhaccuatui.com/playlist/top-100-pop-usuk-hay-nhat-va.zE23R7bc8e9X.html?st=1')
+                    link: 'https://www.nhaccuatui.com/playlist/top-100-pop-usuk-hay-nhat-va.zE23R7bc8e9X.html?st=1'
                 },
                 {
                     name : 'Top 100 Electronica/Dance USUK',
                     imgUrl : 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg',
-                    songsFetcher: () => getTop100('https://www.nhaccuatui.com/playlist/top-100-electronicadance-hay-nhat-va.ippIsiqacmnE.html?st=1')
+                    link: 'https://www.nhaccuatui.com/playlist/top-100-electronicadance-hay-nhat-va.ippIsiqacmnE.html?st=1'
                 },
                 {
                     name : 'Top 100 Nhạc Hàn',
                     imgUrl : 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg',
-                    songsFetcher: () => getTop100('https://www.nhaccuatui.com/playlist/top-100-nhac-han-hay-nhat-va.iciV0mD8L9Ed.html?st=1')
+                    link: 'https://www.nhaccuatui.com/playlist/top-100-nhac-han-hay-nhat-va.iciV0mD8L9Ed.html?st=1'
                 },
                 {
                     name : 'Top 100 Nhạc Hoa',
                     imgUrl : 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg',
-                    songsFetcher: () => getTop100('https://www.nhaccuatui.com/playlist/top-100-nhac-hoa-hay-nhat-va.g4Y7NTPP9exf.html?st=1')
+                    link: 'https://www.nhaccuatui.com/playlist/top-100-nhac-hoa-hay-nhat-va.g4Y7NTPP9exf.html?st=1'
                 },
                 {
                     name : 'Top 100 Nhạc Nhật',
                     imgUrl : 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg',
-                    songsFetcher: () => getTop100('https://www.nhaccuatui.com/playlist/top-100-nhac-nhat-hay-nhat-va.aOokfjySrloy.html?st=1')
+                    link: 'https://www.nhaccuatui.com/playlist/top-100-nhac-nhat-hay-nhat-va.aOokfjySrloy.html?st=1'
                 },
                 {
                     name : 'Top 100 Nhạc Không Lời',
                     imgUrl : 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg',
-                    songsFetcher: () => getTop100('https://www.nhaccuatui.com/top100/top-100-khong-loi.kr9KYNtkzmnA.html')
+                    link: 'https://www.nhaccuatui.com/top100/top-100-khong-loi.kr9KYNtkzmnA.html'
                 },
             ]
         }
+        
     }
 
     componentDidMount()
     {
-        let newTopPlaylists = [...this.state.topPlaylists];
-
-         newTopPlaylists.map(item=> {
-            getTop100Avatar('https://www.nhaccuatui.com/playlist/top-100-nhac-tre-hay-nhat-va.m3liaiy6vVsF.html?st=1').then(result=>{
-            console.log(result)    
-            item.imgUrl = result;
-           
-           });
-
-        })
-
+        this.setState({topPlaylists: this.getPlaylistAvatars()})
     }
 
-    onTopPlaylistPress(songsFetcher)
+    getPlaylistAvatars()
     {
-        const songs = songsFetcher()
-        this.props.navigation.navigate('APlaylist', {canAddSong: false, songs: songs});
+        let newTopPlaylists = [...this.state.topPlaylists];
+
+         newTopPlaylists.forEach(async (item)=> {
+            getTop100Avatar('https://www.nhaccuatui.com/playlist/top-100-nhac-tre-hay-nhat-va.m3liaiy6vVsF.html?st=1')
+            .then(result=>{ 
+                item.imgUrl = result;
+           })
+        }) 
+
+        return newTopPlaylists;
+    }
+
+    onTopPlaylistPress(link)
+    {
+        getTop100(link).then(result => this.props.dispatch({type: 'SetupCurrentSongLists', currentSongLists: result}))
+        this.props.navigation.navigate('APlaylist', {canAddSong: false, songs: this.state.currentSongLists})
+
     }
 
     renderTopPlaylists = ({item}) => (
         <TopPlaylistButton
             name = {item.name}
             imgUrl = {item.imgUrl}
-            songsFetcher = {item.songsFetcher}
+            songsFetcher = {item.link}
             onPress = {this.onTopPlaylistPress.bind(this)}
         />
     )
@@ -100,14 +107,7 @@ class Home extends Component{
     }
 }
 
-function mapStateToProps(state)
-{
-    return {
-
-    }
-}
-
-const HomeScene =  connect(mapStateToProps)(Home);
+const HomeScene =  connect()(Home);
 
 export default StackNavigator = createStackNavigator({
     Main: {
