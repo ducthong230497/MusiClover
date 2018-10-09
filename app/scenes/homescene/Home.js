@@ -4,7 +4,7 @@ import {connect} from 'react-redux'
 import {createStackNavigator} from 'react-navigation'
 import {Icon} from 'react-native-elements'
 
-import {getTop100} from '../../connector/connector'
+import {getTop100, getTop100Avatar} from '../../connector/connector'
 import TopPlaylistButton from './TopPlaylistButton'
 import APlaylist from '../aplaylistscene/APlaylist'
 
@@ -52,6 +52,21 @@ class Home extends Component{
                 },
             ]
         }
+    }
+
+    componentDidMount()
+    {
+        let newTopPlaylists = [...this.state.topPlaylists];
+
+         newTopPlaylists.map(item=> {
+            getTop100Avatar('https://www.nhaccuatui.com/playlist/top-100-nhac-tre-hay-nhat-va.m3liaiy6vVsF.html?st=1').then(result=>{
+            console.log(result)    
+            item.imgUrl = result;
+           
+           });
+
+        })
+
     }
 
     onTopPlaylistPress(songsFetcher)
