@@ -18,6 +18,8 @@ class APlaylist extends Component{
             selectedSongName: '',
             selectedArtist: ''
         }
+
+        this.playlist = [];
     }
   
     
@@ -38,13 +40,13 @@ class APlaylist extends Component{
 
     onSongButtonPress(index)
     {
-        this.props.dispatch({type: 'SetupTrackList', tracks: this.props.currentSongLists,initialTrackIndex: index})
+        this.props.dispatch({type: 'SetupTrackList', tracks: this.playlist,initialTrackIndex: index})
         this.props.navigation.navigate('SongPlayer');
     }
 
     onMoreButtonPress(index)
     {
-        currentSong = this.props.currentSongLists[index];
+        currentSong = this.playlist[index];
         this.setState({selectedSongName:currentSong.songName, selectedArtist: currentSong.artist, isSongMoreViewVisible: true});
     }
 
@@ -71,8 +73,13 @@ class APlaylist extends Component{
 
     render(){
 
-        const songs = this.props.currentSongLists;
-
+        let playlist = this.props.playlists.find(playlist => playlist.name === this.props.navigation.getParam('playlistName'))
+        if(playlist != null)
+        {
+            this.playlist = Object.values(playlist)
+            this.playlist.pop() //pop the final item which is the variable 'name' we have put to playlist (see playlistsReducer)
+        }
+        console.log(this.props.playlists);
         return (
             <View style={styles.container}>
                 {
@@ -86,9 +93,9 @@ class APlaylist extends Component{
                     :null
                 }
                 <FlatList
-                    data={songs}
+                    data={this.playlist}
                     renderItem={this.renderSongs.bind(this)}
-                    keyExtractor = {(item)=>item.songName}>
+                    keyExtractor = {(item, index)=>index.toString()}>
                 </FlatList>
                 <SongAddView
                     isVisible = {this.state.isAddSongViewVisisble}
@@ -97,7 +104,7 @@ class APlaylist extends Component{
                 />
                 <SongMoreView
                     isVisible = {this.state.isSongMoreViewVisible}
-                    canRemoveFromPlaylist = {false}
+                    playlist = {false}
                     songName = {this.state.selectedSongName}
                     artist = {this.state.selectedArtist}
                     onAddToPlaylistButtonPress = {this.onAddToPlaylistButtonPress.bind(this)}
@@ -112,7 +119,7 @@ class APlaylist extends Component{
 function mapStateToProps(state)
 {
     return {
-        currentSongLists: state.songPlayer.currentSongLists
+        playlists: state.playlists.playlists
     }
 }
 

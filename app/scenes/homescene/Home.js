@@ -81,10 +81,10 @@ class Home extends Component{
     onTopPlaylistPress(link)
     {
         getTop100(link).then(result => {
-            this.props.dispatch({type: 'SetupCurrentSongLists', currentSongLists: result})
+            this.props.dispatch({type: 'AddPlaylist', name: 'Home', playlist: result})
         })
 
-        this.props.navigation.navigate('APlaylist', {canAddSong: false, songs: this.state.currentSongLists})
+        this.props.navigation.navigate('APlaylist', {canAddSong: false, playlistName: 'Home'})
     }
 
     renderTopPlaylists = ({item}) => (
