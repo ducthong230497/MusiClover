@@ -1,9 +1,7 @@
 import React, {Component} from 'react'
 import {View,Text, TextInput,Button, StyleSheet} from 'react-native'
 
-export default class PlaylistCreateView extends Component{
-
-
+export default class SongAddView extends Component{
     render(){
         return (
             this.props.isVisible?
@@ -11,27 +9,7 @@ export default class PlaylistCreateView extends Component{
             <View style={styles.overlay}>
                 <View style={[styles.overlay, styles.transparentBackground]}></View>
                 <View style={styles.subContainer}>
-                    <Text style={styles.header}>CREATE PLAYLIST</Text>
-                    <TextInput
-                    style={styles.textField}
-                    placeholder="Enter playlist name..."
-                    onChangeText={this.props.onChangeText}
-                    />
-                    <View style={styles.button}>
-                        <Button
-                        onPress={this.props.onCancelButtonPress}
-                        title="Cancel"
-                        color="#841584"
-                        />
-                    </View>
-                    <View style={styles.button}>
-                        <Button
-                        onPress={this.props.onCreateButtonPress}
-                        title="Create"
-                        color="#841584"
-                        />
-                    </View>
-                    {this.props.showError?(<Text style={styles.error}>The playlist has already existed</Text>):null}
+                    <Text>Add to playlist</Text>
                 </View>
             </View>    
             ):null

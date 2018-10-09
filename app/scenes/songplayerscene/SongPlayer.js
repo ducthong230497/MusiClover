@@ -6,6 +6,7 @@ import TrackDetails from './TrackDetails';
 import SeekBar from './SeekBar';
 import Controls from './Controls';
 import Video from 'react-native-video';
+import {getXmlURL, getDataFromXmlURL} from '../../connector/connector'
 import {connect} from 'react-redux'
 
 const DUMMYTRACKS = [
@@ -40,13 +41,24 @@ class SongPlayer extends Component {
       paused: false,
       repeatOn: false,
       shuffleOn: false,
-      selectedTrack: this.props.initialTrackIndex,
+      selectedTrackIndex: this.props.initialTrackIndex,
+      selectedTrackImageUrl: 'null',
+      selectedTrackUrl: 'https://aredir.nixcdn.com/dummy.mp3'
     };
 
     this.video = React.createRef();
 
+    this.getSongData(this.props.initialTrackIndex);
   }
 
+  getSongData(index)
+  {
+    getXmlURL(this.props.tracks[index].songURL).then(xmlUrl=> {
+      getDataFromXmlURL(xmlUrl).then(data => {
+        this.setState({selectedTrackUrl: data.URL, selectedTrackImageUrl: data.img});
+      });
+    });
+  }
 
   setDuration(data) {
     // console.log("dsads " + data.duration);
@@ -58,26 +70,29 @@ class SongPlayer extends Component {
     this.setState({currentPosition: Math.floor(data.currentTime)});
   }
 
-  seek(time) {
-    time = Math.round(time);
-    this.video.current && this.video.current.seek(time);
-    this.setState({
-      currentPosition: time,
-      paused: false,
-    });
+  onSeek(position) {
+    // time = Math.round(time);
+    // this.video.current && this.video.current.seek(time);
+    // this.setState({
+    //   currentPosition: time,
+    //   paused: false,
+    // });
+    this.video.current && this.video.current.seek(position);
   }
 
   onBack() {
-    if (this.state.currentPosition < 10 && this.state.selectedTrack > 0) {
+    
+    if (this.state.currentPosition < 10 && this.state.selectedTrackIndex > 0) {
+      this.getSongData(this.state.selectedTrackIndex-1);
       this.video.current && this.video.current.seek(0);
-      this.setState({ isChanging: true });
-      setTimeout(() => this.setState({
+      // this.setState({ isChanging: true });
+      this.setState({
         currentPosition: 0,
         paused: false,
         totalLength: 1,
-        isChanging: false,
-        selectedTrack: this.state.selectedTrack - 1,
-      }), 0);
+        // isChanging: false,
+        selectedTrackIndex: this.state.selectedTrackIndex - 1,
+      });
     } else {
       this.video.current.seek(0);
       this.setState({
@@ -88,17 +103,19 @@ class SongPlayer extends Component {
 
   onForward() {
     const trackLength = this.props.tracks == null? DUMMYTRACKS.length: this.props.tracks.length;
-    if (this.state.selectedTrack < trackLength) {
+    if (this.state.selectedTrackIndex < trackLength-1) {
+      this.getSongData(this.state.selectedTrackIndex+1);
       this.video.current && this.video.current.seek(0);
-      this.setState({ isChanging: true });
-      setTimeout(() => this.setState({
+      // this.setState({ isChanging: true });
+      this.setState({
         currentPosition: 0,
         totalLength: 1,
         paused: false,
-        isChanging: false,
-        selectedTrack: this.state.selectedTrack + 1,
-      }), 0);
+        // isChanging: false,
+        selectedTrackIndex: this.state.selectedTrackIndex + 1,
+      });
     }
+
   }
 
   onHideButtonPress()
@@ -108,20 +125,20 @@ class SongPlayer extends Component {
 
   render() {
     const tracks = this.props.tracks == null? DUMMYTRACKS: this.props.tracks;
-    const track = tracks[this.state.selectedTrack];
-    const video = this.state.isChanging ? null : (
-      <Video source={{uri: track.audioUrl}} // Can be a URL or a local file.
-        ref={this.video}
-        paused={this.state.paused}               // Pauses playback entirely.
-        resizeMode="cover"           // Fill the whole screen at aspect ratio.
-        repeat={true}                // Repeat forever.
-        onLoadStart={this.loadStart} // Callback when video starts to load
-        onLoad={this.setDuration.bind(this)}    // Callback when video loads
-        onProgress={this.setTime.bind(this)}    // Callback every ~250ms with currentTime
-        onEnd={this.onEnd}           // Callback when playback finishes
-        onError={this.videoError}    // Callback when video cannot be loaded
-        style={styles.audioElement} />
-    );
+    const track = tracks[this.state.selectedTrackIndex];
+    // const video = (
+    //   <Video source={{uri: this.state.selectedTrackUrl}} // Can be a URL or a local file.
+    //     ref={this.video}
+    //     paused={this.state.paused}               // Pauses playback entirely.
+    //     resizeMode="cover"           // Fill the whole screen at aspect ratio.
+    //     repeat={true}                // Repeat forever.
+    //     onLoadStart={this.loadStart} // Callback when video starts to load
+    //     onLoad={this.setDuration.bind(this)}    // Callback when video loads
+    //     onProgress={this.setTime.bind(this)}    // Callback every ~250ms with currentTime
+    //     onEnd={this.onEnd}           // Callback when playback finishes
+    //     onError={this.videoError}    // Callback when video cannot be loaded
+    //     style={styles.audioElement} />
+    // );
 
     return (
       <View style={styles.container}>
@@ -129,10 +146,10 @@ class SongPlayer extends Component {
         <Header 
           message="Playing From Charts"
           onHideButtonPress = {this.onHideButtonPress.bind(this)} />
-        <AlbumArt url={track.albumArtUrl} />
+        <AlbumArt url={this.state.selectedTrackImageUrl} />
         <TrackDetails title={track.songName} artist={track.artist} />
         <SeekBar
-          onSeek={this.seek.bind(this)}
+          onSeek={this.onSeek.bind(this)}
           trackLength={this.state.totalLength}
           onSlidingStart={() => this.setState({paused: true})}
           currentPosition={this.state.currentPosition} />
@@ -140,14 +157,25 @@ class SongPlayer extends Component {
           onPressRepeat={() => this.setState({repeatOn : !this.state.repeatOn})}
           repeatOn={this.state.repeatOn}
           shuffleOn={this.state.shuffleOn}
-          forwardDisabled={this.state.selectedTrack == (this.props.tracks == null?DUMMYTRACKS.length: this.props.tracks.length - 1)}
+          forwardDisabled={this.state.selectedTrackIndex == (this.props.tracks == null?DUMMYTRACKS.length: this.props.tracks.length - 1)}
           onPressShuffle={() => this.setState({shuffleOn: !this.state.shuffleOn})}
           onPressPlay={() => this.setState({paused: false})}
           onPressPause={() => this.setState({paused: true})}
           onBack={this.onBack.bind(this)}
           onForward={this.onForward.bind(this)}
           paused={this.state.paused}/>
-        {video}
+        <Video 
+          source={{uri: this.state.selectedTrackUrl}} // Can be a URL or a local file.
+          ref={this.video}
+          paused={this.state.paused}               // Pauses playback entirely.
+          resizeMode="cover"           // Fill the whole screen at aspect ratio.
+          repeat={true}                // Repeat forever.
+          onLoadStart={this.loadStart} // Callback when video starts to load
+          onLoad={this.setDuration.bind(this)}    // Callback when video loads
+          onProgress={this.setTime.bind(this)}    // Callback every ~250ms with currentTime
+          onEnd={this.onEnd}           // Callback when playback finishes
+          onError={this.videoError}    // Callback when video cannot be loaded
+          style={styles.audioElement} />
       </View>
     );
   }

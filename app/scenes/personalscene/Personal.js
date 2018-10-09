@@ -3,15 +3,46 @@ import {View,Text,StyleSheet} from 'react-native'
 import {createStackNavigator} from 'react-navigation'
 import {Icon} from 'react-native-elements'
 
-import CategoryButton from './CategoryButton'
+import CategoryButton from './children/CategoryButton'
 import APlaylist from '../aplaylistscene/APlaylist' 
 import OnlinePlaylists from './OnlinePlaylists'
 import OfflinePlaylists from './OfflinePlaylists'
 import OnlineSongs from './OnlineSongs'
 import OfflineSongs from './OfflineSongs'
-import SongPlayer from "../songplayerscene/SongPlayer"
 
 class Personal extends Component{
+
+    constructor(props)
+    {
+        super(props);
+        this.state = {
+            isLogined: true
+        }
+    }
+
+    onOnlinePlaylistsButtonPress()
+    {
+        if(this.state.isLogined)
+        {
+            this.props.navigation.navigate('OnlinePlaylists');
+        }
+        else
+        {
+            this.props.navigation.navigate('Login');
+        }
+    }
+
+    onOnlineSongsButtonPress()
+    {
+        if(this.state.isLogined)
+        {
+            this.props.navigation.navigate('OnlineSongs')
+        }
+        else
+        {
+            this.props.navigation.navigate('Login');
+        }
+    }
 
     render(){
 
@@ -22,12 +53,12 @@ class Personal extends Component{
                     <CategoryButton 
                         text = 'Playlists' 
                         iconName = 'queue-music' 
-                        onPress = {()=>this.props.navigation.navigate('OnlinePlaylists')}>
+                        onPress = {this.onOnlinePlaylistsButtonPress.bind(this)}>
                     </CategoryButton>
                     <CategoryButton 
                         text = 'Songs' 
                         iconName = 'music-note' 
-                        onPress = {()=>this.props.navigation.navigate('OnlineSongs')}>
+                        onPress = {this.onOnlineSongsButtonPress.bind(this)}>
                     </CategoryButton>
                 </View>
                 <View style ={styles.subcontainer}>
@@ -50,7 +81,7 @@ class Personal extends Component{
 }
 
 export default StackNavigator = createStackNavigator({
-    Main: {
+    Personal: {
         screen: Personal,
         navigationOptions: ()=>({
             header:null,      
@@ -85,12 +116,6 @@ export default StackNavigator = createStackNavigator({
         screen: APlaylist,
         navigationOptions: ()=>({
             headerTitle:'Playlist',     
-        })
-    },
-    SongPlayer:{
-        screen: SongPlayer,
-        navigationOptions: ()=>({
-            header: null,     
         })
     }
 },
