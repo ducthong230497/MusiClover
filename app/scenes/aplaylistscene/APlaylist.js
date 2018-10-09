@@ -38,13 +38,13 @@ class APlaylist extends Component{
 
     onSongButtonPress(index)
     {
-        this.props.dispatch({type: 'SetupTrackList', tracks: this.props.navigation.getParam('songs'),initialTrackIndex: index})
+        this.props.dispatch({type: 'SetupTrackList', tracks: this.props.currentSongLists,initialTrackIndex: index})
         this.props.navigation.navigate('SongPlayer');
     }
 
     onMoreButtonPress(index)
     {
-        currentSong = this.props.navigation.getParam('songs')[index];
+        currentSong = this.props.currentSongLists[index];
         this.setState({selectedSongName:currentSong.songName, selectedArtist: currentSong.artist, isSongMoreViewVisible: true});
     }
 
@@ -71,7 +71,7 @@ class APlaylist extends Component{
 
     render(){
 
-        const songs = this.props.navigation.getParam('songs');
+        const songs = this.props.currentSongLists;
 
         return (
             <View style={styles.container}>
@@ -109,7 +109,14 @@ class APlaylist extends Component{
     }
 }
 
-export default connect()(APlaylist);
+function mapStateToProps(state)
+{
+    return {
+        currentSongLists: state.songPlayer.currentSongLists
+    }
+}
+
+export default connect(mapStateToProps)(APlaylist);
 
 const styles = StyleSheet.create({
     container:{

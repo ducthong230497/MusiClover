@@ -18,37 +18,37 @@ class Home extends Component{
             topPlaylists: [
                 {
                     name : 'Top 100 Nhạc Trẻ Việt',
-                    imgUrl : 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg',
+                    imgUrl : 'https://media.giphy.com/media/QyOI0WGW3vY2s/giphy.gif',
                     link: 'https://www.nhaccuatui.com/playlist/top-100-nhac-tre-hay-nhat-va.m3liaiy6vVsF.html?st=1'
                 },
                 {
                     name : 'Top 100 Pop USUK',
-                    imgUrl : 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg',
+                    imgUrl : 'https://media.giphy.com/media/QyOI0WGW3vY2s/giphy.gif',
                     link: 'https://www.nhaccuatui.com/playlist/top-100-pop-usuk-hay-nhat-va.zE23R7bc8e9X.html?st=1'
                 },
                 {
                     name : 'Top 100 Electronica/Dance USUK',
-                    imgUrl : 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg',
+                    imgUrl : 'https://media.giphy.com/media/QyOI0WGW3vY2s/giphy.gif',
                     link: 'https://www.nhaccuatui.com/playlist/top-100-electronicadance-hay-nhat-va.ippIsiqacmnE.html?st=1'
                 },
                 {
                     name : 'Top 100 Nhạc Hàn',
-                    imgUrl : 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg',
+                    imgUrl : 'https://media.giphy.com/media/QyOI0WGW3vY2s/giphy.gif',
                     link: 'https://www.nhaccuatui.com/playlist/top-100-nhac-han-hay-nhat-va.iciV0mD8L9Ed.html?st=1'
                 },
                 {
                     name : 'Top 100 Nhạc Hoa',
-                    imgUrl : 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg',
+                    imgUrl : 'https://media.giphy.com/media/QyOI0WGW3vY2s/giphy.gif',
                     link: 'https://www.nhaccuatui.com/playlist/top-100-nhac-hoa-hay-nhat-va.g4Y7NTPP9exf.html?st=1'
                 },
                 {
                     name : 'Top 100 Nhạc Nhật',
-                    imgUrl : 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg',
+                    imgUrl : 'https://media.giphy.com/media/QyOI0WGW3vY2s/giphy.gif',
                     link: 'https://www.nhaccuatui.com/playlist/top-100-nhac-nhat-hay-nhat-va.aOokfjySrloy.html?st=1'
                 },
                 {
                     name : 'Top 100 Nhạc Không Lời',
-                    imgUrl : 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg',
+                    imgUrl : 'https://media.giphy.com/media/QyOI0WGW3vY2s/giphy.gif',
                     link: 'https://www.nhaccuatui.com/top100/top-100-khong-loi.kr9KYNtkzmnA.html'
                 },
             ]
@@ -58,35 +58,40 @@ class Home extends Component{
 
     componentDidMount()
     {
-        this.setState({topPlaylists: this.getPlaylistAvatars()})
+        this.getPlaylistWithAvatars().then(result => {
+            this.setState({topPlaylists: result})
+        }).catch(err=> console.log(err));
     }
 
-    getPlaylistAvatars()
+    async getPlaylistWithAvatars()
     {
         let newTopPlaylists = [...this.state.topPlaylists];
 
-         newTopPlaylists.forEach(async (item)=> {
-            getTop100Avatar('https://www.nhaccuatui.com/playlist/top-100-nhac-tre-hay-nhat-va.m3liaiy6vVsF.html?st=1')
+        for(let item of newTopPlaylists)
+        {
+            await getTop100Avatar(item.link)
             .then(result=>{ 
                 item.imgUrl = result;
            })
-        }) 
+        }
 
         return newTopPlaylists;
     }
 
     onTopPlaylistPress(link)
     {
-        getTop100(link).then(result => this.props.dispatch({type: 'SetupCurrentSongLists', currentSongLists: result}))
-        this.props.navigation.navigate('APlaylist', {canAddSong: false, songs: this.state.currentSongLists})
+        getTop100(link).then(result => {
+            this.props.dispatch({type: 'SetupCurrentSongLists', currentSongLists: result})
+        })
 
+        this.props.navigation.navigate('APlaylist', {canAddSong: false, songs: this.state.currentSongLists})
     }
 
     renderTopPlaylists = ({item}) => (
         <TopPlaylistButton
             name = {item.name}
             imgUrl = {item.imgUrl}
-            songsFetcher = {item.link}
+            link = {item.link}
             onPress = {this.onTopPlaylistPress.bind(this)}
         />
     )
