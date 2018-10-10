@@ -1,6 +1,6 @@
-
 export async function getTop100(url)
 {
+    getDataForSearching("lac troi")
     let listSong = [];
     url = url == null ? 'https://www.nhaccuatui.com/playlist/top-100-nhac-tre-hay-nhat-va.m3liaiy6vVsF.html' : url 
     await fetch(url).then((response) => {
@@ -77,10 +77,38 @@ export async function getDataFromXmlURL(xmlURL){
         //let avatar = response._bodyInit.toString().match(regexAvatar).toString().match(regexCDATA)[1].toString().replace("<![CDATA[", "").replace("]]>", "")
         let mp3URL = response._bodyInit.toString().match(regexLocation).toString().match(regexCDATA)[1].toString()
         let avatar = response._bodyInit.toString().match(regexAvatar).toString().match(regexCDATA)[1].toString()
-        console.log("location: " +mp3URL+ " end")
+        //console.log("location: " +mp3URL+ " end")
         data = {URL: mp3URL, img: avatar}
     }).catch(err=>console.error(err))
     return data
+}
+
+// encryptkey is used for crawling data on mobile website
+export async function getEncryptKey(url){
+    let encryptKey
+    await fetch(url).then(response => {
+        let regexEncryptKey = /encryptkey="([\s\S]*?)"/
+        encryptKey = response._bodyInit.match(regexEncryptKey)[1].toString()
+    })
+    return encryptKey
+}
+
+export async function getDataFromKeyEncrypt(encryptKey){
+    strSearch = strSearch.replace(" ", "%20")
+    let result = {}
+    let str = "https://m.nhaccuatui.com/ajax/search?q=" + strSearch
+    console.log(str)
+
+    try {
+        let response = await fetch(
+            str
+        );
+        let responseJson = await response.json();
+        console.log(responseJson.data.song[0].url)
+        return responseJson.data
+    } catch (error) {
+        console.error(error);
+    }
 }
 
 export async function getTop100Avatar(url){
@@ -89,7 +117,36 @@ export async function getTop100Avatar(url){
         let regexAvatar = /<link rel="image_src" href="([\s\S]*?)"/;
         
         avatar = response._bodyInit.toString().match(regexAvatar)[1].toString()
-    }).catch(err=>console.error(err))
-    console.log("avatar: "+avatar)
+    }).catch(err => console.error(err))
+    console.log("avatar: " + avatar)
     return avatar
 }
+
+/*
+===========================================================================================================
+    * this search function return json data containing 'song' 'singer' 'playlist' 'video'
+    * remember to check if its length is greater than 0 before using it (ex: reponseJson.song.length > 0)
+    * each has 3 properties: 'singer' 'name' 'url'
+    * note that this url is mobile which start with 'https://m.nhaccuatui.com/'
+    * we will use another function to crawl data from this url
+===========================================================================================================
+*/
+export async function getDataForSearching(strSearch){
+    strSearch = strSearch.replace(" ", "%20")
+    let result = {}
+    let str = "https://m.nhaccuatui.com/ajax/search?q=" + strSearch
+    console.log(str)
+
+    try {
+        let response = await fetch(
+            str
+        );
+        let responseJson = await response.json();
+        console.log(responseJson.data.song[0].url)
+        return responseJson.data
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+var mediaInfoUrl = "https://m.nhaccuatui.com/ajax/get-media-info?key1=&key2=&key3=&ip="
