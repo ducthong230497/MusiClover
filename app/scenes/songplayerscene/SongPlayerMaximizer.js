@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {View, Text, StatusBar} from 'react-native';
+import {View, StatusBar} from 'react-native';
 import Header from './Header';
 import AlbumArt from './AlbumArt';
 import TrackDetails from './TrackDetails';
@@ -8,7 +8,7 @@ import Controls from './Controls';
 import {getXmlURL, getDataFromXmlURL} from '../../connector/connector'
 import {connect} from 'react-redux'
 
-class SongPlayerInterface extends Component {
+class SongPlayerMaximizer extends Component {
   constructor(props)
   {
     super(props);
@@ -17,7 +17,7 @@ class SongPlayerInterface extends Component {
       selectedTrackImageUrl: 'null',
     };
 
-    this.getSongData(this.props.selectedTrackIndex);
+    // this.getSongData(this.props.selectedTrackIndex);
   }
 
   getSongData(index)
@@ -31,7 +31,7 @@ class SongPlayerInterface extends Component {
   }
 
   onSeek(position) {
-    this.props.songPlayer.current.seek(position)
+    this.props.songPlayer.seek(position)
     this.props.dispatch({type: 'SetCurrentPosition', currentPosition: Math.floor(position)})
   }
 
@@ -39,10 +39,12 @@ class SongPlayerInterface extends Component {
     
     if (this.props.selectedTrackIndex > 0) {
       this.getSongData(this.props.selectedTrackIndex-1);
-      this.props.dispatch({type: 'SetCurrentPosition', currentPosition: 0})
-      this.props.dispatch({type: 'Resume'})
-      this.props.dispatch({type: 'SetTotalLength', totalLength: 1})
-      this.props.dispatch({type: 'SetSelectedTrackIndex', selectedTrackIndex: this.props.selectedTrackIndex-1})
+      this.props.dispatch({type: 'BackTrack'});
+      
+      // this.props.dispatch({type: 'SetCurrentPosition', currentPosition: 0})
+      // this.props.dispatch({type: 'Resume'})
+      // this.props.dispatch({type: 'SetTotalLength', totalLength: 1})
+      // this.props.dispatch({type: 'SetSelectedTrackIndex', selectedTrackIndex: this.props.selectedTrackIndex-1})
 
     } else {
     //   this.video.current.seek(0);
@@ -56,23 +58,27 @@ class SongPlayerInterface extends Component {
     const trackLength = this.props.tracks.length;
     if (this.props.selectedTrackIndex < trackLength-1) {
       this.getSongData(this.props.selectedTrackIndex+1);
-      this.props.dispatch({type: 'SetCurrentPosition', currentPosition: 0})
-      this.props.dispatch({type: 'Resume'})
-      this.props.dispatch({type: 'SetTotalLength', totalLength: 1})
-      this.props.dispatch({type: 'SetSelectedTrackIndex', selectedTrackIndex: this.props.selectedTrackIndex+1})
+      this.props.dispatch({type: 'NextTrack'});
+
+      // this.props.dispatch({type: 'SetCurrentPosition', currentPosition: 0})
+      // this.props.dispatch({type: 'Resume'})
+      // this.props.dispatch({type: 'SetTotalLength', totalLength: 1})
+      // this.props.dispatch({type: 'SetSelectedTrackIndex', selectedTrackIndex: this.props.selectedTrackIndex+1})
     }
 
   }
 
   onHideButtonPress()
   {
-      this.props.navigation.pop();
+    this.props.dispatch({type: 'ShowMinimizer'});
   }
 
   render() {
-    const tracks = this.props.tracks;
-    const track = tracks[this.props.selectedTrackIndex];
 
+    if(!this.props.isMaximizerVisible) return null;
+
+    const track = this.props.tracks[this.props.selectedTrackIndex];
+    
     return (
       <View style={styles.container}>
         <StatusBar hidden={true} />
@@ -105,7 +111,6 @@ class SongPlayerInterface extends Component {
 function mapStateToProps(state)
 {
   return {
-    songPlayer: state.songPlayer.songPlayer,
     tracks: state.songPlayer.tracks,
     selectedTrackIndex: state.songPlayer.selectedTrackIndex,
     totalLength: state.songPlayer.totalLength,
@@ -113,18 +118,20 @@ function mapStateToProps(state)
     paused: state.songPlayer.paused,
     repeatOn: state.songPlayer.repeatOn,
     shuffleOn: state.songPlayer.shuffleOn,
+    isMaximizerVisible: state.songPlayer.isMaximizerVisible
   }
 }
 
-export default connect(mapStateToProps)(SongPlayerInterface);
+export default connect(mapStateToProps)(SongPlayerMaximizer);
 
 const styles = {
   container: {
     flex: 1,
     backgroundColor: 'rgb(4,4,4)',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width:'100%',
+    height: '100%',
   },
-  audioElement: {
-    height: 0,
-    width: 0,
-  }
 };

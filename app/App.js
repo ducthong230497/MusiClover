@@ -6,12 +6,11 @@ import {createBottomTabNavigator} from 'react-navigation'
 import {createStackNavigator} from 'react-navigation'
 import {Icon} from 'react-native-elements'
 //scenes
-import SongPlayerInterface from './scenes/songplayerscene/SongPlayerInterface';
+import SongPlayerMaximizer from './scenes/songplayerscene/SongPlayerMaximizer';
 import SongPlayer from './scenes/songplayerscene/SongPlayer';
 import SearchScene from './scenes/searchscene/Search'
 import PersonalScene from './scenes/personalscene/Personal'
 import TestScene from './scenes/testscene/Test'
-import SongPlayerAnimation from './scenes/songplayerscene/SongPlayerAnimation'
 import HomeScene from './scenes/homescene/Home'
 import SettingScene from './scenes/settingscene/Setting'
 
@@ -31,7 +30,7 @@ export default class App extends Component{
 
 }
 
-const BottomNavigator = createBottomTabNavigator(
+const AppNavigator = createBottomTabNavigator(
   {
     Home: {
       screen: HomeScene,
@@ -87,23 +86,6 @@ const BottomNavigator = createBottomTabNavigator(
       },
     },
   }
-);
-
-const AppNavigator = createStackNavigator({
-  Main: {
-      screen: BottomNavigator,
-      navigationOptions: ()=>({
-          header:null,      
-
-      })
-  },
-  SongPlayerInterface: {
-      screen: SongPlayerInterface,
-      navigationOptions: ()=>({
-          header: null,
-      })
-  },
-},
 );
 
 const styles = {

@@ -10,7 +10,7 @@ class SongPlayAnimation extends Component{
 
     componentWillMount()
     {
-        this.animation = new Animated.ValueXY({x: 0, y: SCREEN_HEIGHT - 80})
+        this.animation = new Animated.ValueXY({x: 0, y: SCREEN_HEIGHT - 50})
     }
 
   render(){
@@ -51,6 +51,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    position: 'absolute',
+    width:'100%',
+    height: '100%',
   }
 });
