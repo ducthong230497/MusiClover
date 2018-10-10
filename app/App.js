@@ -6,6 +6,7 @@ import {createBottomTabNavigator} from 'react-navigation'
 import {createStackNavigator} from 'react-navigation'
 import {Icon} from 'react-native-elements'
 //scenes
+import SongPlayerInterface from './scenes/songplayerscene/SongPlayerInterface';
 import SongPlayer from './scenes/songplayerscene/SongPlayer';
 import SearchScene from './scenes/searchscene/Search'
 import PersonalScene from './scenes/personalscene/Personal'
@@ -19,9 +20,12 @@ export default class App extends Component{
   render()
   {
     return (
-      <Provider store = {reduxStore}>	
-        <AppNavigator></AppNavigator>
-      </Provider>
+        <Provider store = {reduxStore}>	
+            <View style = {styles.container}>
+              <AppNavigator></AppNavigator>
+              <SongPlayer></SongPlayer>
+            </View>
+        </Provider>
     );
   }
 
@@ -93,11 +97,18 @@ const AppNavigator = createStackNavigator({
 
       })
   },
-  SongPlayer: {
-      screen: SongPlayer,
+  SongPlayerInterface: {
+      screen: SongPlayerInterface,
       navigationOptions: ()=>({
           header: null,
       })
   },
 },
 );
+
+const styles = {
+  container: {
+    flex: 1,
+    backgroundColor: 'rgb(4,4,4)',
+  }
+};

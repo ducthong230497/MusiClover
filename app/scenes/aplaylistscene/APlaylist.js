@@ -40,8 +40,9 @@ class APlaylist extends Component{
 
     onSongButtonPress(index)
     {
-        this.props.dispatch({type: 'SetupTrackList', tracks: this.playlist,initialTrackIndex: index})
-        this.props.navigation.navigate('SongPlayer');
+        this.props.dispatch({type: 'SetTrackList', tracks: this.playlist})
+        this.props.dispatch({type: 'SetSelectedTrackIndex', selectedTrackIndex: index})
+        this.props.navigation.navigate('SongPlayerInterface');
     }
 
     onMoreButtonPress(index)
