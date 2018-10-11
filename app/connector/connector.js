@@ -1,6 +1,7 @@
 export async function getTop100(url)
 {
-    getDataForSearching("lac troi")
+    //getDataForSearching("lac troi")
+    getDataFromKeyEncrypt("68584e88cf4d193d9a0f6e799c6228e5", typeEnum.SONG)
     let listSong = [];
     url = url == null ? 'https://www.nhaccuatui.com/playlist/top-100-nhac-tre-hay-nhat-va.m3liaiy6vVsF.html' : url 
     await fetch(url).then((response) => {
@@ -93,19 +94,30 @@ export async function getEncryptKey(url){
     return encryptKey
 }
 
-export async function getDataFromKeyEncrypt(encryptKey){
-    strSearch = strSearch.replace(" ", "%20")
-    let result = {}
-    let str = "https://m.nhaccuatui.com/ajax/search?q=" + strSearch
-    console.log(str)
+var typeEnum = {
+    SONG: 1,
+    PLAYLIST: 2,
+    VIDEO: 3, // we dont use this for now
+  };
+var mediaInfoUrl = "https://m.nhaccuatui.com/ajax/get-media-info?key1=&key2=&key3=&ip="
+
+export async function getDataFromKeyEncrypt(encryptKey, Enum){
+    let url
+    if(Enum == typeEnum.SONG)
+        url = mediaInfoUrl.replace("key1=", "key1="+encryptKey)
+    else if(Enum == typeEnum.PLAYLIST)
+        url = mediaInfoUrl.replace("key2=", "key2="+encryptKey)
+    else if(Enum == typeEnum.VIDEO)
+        url = mediaInfoUrl.replace("key3=", "key3="+encryptKey)
+    console.log(url)
 
     try {
         let response = await fetch(
-            str
+            url
         );
         let responseJson = await response.json();
-        console.log(responseJson.data.song[0].url)
-        return responseJson.data
+        console.log(responseJson.data.location)
+        return responseJson.data // in this variable we have 'singerTitle' 'avatar' 'title'
     } catch (error) {
         console.error(error);
     }
@@ -149,4 +161,3 @@ export async function getDataForSearching(strSearch){
     }
 }
 
-var mediaInfoUrl = "https://m.nhaccuatui.com/ajax/get-media-info?key1=&key2=&key3=&ip="
