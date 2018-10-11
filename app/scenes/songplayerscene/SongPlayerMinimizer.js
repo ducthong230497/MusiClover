@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {View,StyleSheet,Text, TouchableOpacity} from 'react-native';
 import {Icon} from 'react-native-elements'
 import {connect} from 'react-redux' 
+import {getXmlURL, getDataFromXmlURL} from '../../connector/connector'
 
 class SongPlayerMinimizer extends Component{
 
@@ -22,7 +23,17 @@ class SongPlayerMinimizer extends Component{
 
     onSkipButtonPress()
     {
+        this.getSongData(this.props.selectedTrackIndex+1);
         this.props.dispatch({type: 'NextTrack'})
+    }
+
+    getSongData(index)
+    {
+      getXmlURL(this.props.tracks[index].songURL).then(xmlUrl=> {
+        getDataFromXmlURL(xmlUrl).then(data => {
+          this.props.dispatch({type: 'SetSelectedTrackInfo', selectedTrackURL: data.URL, selectedTrackImage: data.img})
+        });
+      });
     }
 
     render(){

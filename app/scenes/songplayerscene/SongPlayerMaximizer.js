@@ -13,10 +13,6 @@ class SongPlayerMaximizer extends Component {
   {
     super(props);
 
-    this.state = {
-      selectedTrackImageUrl: 'null',
-    };
-
     // this.getSongData(this.props.selectedTrackIndex);
   }
 
@@ -24,14 +20,13 @@ class SongPlayerMaximizer extends Component {
   {
     getXmlURL(this.props.tracks[index].songURL).then(xmlUrl=> {
       getDataFromXmlURL(xmlUrl).then(data => {
-        this.setState({selectedTrackImageUrl: data.img});
-        this.props.dispatch({type: 'SetSelectedTrackURL', selectedTrackURL: data.URL})
+        this.props.dispatch({type: 'SetSelectedTrackInfo', selectedTrackURL: data.URL, selectedTrackImage: data.img})
       });
     });
   }
 
   onSeek(position) {
-    this.props.songPlayer.seek(position)
+    this.props.songPlayer.current.seek(position)
     this.props.dispatch({type: 'SetCurrentPosition', currentPosition: Math.floor(position)})
   }
 
@@ -85,7 +80,7 @@ class SongPlayerMaximizer extends Component {
         <Header 
           message="Playing From Charts"
           onHideButtonPress = {this.onHideButtonPress.bind(this)} />
-        <AlbumArt url={this.state.selectedTrackImageUrl} />
+        <AlbumArt url={this.props.selectedTrackImage} />
         <TrackDetails title={track.songName} artist={track.artist} />
         <SeekBar
           onSeek={this.onSeek.bind(this)}
@@ -111,8 +106,10 @@ class SongPlayerMaximizer extends Component {
 function mapStateToProps(state)
 {
   return {
+    songPlayer: state.songPlayer.songPlayer,
     tracks: state.songPlayer.tracks,
     selectedTrackIndex: state.songPlayer.selectedTrackIndex,
+    selectedTrackImage: state.songPlayer.selectedTrackImage,
     totalLength: state.songPlayer.totalLength,
     currentPosition: state.songPlayer.currentPosition,
     paused: state.songPlayer.paused,

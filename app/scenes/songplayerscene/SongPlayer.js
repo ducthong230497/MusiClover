@@ -31,6 +31,12 @@
     {
       super(props);
       this.video = React.createRef();
+      this.setSongPlayer(this.video);
+    }
+
+    setSongPlayer(songPlayer)
+    {
+      this.props.dispatch({type: 'SetSongPlayer', songPlayer: songPlayer})
     }
 
     setDuration(data) {
@@ -44,12 +50,12 @@
     render() {
 
       return (
-        <View style = {styles.container}>
-          <SongPlayerMinimizer
-          />
-          <SongPlayerMaximizer
-            songPlayer = {this.video.current}
-          />
+        // <View style = {styles.container}>
+        //   <SongPlayerMinimizer
+        //   />
+        //   <SongPlayerMaximizer
+        //     songPlayer = {this.video.current}
+        //   />
           <Video 
             ref = {this.video}
             source={{uri: this.props.selectedTrackURL}} // Can be a URL or a local file.
@@ -62,7 +68,7 @@
             onEnd={this.onEnd}           // Callback when playback finishes
             onError={this.videoError}    // Callback when video cannot be loaded
             style={styles.audioElement} />
-        </View>
+        // </View>
       );
     }
   }

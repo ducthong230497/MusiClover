@@ -7,6 +7,7 @@ import {createStackNavigator} from 'react-navigation'
 import {Icon} from 'react-native-elements'
 //scenes
 import SongPlayerMaximizer from './scenes/songplayerscene/SongPlayerMaximizer';
+import SongPlayerMinimizer from './scenes/songplayerscene/SongPlayerMinimizer';
 import SongPlayer from './scenes/songplayerscene/SongPlayer';
 import SearchScene from './scenes/searchscene/Search'
 import PersonalScene from './scenes/personalscene/Personal'
@@ -23,6 +24,8 @@ export default class App extends Component{
             <View style = {styles.container}>
               <AppNavigator></AppNavigator>
               <SongPlayer></SongPlayer>
+              <SongPlayerMaximizer></SongPlayerMaximizer>
+              <SongPlayerMinimizer></SongPlayerMinimizer>
             </View>
         </Provider>
     );
@@ -87,6 +90,23 @@ const AppNavigator = createBottomTabNavigator(
     },
   }
 );
+
+// const AppNavigator = createStackNavigator({
+//   Main: {
+//       screen: BottomNavigator,
+//       navigationOptions: ()=>({
+//           header:null,      
+
+//       })
+//   },
+//   SongPlayer: {
+//       screen: SongPlayer,
+//       navigationOptions: ()=>({
+//           header: null,
+//       })
+//   },
+// },
+// );
 
 const styles = {
   container: {

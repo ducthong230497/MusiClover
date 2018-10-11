@@ -1,7 +1,9 @@
 const initialState = {
+    songPlayer: null,
     tracks: [],
     selectedTrackIndex: 0,
     selectedTrackURL: 'https://aredir.nixcdn.com/dummy.mp3',
+    selectedTrackImage: 'https://media.giphy.com/media/QyOI0WGW3vY2s/giphy.gif',
     totalLength: 1,
     currentPosition: 0,
     paused: false,
@@ -11,6 +13,11 @@ const initialState = {
 }
 export default (state=initialState, action) => {
     switch (action.type) {
+        case 'SetSongPlayer' :
+        return {
+            ...state,
+            songPlayer: action.songPlayer,
+        }
         case 'SetTrackList' :
         return {
             ...state,
@@ -21,10 +28,11 @@ export default (state=initialState, action) => {
             ...state,
             selectedTrackIndex: action.selectedTrackIndex
         }
-        case 'SetSelectedTrackURL' :
+        case 'SetSelectedTrackInfo' :
         return {
             ...state,
-            selectedTrackURL: action.selectedTrackURL
+            selectedTrackURL: action.selectedTrackURL,
+            selectedTrackImage: action.selectedTrackImage
         }
         case 'Pause':
         return {
