@@ -5,7 +5,6 @@ import AlbumArt from './AlbumArt';
 import TrackDetails from './TrackDetails';
 import SeekBar from './SeekBar';
 import Controls from './Controls';
-import {getXmlURL, getDataFromXmlURL} from '../../connector/connector'
 import {connect} from 'react-redux'
 
 class SongPlayerMaximizer extends Component {
@@ -16,15 +15,6 @@ class SongPlayerMaximizer extends Component {
     // this.getSongData(this.props.selectedTrackIndex);
   }
 
-  getSongData(index)
-  {
-    getXmlURL(this.props.tracks[index].songURL).then(xmlUrl=> {
-      getDataFromXmlURL(xmlUrl).then(data => {
-        this.props.dispatch({type: 'SetSelectedTrackInfo', selectedTrackURL: data.URL, selectedTrackImage: data.img})
-      });
-    });
-  }
-
   onSeek(position) {
     this.props.songPlayer.current.seek(position)
     this.props.dispatch({type: 'SetCurrentPosition', currentPosition: Math.floor(position)})
@@ -33,14 +23,14 @@ class SongPlayerMaximizer extends Component {
   onBack() {
     
     if (this.props.selectedTrackIndex > 0) {
-      this.getSongData(this.props.selectedTrackIndex-1);
-      this.props.dispatch({type: 'BackTrack'});
-      
-      // this.props.dispatch({type: 'SetCurrentPosition', currentPosition: 0})
-      // this.props.dispatch({type: 'Resume'})
-      // this.props.dispatch({type: 'SetTotalLength', totalLength: 1})
-      // this.props.dispatch({type: 'SetSelectedTrackIndex', selectedTrackIndex: this.props.selectedTrackIndex-1})
-
+      if(this.props.shuffleOn)
+      {
+        this.props.dispatch({type: 'NextShuffleTrack'});
+      }
+      else
+      {
+        this.props.dispatch({type: 'BackTrack'});
+      }
     } else {
     //   this.video.current.seek(0);
     //   this.setState({
@@ -52,13 +42,14 @@ class SongPlayerMaximizer extends Component {
   onForward() {
     const trackLength = this.props.tracks.length;
     if (this.props.selectedTrackIndex < trackLength-1) {
-      this.getSongData(this.props.selectedTrackIndex+1);
-      this.props.dispatch({type: 'NextTrack'});
-
-      // this.props.dispatch({type: 'SetCurrentPosition', currentPosition: 0})
-      // this.props.dispatch({type: 'Resume'})
-      // this.props.dispatch({type: 'SetTotalLength', totalLength: 1})
-      // this.props.dispatch({type: 'SetSelectedTrackIndex', selectedTrackIndex: this.props.selectedTrackIndex+1})
+      if(this.props.shuffleOn)
+      {
+        this.props.dispatch({type: 'NextShuffleTrack'});
+      }
+      else
+      {
+        this.props.dispatch({type: 'NextTrack'});
+      }
     }
 
   }

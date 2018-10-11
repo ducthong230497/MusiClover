@@ -1,3 +1,6 @@
+import {getXmlURL, getDataFromXmlURL} from '../../connector/connector'
+import store from '../store'
+
 const initialState = {
     songPlayer: null,
     tracks: [],
@@ -11,6 +14,7 @@ const initialState = {
     shuffleOn: false,
     isMaximizerVisible: false
 }
+
 export default (state=initialState, action) => {
     switch (action.type) {
         case 'SetSongPlayer' :
@@ -55,6 +59,7 @@ export default (state=initialState, action) => {
             currentPosition: action.currentPosition
         }
         case 'NextTrack':
+        getSongData(state.selectedTrackIndex+1, state.tracks);
         return {
             ...state,
             currentPosition: 0, 
@@ -62,7 +67,18 @@ export default (state=initialState, action) => {
             totalLength: 1, 
             selectedTrackIndex: state.selectedTrackIndex + 1
         }
+        case 'NextShuffleTrack':
+        let randomTrackIndex = Math.floor(Math.random() * state.tracks.length);
+        getSongData(randomTrackIndex, state.tracks);
+        return {
+            ...state,
+            currentPosition: 0, 
+            paused: false, 
+            totalLength: 1, 
+            selectedTrackIndex: randomTrackIndex
+        }
         case 'BackTrack':
+        getSongData(state.selectedTrackIndex-1, state.tracks);
         return {
             ...state,
             currentPosition: 0, 
@@ -101,4 +117,13 @@ export default (state=initialState, action) => {
         default:
             return state
     }
+}
+
+function getSongData(index,tracks)
+{
+  getXmlURL(tracks[index].songURL).then(xmlUrl=> {
+    getDataFromXmlURL(xmlUrl).then(data => {
+        store.dispatch({type: 'SetSelectedTrackInfo', selectedTrackURL: data.URL, selectedTrackImage: data.img})
+    });
+  });
 }

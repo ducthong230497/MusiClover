@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import {View,StyleSheet,Text, TouchableOpacity} from 'react-native';
 import {Icon} from 'react-native-elements'
 import {connect} from 'react-redux' 
-import {getXmlURL, getDataFromXmlURL} from '../../connector/connector'
 
 class SongPlayerMinimizer extends Component{
 
@@ -23,17 +22,20 @@ class SongPlayerMinimizer extends Component{
 
     onSkipButtonPress()
     {
-        this.getSongData(this.props.selectedTrackIndex+1);
-        this.props.dispatch({type: 'NextTrack'})
+    if(this.props.shuffleOn)
+      {
+        this.props.dispatch({type: 'NextShuffleTrack'});
+      }
+      else
+      {
+        this.props.dispatch({type: 'NextTrack'});
+      }
     }
 
-    getSongData(index)
+    onCloseButtonPress()
     {
-      getXmlURL(this.props.tracks[index].songURL).then(xmlUrl=> {
-        getDataFromXmlURL(xmlUrl).then(data => {
-          this.props.dispatch({type: 'SetSelectedTrackInfo', selectedTrackURL: data.URL, selectedTrackImage: data.img})
-        });
-      });
+        this.props.dispatch({type: 'HideInterface'});
+        this.props.dispatch({type: 'Pause'});
     }
 
     render(){
@@ -60,6 +62,9 @@ class SongPlayerMinimizer extends Component{
                 <TouchableOpacity style = {styles.button} onPress = {this.onSkipButtonPress.bind(this)}>
                     <Icon name = 'skip-next' color = 'white' size = {35}></Icon>
                 </TouchableOpacity>
+                <TouchableOpacity style = {styles.button} onPress = {this.onCloseButtonPress.bind(this)}>
+                    <Icon name = 'close' color = 'white' size = {30}></Icon>
+                </TouchableOpacity>
             </View>
         </TouchableOpacity>
         )
@@ -72,6 +77,7 @@ function mapStateToProps(state)
         tracks: state.songPlayer.tracks,
         selectedTrackIndex: state.songPlayer.selectedTrackIndex,
         paused: state.songPlayer.paused,
+        shuffleOn: state.songPlayer.shuffleOn,
         isMinimizerVisible: state.songPlayer.isMinimizerVisible
     }
 }

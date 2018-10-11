@@ -3,6 +3,7 @@ import {View,Text, TouchableHighlight, StyleSheet, FlatList} from 'react-native'
 import {Icon} from 'react-native-elements'
 import {connect} from 'react-redux'
 
+import {getXmlURL, getDataFromXmlURL} from '../../connector/connector'
 import SongAddView from './SongAddView'
 import SongButton from '../_components/SongButton'
 import SongMoreView from './SongMoreView'
@@ -43,9 +44,16 @@ class APlaylist extends Component{
         this.props.dispatch({type: 'SetTrackList', tracks: this.playlist})
         this.props.dispatch({type: 'SetSelectedTrackIndex', selectedTrackIndex: index})
         this.props.dispatch({type: 'ShowMaximizer'});
-
         this.props.navigation.navigate('SongPlayer');
+
+        //get track data
+        getXmlURL(this.playlist[index].songURL).then(xmlUrl=> {
+            getDataFromXmlURL(xmlUrl).then(data => {
+              this.props.dispatch({type: 'SetSelectedTrackInfo', selectedTrackURL: data.URL, selectedTrackImage: data.img})
+            });
+        });
     }
+
 
     onMoreButtonPress(index)
     {

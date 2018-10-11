@@ -2,8 +2,6 @@
   import {View} from 'react-native';
   import Video from 'react-native-video';
   import {connect} from 'react-redux'
-  import SongPlayerMinimizer from './SongPlayerMinimizer';
-  import SongPlayerMaximizer from './SongPlayerMaximizer';
 
   const DUMMYTRACKS = [
     {
@@ -47,6 +45,21 @@
       this.props.dispatch({type: 'SetCurrentPosition', currentPosition: Math.floor(data.currentTime)})
     }
 
+    onEnd()
+    {
+      if(!this.props.repeatOn)
+      {
+        if(this.props.shuffleOn)
+        {
+          this.props.dispatch({type: 'NextShuffleTrack'});
+        }
+        else
+        {
+          this.props.dispatch({type: 'NextTrack'});
+        }
+      }
+    }
+
     render() {
 
       return (
@@ -65,7 +78,7 @@
             onLoadStart={this.loadStart} // Callback when video starts to load
             onLoad={this.setDuration.bind(this)}    // Callback when video loads
             onProgress={this.setTime.bind(this)}    // Callback every ~250ms with currentTime
-            onEnd={this.onEnd}           // Callback when playback finishes
+            onEnd={this.onEnd.bind(this)}           // Callback when playback finishes
             onError={this.videoError}    // Callback when video cannot be loaded
             style={styles.audioElement} />
         // </View>
@@ -73,12 +86,14 @@
     }
   }
 
+
   function mapStateToProps(state)
   {
     return {
       currentPosition: state.songPlayer.currentPosition,
       paused: state.songPlayer.paused,
       repeatOn: state.songPlayer.repeatOn,
+      shuffleOn: state.songPlayer.shuffleOn,
       selectedTrackURL: state.songPlayer.selectedTrackURL,
     }
   }
