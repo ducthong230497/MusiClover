@@ -5,15 +5,14 @@ import {Icon} from 'react-native-elements'
 
 import SettingButton from './SettingButton'
 
-import Login from '../loginscene/Login'
+import Account from '../loginscene/Account'
 import Register from '../loginscene/Register'
-
 
 class Settings extends Component{
 
     onAccountButtonPress()
     {
-        this.props.navigation.navigate('Login');
+        this.props.navigation.navigate('Account');
     }
 
     onVersionButtonPress()
@@ -55,10 +54,10 @@ export default StackNavigator = createStackNavigator({
 
         })
     },
-    Login: {
-        screen: Login,
+    Account: {
+        screen: Account,
         navigationOptions: ()=>({
-            headerTitle:'Login',     
+            headerTitle:'Account',     
         })
     },
     Register: {

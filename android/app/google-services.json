@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "152247020969",
+    "firebase_url": "https://musiclover-3650f.firebaseio.com",
+    "project_id": "musiclover-3650f",
+    "storage_bucket": "musiclover-3650f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:152247020969:android:924775d8f0ad88a1",
+        "android_client_info": {
+          "package_name": "com.musiclover"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "152247020969-q7h8mh7v7vqmtmijti4gr9aidafortuq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDWf1ZfjynebJzD4pTk7Ad3-I5nhtfX79w"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

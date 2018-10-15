@@ -1,11 +1,47 @@
 import React, {Component} from 'react'
 import {View,Text,StyleSheet, TextInput, Button} from 'react-native'
+import Firebase from 'react-native-firebase';
 
-export default class Register extends Component{
+export default class LoggedOut extends Component{
+
+    constructor(props)
+    {
+        super(props);
+
+        this.state = {
+            password: "",
+            email: "",
+            showError: false
+        }
+    }
+
 
     onLoginButtonPress()
-    {
+    {      
+        const { email, password } = this.state;
 
+        if(!(/\S/.test(email)) || !(/\S/.test(password))) 
+        {
+            this.showError();
+            return;
+        }
+        
+        Firebase.auth().signInWithEmailAndPassword(email, password)
+        .then((user) => {
+
+        })
+        .catch((error) => {
+        const { code, message } = error;
+            this.showError();
+        });
+    }
+
+    showError()
+    {
+        this.setState({showError: true});
+            setTimeout(() => {
+                this.setState({showError: false});
+        }, 2000);
     }
 
     onFacebookButtonPress()
@@ -18,10 +54,6 @@ export default class Register extends Component{
 
     }
 
-    onRegisterButtonPress()
-    {
-        this.props.navigation.navigate('Register');
-    }
 
     render(){
 
@@ -30,14 +62,19 @@ export default class Register extends Component{
                 <View style = {styles.container} >
                     <TextInput
                         style={styles.textField}
-                        placeholder="Username..."
-                        onChangeText={this.props.onChangeText}
+                        placeholder="Email..."
+                        onChangeText={(text)=> this.setState({email: text})}
                     />
                     <TextInput
                         style={styles.textField}
                         placeholder="Password..."
-                        onChangeText={this.props.onChangeText}
+                        onChangeText={(text)=> this.setState({password: text})}
+                        secureTextEntry={true}
                     />
+                    {this.state.showError?
+                    <Text style = {styles.errorText}>Invalid email or password</Text>
+                    :null
+                    }
                     <View style={styles.loginButton}>
                         <Button
                         onPress={this.onLoginButtonPress.bind(this)}
@@ -62,7 +99,7 @@ export default class Register extends Component{
                 </View>
                 <View style={styles.registerButton}>
                         <Button
-                            onPress={this.onRegisterButtonPress.bind(this)}
+                            onPress={this.props.onRegisterButtonPress}
                             title="Register"
                             color="#157f63"
                         />
@@ -107,5 +144,9 @@ const styles = StyleSheet.create({
         marginLeft: 20,
         marginRight: 20,
         marginBottom: 20
+    },
+    errorText:{
+        alignSelf: "center",
+        color: "red"
     }
 });
