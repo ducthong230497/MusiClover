@@ -3,8 +3,11 @@ package com.musiclover;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+
 import io.invertase.firebase.RNFirebasePackage;
 import io.invertase.firebase.auth.RNFirebaseAuthPackage;
+import io.invertase.firebase.firestore.RNFirebaseFirestorePackage;
+
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -30,7 +33,8 @@ public class MainApplication extends Application implements ReactApplication {
           new RNFirebasePackage(),
           new VectorIconsPackage(),
           new ReactVideoPackage(),
-          new RNFirebaseAuthPackage()
+          new RNFirebaseAuthPackage(),
+          new RNFirebaseFirestorePackage()
       );
     }
 

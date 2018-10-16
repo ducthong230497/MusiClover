@@ -112,14 +112,14 @@ const styles = StyleSheet.create({
         alignItems: 'stretch'
     },
     textField:{
-        height: 30,
+        height: 50,
         backgroundColor: 'white',
         marginLeft: 20,
         marginRight:20,
         marginBottom: 10
     },
     registerButton: {
-        height: 30,
+        height: 40,
         margin: 20,
         backgroundColor: "#157f63",
         justifyContent: "center",
@@ -130,6 +130,7 @@ const styles = StyleSheet.create({
         color: "red"
     },
     text:{
-        color: "white"
+        color: "white",
+        fontWeight: "bold"
     }
 });

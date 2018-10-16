@@ -1,16 +1,17 @@
 import React, {Component} from 'react'
 import {View,Text,StyleSheet, TextInput, Button} from 'react-native'
 import Firebase from 'react-native-firebase';
+import {connect} from 'react-redux'
+
 import LoggedIn from './LoggedIn';
 import LoggedOut from './LoggedOut';
 
-export default class Account extends Component{
+class Account extends Component{
 
     constructor() {
         super();
         this.state = {
           loading: true,
-          user: null,
         };
     }
 
@@ -21,12 +22,12 @@ export default class Account extends Component{
      * (logged out) or an Object (logged in)
      */
     componentDidMount() {
-    this.authSubscription = Firebase.auth().onAuthStateChanged((user) => {
-        this.setState({
-        loading: false,
-        user,
+        this.authSubscription = Firebase.auth().onAuthStateChanged((user) => {
+
+            this.setState({loading: false});
+            this.props.dispatch({type: 'SetUser', user: user});
+
         });
-    });
     }
 
     /**
@@ -48,13 +49,22 @@ export default class Account extends Component{
         if (this.state.loading) return null;
 
         // The user is an Object, so they're logged in
-        if (this.state.user) return <LoggedIn />;
+        if (this.props.user) return <LoggedIn />;
 
         // The user is null, so they're logged out
         return <LoggedOut onRegisterButtonPress = {this.onRegisterButtonPress.bind(this)}/>;
 
     }
 }
+
+function mapStateToProps(state)
+{
+    return {
+        user: state.user.user
+    }
+}
+
+export default connect(mapStateToProps)(Account);
 
 const styles = StyleSheet.create({
     container:{

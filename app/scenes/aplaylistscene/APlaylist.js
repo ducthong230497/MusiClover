@@ -2,8 +2,10 @@ import React, {Component} from 'react'
 import {View,Text, TouchableHighlight, StyleSheet, FlatList} from 'react-native'
 import {Icon} from 'react-native-elements'
 import {connect} from 'react-redux'
-
 import {getXmlURL, getDataFromXmlURL} from '../../connector/connector'
+import Firebase from 'react-native-firebase'
+
+
 import SongAddView from './SongAddView'
 import SongButton from '../_components/SongButton'
 import SongMoreView from './SongMoreView'
@@ -17,7 +19,8 @@ class APlaylist extends Component{
             isAddSongViewVisisble: false,
             isSongMoreViewVisible: false,
             selectedSongName: '',
-            selectedArtist: ''
+            selectedArtist: '',
+            selectedSongURL: ''
         }
 
         this.playlist = [];
@@ -58,7 +61,12 @@ class APlaylist extends Component{
     onMoreButtonPress(index)
     {
         currentSong = this.playlist[index];
-        this.setState({selectedSongName:currentSong.songName, selectedArtist: currentSong.artist, isSongMoreViewVisible: true});
+        this.setState({
+            selectedSongName:currentSong.songName, 
+            selectedArtist: currentSong.artist, 
+            isSongMoreViewVisible: true
+        });
+        
     }
 
     onCloseSongMoreViewButtonPress()
@@ -68,7 +76,15 @@ class APlaylist extends Component{
 
     onAddToPlaylistButtonPress()
     {
-        
+        Firebase.firestore().collection('playlists').doc('123').update({
+            songs: Firebase.firestore.FieldValue._arrayUnion({
+                songName: this.state.selectedSongName,
+                artist: this.state.selectedArtist,
+                songURL: this.state.selectedSongURL,
+            })
+        })
+
+        this.setState({isSongMoreViewVisible:false});
     }
 
     renderSongs = ({index, item}) => (

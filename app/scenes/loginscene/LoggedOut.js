@@ -80,11 +80,11 @@ export default class LoggedOut extends Component{
                     </TouchableHighlight>
 
                     <TouchableHighlight style={styles.facebookButton} onPress={this.onFacebookButtonPress.bind(this)}>
-                        <Text style = {styles.text}>Login with facebook</Text>
+                        <Text style = {styles.text}>Login With Facebook</Text>
                     </TouchableHighlight>
 
                     <TouchableHighlight style={styles.googleButton} onPress={this.onGoogleButtonPress.bind(this)}>
-                        <Text style = {styles.text}>Login with google</Text>
+                        <Text style = {styles.text}>Login With Google</Text>
                     </TouchableHighlight>      
                 </View>
                 <TouchableHighlight style={styles.registerButton} onPress={this.props.onRegisterButtonPress}             
@@ -106,17 +106,18 @@ const styles = StyleSheet.create({
         alignItems: 'stretch'
     },
     textField:{
-        height: 30,
+        height: 50,
         backgroundColor: 'white',
         marginLeft: 20,
         marginRight:20,
         marginBottom: 10
     },
     text:{
-        color: "white"
+        color: "white",
+        fontWeight: "bold",
     },
     loginButton:{  
-        height: 30,    
+        height: 40,    
         marginTop: 20,
         marginLeft: 20,
         marginRight: 20,
@@ -126,7 +127,7 @@ const styles = StyleSheet.create({
         justifyContent: "center" 
     },
     googleButton: {
-        height: 30,   
+        height: 40,   
         marginTop: 10,
         marginLeft: 20,
         marginRight: 20,
@@ -135,7 +136,7 @@ const styles = StyleSheet.create({
         justifyContent: "center" 
     },
     facebookButton:{
-        height: 30,   
+        height: 40,   
         marginTop: 10,
         marginLeft: 20,
         marginRight: 20,
@@ -144,7 +145,7 @@ const styles = StyleSheet.create({
         justifyContent: "center" 
     },
     registerButton: {
-        height: 30,   
+        height: 40,   
         marginLeft: 20,
         marginRight: 20,
         marginBottom: 20,

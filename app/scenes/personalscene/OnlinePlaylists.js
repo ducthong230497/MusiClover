@@ -1,8 +1,12 @@
 import React, { Component } from 'react'
 import { View, StyleSheet } from 'react-native'
 import Playlists from './children/Playlists'
+import LoginButton from './children/LoginButton'
 
-export default class OnlinePlaylists extends Component {
+import {connect} from 'react-redux'
+import Firebase from 'react-native-firebase'
+
+class OnlinePlaylists extends Component {
 
     constructor(props)
     {
@@ -11,30 +15,74 @@ export default class OnlinePlaylists extends Component {
             playlists: []
         };
 
+        this.playlistCollection = Firebase.firestore().collection('playlists');
     }
 
-    //callback 
-    componentDidMount()
-    {
-        //retrieve all online playlists here
+    componentDidMount() {
+        this.unsubscribe = this.playlistCollection.onSnapshot((querySnapshot)=>{
+            const playlists = [];
+            querySnapshot.forEach((doc) => {             
+                const { name, imgUrl, songCount } = doc.data();
+                playlists.push({
+                key: doc.id,
+                name: name,
+                imgUrl: imgUrl,
+                songCount: songCount
+                });
+            });
+            this.setState({ 
+                playlists: playlists,
+            });
+        }) 
+    }
+    
+    componentWillUnmount() {
+        this.unsubscribe();
     }
 
     onCreatePlaylistPress(newPlaylistName)
     {
 
+        if(this.state.playlists.findIndex(playlist=>playlist.name === newPlaylistName.trim()) === -1 && /\S/.test(newPlaylistName))
+        {
+            this.playlistCollection.doc(newPlaylistName.trim()).set({
+                name: newPlaylistName.trim(),
+                imgUrl: 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg',
+                songCount: 0,
+                songs: []
+            })
+
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+
     }
 
     onDeletePlaylistPress(deletedPlaylistName)
     {
+        this.playlistCollection.doc(deletedPlaylistName).delete();
 
+        return true;
     }
 
     onPlaylistButtonPress(playlist)
     {
-        this.props.navigation.navigate('APlaylist', {canAddSong: true, songs: []})
+        this.props.navigation.navigate('APlaylist', {canAddSong: false, songs: playlist.songs})
     }
 
+
     render() {
+        
+        if(this.props.user===null)
+        {
+            return (
+                <LoginButton navigation = {this.props.navigation}></LoginButton>
+            )
+        }
+
         return (
             <Playlists
                 playlists = {this.state.playlists}
@@ -47,6 +95,15 @@ export default class OnlinePlaylists extends Component {
 
     }
 }
+
+function mapStateToProps(state)
+{
+    return {
+        user: state.user.user
+    }
+}
+
+export default connect(mapStateToProps)(OnlinePlaylists);
 
 
 

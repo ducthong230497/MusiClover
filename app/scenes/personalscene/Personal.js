@@ -15,33 +15,16 @@ class Personal extends Component{
     constructor(props)
     {
         super(props);
-        this.state = {
-            isLogined: true
-        }
     }
 
     onOnlinePlaylistsButtonPress()
     {
-        if(this.state.isLogined)
-        {
-            this.props.navigation.navigate('OnlinePlaylists');
-        }
-        else
-        {
-            this.props.navigation.navigate('Login');
-        }
+        this.props.navigation.navigate('OnlinePlaylists');
     }
 
     onOnlineSongsButtonPress()
     {
-        if(this.state.isLogined)
-        {
-            this.props.navigation.navigate('OnlineSongs')
-        }
-        else
-        {
-            this.props.navigation.navigate('Login');
-        }
+        this.props.navigation.navigate('OnlineSongs')
     }
 
     render(){

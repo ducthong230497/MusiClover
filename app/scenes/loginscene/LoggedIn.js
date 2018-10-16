@@ -12,7 +12,8 @@ export default class LoggedIn extends Component{
             isChangePasswordViewVisible: false,
             currentPassword: '',
             password: '',
-            confirmPassword: ''
+            confirmPassword: '',
+            showError: ''
         }
     }
 
@@ -35,19 +36,38 @@ export default class LoggedIn extends Component{
     {
         const {currentPassword, password, confirmPassword} = this.state;
 
-        if(Firebase.auth().currentUser !== null && 
-        Firebase.auth().currentUser.password === currentPassword && 
-        password === confirmPassword && (/\S/.test(password)))
-        {
-            Firebase.auth().currentUser.updatePassword(password)
-            .then((data)=>{
-                this.setState({isChangePasswordViewVisible: false});
-            })
-            .catch(error => {
-                
-            });
-        }
+        //reauthenticate
+        var cred = Firebase.auth.EmailAuthProvider.credential(Firebase.auth().currentUser.email, currentPassword);
+        Firebase.auth().currentUser.reauthenticateWithCredential(cred)
+        .then((data)=>{
+            //change password
+            if(password === confirmPassword && (/\S/.test(password)))
+            {
+                Firebase.auth().currentUser.updatePassword(password)
+                .then((data)=>{
+                    this.setState({isChangePasswordViewVisible: false});
+                })
+                .catch(error => {
+                    
+                });
+            }
+            else
+            {
+                this.showError()
+            }
+        })
+        .catch((error)=>{
+            this.showError()
+        })
 
+    }
+
+    showError()
+    {
+        this.setState({showError: true});
+            setTimeout(() => {
+                this.setState({showError: false});
+        }, 2000);
     }
 
     getUserEmail()
@@ -70,11 +90,12 @@ export default class LoggedIn extends Component{
                     <TouchableHighlight style={styles.passwordButton} onPress={this.onChangePasswordButtonPress.bind(this)}>
                         <Text style = {styles.buttonText}>Change Password</Text>
                     </TouchableHighlight>:
-                    <View style = {styles.subContainer2}>
+                    <View style = {styles.subContainer}>
                         <TextInput
                             style={styles.textField}
                             placeholder="Current Password..."
                             onChangeText={(text)=> this.setState({currentPassword: text})}
+                            secureTextEntry={true}
                         />
                         <TextInput
                             style={styles.textField}
@@ -88,6 +109,10 @@ export default class LoggedIn extends Component{
                             onChangeText={(text)=> this.setState({confirmPassword: text})}
                             secureTextEntry={true}
                         />
+                        {this.state.showError?
+                        <Text style = {styles.errorText}>Invalid password</Text>
+                        :null
+                        }
                         <TouchableHighlight style={styles.passwordButton} onPress={this.onConfirmChangeButtonPress.bind(this)}>
                             <Text style = {styles.buttonText}>Confirm Change</Text>
                         </TouchableHighlight>
@@ -124,12 +149,6 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         alignItems: 'stretch'
     },
-    textField:{
-        backgroundColor: 'white',
-        marginLeft: 20,
-        marginRight:20,
-        marginBottom: 10
-    },
     logoutButton:{  
         height: 30,    
         marginTop: 20,
@@ -141,7 +160,7 @@ const styles = StyleSheet.create({
         alignItems: "center"
     },
     passwordButton:{  
-        height: 30,    
+        height: 35,    
         marginTop: 15,
         marginLeft: 20,
         marginRight: 20,
@@ -151,8 +170,10 @@ const styles = StyleSheet.create({
         alignSelf: "stretch"
     },
     errorText:{
+        marginTop: 10,
         alignSelf: "center",
-        color: "red"
+        color: "red",
+        fontWeight: "bold"
     },
     buttonText:{
         color: "white"
@@ -164,7 +185,7 @@ const styles = StyleSheet.create({
         alignSelf: "center"
     },
     textField:{
-        height: 30,
+        height: 40,
         backgroundColor: 'white',
         marginLeft: 20,
         marginRight:20,

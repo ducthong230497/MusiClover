@@ -1,8 +1,11 @@
 import React, {Component} from 'react'
-
 import Songs from './children/Songs'
+import LoginButton from './children/LoginButton'
 
-export default class OnlineSongs extends Component{
+import {connect} from 'react-redux'
+import Firebase from 'react-native-firebase'
+
+class OnlineSongs extends Component{
 
     constructor(props)
     {
@@ -22,6 +25,13 @@ export default class OnlineSongs extends Component{
 
     render(){
 
+        if(this.props.user===null)
+        {
+            return (
+                <LoginButton navigation = {this.props.navigation}></LoginButton>
+            )
+        }
+
         return (
             <Songs
                 songs = {this.state.songs}
@@ -31,6 +41,15 @@ export default class OnlineSongs extends Component{
         )
     }
 }
+
+function mapStateToProps(state)
+{
+    return {
+        user: state.user.user
+    }
+}
+
+export default connect(mapStateToProps)(OnlineSongs);
 
 
 
