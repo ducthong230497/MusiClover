@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {View,Text,StyleSheet, TextInput, Button} from 'react-native'
+import {View,Text,StyleSheet, TextInput, Button, TouchableHighlight} from 'react-native'
 import Firebase from 'react-native-firebase';
 
 export default class LoggedOut extends Component{
@@ -75,35 +75,22 @@ export default class LoggedOut extends Component{
                     <Text style = {styles.errorText}>Invalid email or password</Text>
                     :null
                     }
-                    <View style={styles.loginButton}>
-                        <Button
-                        onPress={this.onLoginButtonPress.bind(this)}
-                        title="Login"
-                        color="#841584"
-                        />
-                    </View>
-                    <View style={styles.facebookButton}>
-                        <Button
-                        onPress={this.onFacebookButtonPress.bind(this)}
-                        title="Login with facebook"
-                        color="#3b5998"
-                        />
-                    </View>         
-                    <View style={styles.googleButton}>
-                        <Button
-                        onPress={this.onGoogleButtonPress.bind(this)}
-                        title="Login with google"
-                        color= "#d62d20"
-                        />
-                    </View>      
+                    <TouchableHighlight style={styles.loginButton} onPress={this.onLoginButtonPress.bind(this)}>
+                        <Text style = {styles.text}>Login</Text>
+                    </TouchableHighlight>
+
+                    <TouchableHighlight style={styles.facebookButton} onPress={this.onFacebookButtonPress.bind(this)}>
+                        <Text style = {styles.text}>Login with facebook</Text>
+                    </TouchableHighlight>
+
+                    <TouchableHighlight style={styles.googleButton} onPress={this.onGoogleButtonPress.bind(this)}>
+                        <Text style = {styles.text}>Login with google</Text>
+                    </TouchableHighlight>      
                 </View>
-                <View style={styles.registerButton}>
-                        <Button
-                            onPress={this.props.onRegisterButtonPress}
-                            title="Register"
-                            color="#157f63"
-                        />
-                </View>
+                <TouchableHighlight style={styles.registerButton} onPress={this.props.onRegisterButtonPress}             
+                >
+                    <Text style = {styles.text}>Register</Text>
+                </TouchableHighlight>
             </View>
         )
 
@@ -119,31 +106,51 @@ const styles = StyleSheet.create({
         alignItems: 'stretch'
     },
     textField:{
+        height: 30,
         backgroundColor: 'white',
         marginLeft: 20,
         marginRight:20,
         marginBottom: 10
     },
-    loginButton:{      
+    text:{
+        color: "white"
+    },
+    loginButton:{  
+        height: 30,    
         marginTop: 20,
         marginLeft: 20,
         marginRight: 20,
         marginBottom: 20,
+        backgroundColor:"#841584",
+        alignItems: "center",
+        justifyContent: "center" 
     },
     googleButton: {
+        height: 30,   
         marginTop: 10,
         marginLeft: 20,
         marginRight: 20,
+        backgroundColor: "#d62d20",
+        alignItems: "center",
+        justifyContent: "center" 
     },
     facebookButton:{
+        height: 30,   
         marginTop: 10,
         marginLeft: 20,
         marginRight: 20,
+        backgroundColor: "#3b5998",
+        alignItems: "center",
+        justifyContent: "center" 
     },
     registerButton: {
+        height: 30,   
         marginLeft: 20,
         marginRight: 20,
-        marginBottom: 20
+        marginBottom: 20,
+        backgroundColor: "#157f63",
+        alignItems: "center",
+        justifyContent: "center" 
     },
     errorText:{
         alignSelf: "center",

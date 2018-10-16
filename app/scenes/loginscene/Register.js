@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {View,StyleSheet, TextInput, Button, Text} from 'react-native'
+import {View,StyleSheet, TextInput, TouchableHighlight, Text} from 'react-native'
 import Firebase from 'react-native-firebase';
 
 export default class Register extends Component{
@@ -92,13 +92,10 @@ export default class Register extends Component{
                     <Text style = {styles.errorText}>Invalid email or password</Text>
                     :null
                     }
-                    <View style={styles.registerButton}>
-                        <Button
-                            onPress={this.onRegisterButtonPress.bind(this)}
-                            title="Register"
-                            color="#157f63"
-                        />
-                    </View>
+                    <TouchableHighlight style={styles.registerButton} onPress={this.onRegisterButtonPress.bind(this)}
+                    >
+                    <Text style = {styles.text}>Register</Text>
+                    </TouchableHighlight>
                 </View>
             </View>
         )
@@ -115,16 +112,24 @@ const styles = StyleSheet.create({
         alignItems: 'stretch'
     },
     textField:{
+        height: 30,
         backgroundColor: 'white',
         marginLeft: 20,
         marginRight:20,
         marginBottom: 10
     },
     registerButton: {
-        margin: 20
+        height: 30,
+        margin: 20,
+        backgroundColor: "#157f63",
+        justifyContent: "center",
+        alignItems: "center"
     },
     errorText:{
         alignSelf: "center",
         color: "red"
+    },
+    text:{
+        color: "white"
     }
 });
