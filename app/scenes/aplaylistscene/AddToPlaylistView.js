@@ -1,16 +1,31 @@
 import React, {Component} from 'react'
-import {View,Text, TextInput,Button, StyleSheet} from 'react-native'
+import {View,Text, FlatList, StyleSheet} from 'react-native'
+import PlaylistButton from '../_components/PlaylistButton'
+
 
 export default class SongAddView extends Component{
+
+    renderPlaylist = ({item}) => (
+        <PlaylistButton 
+            imgUrl = {item.imgUrl}
+            name = {item.name}
+            songCount = {item.songCount}
+        />
+    );
+
     render(){
         return (
             this.props.isVisible?
             (    
             <View style={styles.overlay}>
-                <View style={[styles.overlay, styles.transparentBackground]}></View>
                 <View style={styles.subContainer}>
-                    <Text>Add to playlist</Text>
+                    <Text style = {styles.header}>Select Online Playlist</Text>
                 </View>
+                <FlatList
+                    data={this.props.playlists} //PROPS
+                    renderItem={this.renderPlaylist.bind(this)}
+                    keyExtractor = {(item)=>item.name}>
+                </FlatList>
             </View>    
             ):null
         )
@@ -25,35 +40,14 @@ const styles = StyleSheet.create({
         top: 0,
         width:'100%',
         height: '100%',
-        justifyContent: 'center',
-        alignItems: 'center'
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+        backgroundColor: 'rgb(4,4,4)'
     },
-    transparentBackground:{
-        backgroundColor: 'black',
-        opacity: 0.5
-    },
-    subContainer:{
-        width: '80%',
-        backgroundColor: 'white'
-    },
-    textField:{
-        paddingLeft: 10,
-        paddingRight: 10,
-    },
-    header: {
-        color: 'black',
-        fontSize: 17,
-        paddingTop: 10,
-        paddingBottom: 10,
-        alignSelf: 'center'
-    },
-    error:{
-        color: 'red',
-        fontSize: 15,
-        alignSelf: 'center',
-        paddingBottom: 5
-    },
-    button:{
-        padding: 5
-    }  
+    header:{
+        fontWeight: 'bold',
+        color: 'white',
+        fontSize: 20,
+        marginTop: 20
+    }
 });

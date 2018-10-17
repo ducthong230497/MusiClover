@@ -5,10 +5,10 @@ import {connect} from 'react-redux'
 import {getXmlURL, getDataFromXmlURL} from '../../connector/connector'
 import Firebase from 'react-native-firebase'
 
-
-import SongAddView from './SongAddView'
 import SongButton from '../_components/SongButton'
+import SongAddView from './SongAddView'
 import SongMoreView from './SongMoreView'
+import AddToPlaylistView from './AddToPlaylistView'
 
 class APlaylist extends Component{
     
@@ -18,6 +18,7 @@ class APlaylist extends Component{
         this.state = {
             isAddSongViewVisisble: false,
             isSongMoreViewVisible: false,
+            isAddToPlaylistViewVisible: false,
             selectedSongName: '',
             selectedArtist: '',
             selectedSongURL: ''
@@ -64,6 +65,7 @@ class APlaylist extends Component{
         this.setState({
             selectedSongName:currentSong.songName, 
             selectedArtist: currentSong.artist, 
+            selectedSongURL: currentSong.songURL,
             isSongMoreViewVisible: true
         });
         
@@ -76,15 +78,26 @@ class APlaylist extends Component{
 
     onAddToPlaylistButtonPress()
     {
-        Firebase.firestore().collection('playlists').doc('123').update({
-            songs: Firebase.firestore.FieldValue._arrayUnion({
-                songName: this.state.selectedSongName,
-                artist: this.state.selectedArtist,
-                songURL: this.state.selectedSongURL,
-            })
-        })
 
-        this.setState({isSongMoreViewVisible:false});
+        if(!this.props.user) 
+        {
+            this.props.navigation.navigate('Account');
+        }
+        else
+        {
+
+            this.setState({isAddToPlaylistViewVisible: true});
+
+            // Firebase.firestore().collection(this.props.user.email).doc('OnlineData').collection('Playlists').doc('1234').set({
+            //     songs: [{
+            //         songName: this.state.selectedSongName,
+            //         artist: this.state.selectedArtist,
+            //         songURL: this.state.selectedSongURL,
+            //     }]
+            // })
+
+            // this.setState({isSongMoreViewVisible:false});
+        }
     }
 
     renderSongs = ({index, item}) => (
@@ -137,6 +150,9 @@ class APlaylist extends Component{
                     onAddToPlaylistButtonPress = {this.onAddToPlaylistButtonPress.bind(this)}
                     onCloseButtonPress = {this.onCloseSongMoreViewButtonPress.bind(this)}
                 />
+                <AddToPlaylistView
+                    isVisible = {this.state.isAddToPlaylistViewVisible}
+                />
             </View>
         )
 
@@ -146,7 +162,8 @@ class APlaylist extends Component{
 function mapStateToProps(state)
 {
     return {
-        playlists: state.playlists.playlists
+        playlists: state.playlists.playlists,
+        user: state.user.user
     }
 }
 

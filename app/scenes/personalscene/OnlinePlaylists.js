@@ -15,19 +15,30 @@ class OnlinePlaylists extends Component {
             playlists: []
         };
 
-        this.playlistCollection = Firebase.firestore().collection('playlists');
+        this.userCollection = null;
     }
 
     componentDidMount() {
-        this.unsubscribe = this.playlistCollection.onSnapshot((querySnapshot)=>{
+        
+    }
+  
+    componentWillUnmount() {
+        this.unsubscribe();
+    }
+
+    getUserCollection()
+    {
+        this.userCollection = Firebase.firestore().collection(this.props.user.email);
+
+        this.unsubscribe = this.userCollection.doc("OnlineData").collection('Playlists').onSnapshot((querySnapshot)=>{
             const playlists = [];
             querySnapshot.forEach((doc) => {             
-                const { name, imgUrl, songCount } = doc.data();
+                const { name, imgUrl, songCount,songs } = doc.data();
                 playlists.push({
-                key: doc.id,
-                name: name,
-                imgUrl: imgUrl,
-                songCount: songCount
+                    name: name,
+                    imgUrl: imgUrl,
+                    songCount: songCount,
+                    songs: songs
                 });
             });
             this.setState({ 
@@ -35,17 +46,13 @@ class OnlinePlaylists extends Component {
             });
         }) 
     }
-    
-    componentWillUnmount() {
-        this.unsubscribe();
-    }
 
     onCreatePlaylistPress(newPlaylistName)
     {
 
         if(this.state.playlists.findIndex(playlist=>playlist.name === newPlaylistName.trim()) === -1 && /\S/.test(newPlaylistName))
         {
-            this.playlistCollection.doc(newPlaylistName.trim()).set({
+            this.userCollection.doc("OnlineData").collection('Playlists').doc(newPlaylistName.trim()).set({
                 name: newPlaylistName.trim(),
                 imgUrl: 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg',
                 songCount: 0,
@@ -63,7 +70,7 @@ class OnlinePlaylists extends Component {
 
     onDeletePlaylistPress(deletedPlaylistName)
     {
-        this.playlistCollection.doc(deletedPlaylistName).delete();
+        this.userCollection.doc(deletedPlaylistName).delete();
 
         return true;
     }
@@ -81,6 +88,11 @@ class OnlinePlaylists extends Component {
             return (
                 <LoginButton navigation = {this.props.navigation}></LoginButton>
             )
+        }
+
+        if(this.userCollection===null)
+        {
+            this.getUserCollection();
         }
 
         return (
