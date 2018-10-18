@@ -1,9 +1,9 @@
 import React, {Component} from 'react'
-import {View,Text, FlatList, StyleSheet} from 'react-native'
+import {View,Text, FlatList, StyleSheet, TouchableHighlight} from 'react-native'
 import PlaylistButton from '../_components/PlaylistButton'
 
 
-export default class SongAddView extends Component{
+export default class AddToPlaylistView extends Component{
 
     renderPlaylist = ({item}) => (
         <PlaylistButton 
@@ -15,17 +15,20 @@ export default class SongAddView extends Component{
 
     render(){
         return (
-            this.props.isVisible?
+            this.props.isVisible? //PROPS
             (    
             <View style={styles.overlay}>
                 <View style={styles.subContainer}>
                     <Text style = {styles.header}>Select Online Playlist</Text>
+                    <FlatList
+                        data={this.props.playlists} //PROPS
+                        renderItem={this.renderPlaylist.bind(this)}
+                        keyExtractor = {(item)=>item.name}>
+                    </FlatList>
                 </View>
-                <FlatList
-                    data={this.props.playlists} //PROPS
-                    renderItem={this.renderPlaylist.bind(this)}
-                    keyExtractor = {(item)=>item.name}>
-                </FlatList>
+                <TouchableHighlight style={styles.cancelButton} onPress={this.props.onCancelButtonPress}>
+                    <Text style = {styles.buttonText}>Close</Text>
+                </TouchableHighlight>   
             </View>    
             ):null
         )
@@ -41,13 +44,31 @@ const styles = StyleSheet.create({
         width:'100%',
         height: '100%',
         justifyContent: 'flex-start',
-        alignItems: 'center',
+        alignItems: 'stretch',
         backgroundColor: 'rgb(4,4,4)'
+    },
+    subContainer: {
+        flex: 1,
+        justifyContent: 'flex-start',
+        alignItems: 'center',
     },
     header:{
         fontWeight: 'bold',
         color: 'white',
         fontSize: 20,
         marginTop: 20
+    },
+    cancelButton:{  
+        height: 30,    
+        marginTop: 20,
+        marginLeft: 20,
+        marginRight: 20,
+        marginBottom: 20,
+        backgroundColor: "#841584",
+        justifyContent: "center",
+        alignItems: "center"
+    },
+    buttonText:{
+        color: "white"
     }
 });

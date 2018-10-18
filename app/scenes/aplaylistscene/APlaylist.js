@@ -152,6 +152,7 @@ class APlaylist extends Component{
                 />
                 <AddToPlaylistView
                     isVisible = {this.state.isAddToPlaylistViewVisible}
+                    playlists = {}
                 />
             </View>
         )
