@@ -5,11 +5,13 @@ import PlaylistButton from '../_components/PlaylistButton'
 
 export default class AddToPlaylistView extends Component{
 
+
     renderPlaylist = ({item}) => (
         <PlaylistButton 
             imgUrl = {item.imgUrl}
             name = {item.name}
             songCount = {item.songCount}
+            onPlaylistButtonPress = {() => this.props.onPlaylistButtonPress(item.name)}
         />
     );
 
@@ -26,7 +28,10 @@ export default class AddToPlaylistView extends Component{
                         keyExtractor = {(item)=>item.name}>
                     </FlatList>
                 </View>
-                <TouchableHighlight style={styles.cancelButton} onPress={this.props.onCancelButtonPress}>
+                <TouchableHighlight 
+                style={styles.closeButton} 
+                onPress={this.props.onCloseButtonPress}
+                >
                     <Text style = {styles.buttonText}>Close</Text>
                 </TouchableHighlight>   
             </View>    
@@ -50,15 +55,15 @@ const styles = StyleSheet.create({
     subContainer: {
         flex: 1,
         justifyContent: 'flex-start',
-        alignItems: 'center',
     },
     header:{
         fontWeight: 'bold',
         color: 'white',
         fontSize: 20,
-        marginTop: 20
+        marginTop: 20,
+        alignSelf: 'center'
     },
-    cancelButton:{  
+    closeButton:{  
         height: 30,    
         marginTop: 20,
         marginLeft: 20,

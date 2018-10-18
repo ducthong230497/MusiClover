@@ -85,19 +85,27 @@ class APlaylist extends Component{
         }
         else
         {
-
             this.setState({isAddToPlaylistViewVisible: true});
-
-            // Firebase.firestore().collection(this.props.user.email).doc('OnlineData').collection('Playlists').doc('1234').set({
-            //     songs: [{
-            //         songName: this.state.selectedSongName,
-            //         artist: this.state.selectedArtist,
-            //         songURL: this.state.selectedSongURL,
-            //     }]
-            // })
-
-            // this.setState({isSongMoreViewVisible:false});
         }
+    }
+
+    onCloseAddToPlaylistButtonPress()
+    {
+        this.setState({isAddToPlaylistViewVisible: false});
+    }
+
+    onPlaylistButtonPress(playlistName)
+    {
+        Firebase.firestore().collection(this.props.user.email).doc('OnlineData').collection('Playlists').doc(playlistName).set({
+            songs: [{
+                songName: this.state.selectedSongName,
+                artist: this.state.selectedArtist,
+                songURL: this.state.selectedSongURL,
+            }]
+        }, { merge: true })
+
+        this.setState({isAddToPlaylistViewVisible:false});
+        this.setState({isSongMoreViewVisible:false});
     }
 
     renderSongs = ({index, item}) => (
@@ -152,7 +160,9 @@ class APlaylist extends Component{
                 />
                 <AddToPlaylistView
                     isVisible = {this.state.isAddToPlaylistViewVisible}
-                    playlists = {}
+                    onCloseButtonPress = {this.onCloseAddToPlaylistButtonPress.bind(this)}
+                    onPlaylistButtonPress = {this.onPlaylistButtonPress.bind(this)}
+                    playlists = {this.props.onlinePlaylists}
                 />
             </View>
         )
@@ -164,7 +174,8 @@ function mapStateToProps(state)
 {
     return {
         playlists: state.playlists.playlists,
-        user: state.user.user
+        user: state.user.user,
+        onlinePlaylists: state.user.onlinePlaylists,
     }
 }
 

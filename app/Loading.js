@@ -1,16 +1,10 @@
 import React, {Component} from 'react'
-import {View,Text,StyleSheet, TextInput, Button} from 'react-native'
+import {View,StyleSheet, Dimensions, Image} from 'react-native'
 import Firebase from 'react-native-firebase';
 import {connect} from 'react-redux'
 
-class Account extends Component{
+class Loading extends Component{
 
-    constructor() {
-        super();
-        this.state = {
-          loading: true,
-        };
-    }
 
     /**
      * When the App component mounts, we listen for any authentication
@@ -20,10 +14,9 @@ class Account extends Component{
      */
     componentDidMount() {
         this.authSubscription = Firebase.auth().onAuthStateChanged((user) => {
-
-            this.setState({loading: false});
             this.props.dispatch({type: 'SetUser', user: user});
-
+            this.getUserCollection(user.email);
+            this.props.onLoadDone();
         });
     }
 
@@ -33,33 +26,60 @@ class Account extends Component{
      */
     componentWillUnmount() {
         this.authSubscription();
+        this.databaseSubscription();
+    }
+
+    getUserCollection(email)
+    {
+        this.userCollection = Firebase.firestore().collection(email);
+
+        this.databaseSubscription = this.userCollection.doc("OnlineData").collection('Playlists').onSnapshot((querySnapshot)=>{
+            const playlists = [];
+            querySnapshot.forEach((doc) => {             
+                const { name, imgUrl, songCount,songs } = doc.data();
+                playlists.push({
+                    name: name,
+                    imgUrl: imgUrl,
+                    songCount: songCount,
+                    songs: songs
+                });
+            });
+
+            this.props.dispatch({type: 'SetOnlinePlaylists', onlinePlaylists: playlists})
+        }) 
     }
 
     render(){
 
-        
+        let imgFolderPath = '../resources/img/'; 
+
+        return(
+        <View style = {styles.container}>
+            <Image
+                style={styles.image}
+                source={require(imgFolderPath + 'logo.png')}
+            />
+        </View>
+        )
 
     }
 }
 
-function mapStateToProps(state)
-{
-    return {
-        user: state.user.user
-    }
-}
+export default connect()(Loading);
 
-export default connect(mapStateToProps)(Account);
+
+const { width } = Dimensions.get('window');
+const imageSize = width/3;
 
 const styles = StyleSheet.create({
     container:{
         flex: 1,
         backgroundColor: 'rgb(4,4,4)',
-        flexDirection: 'column',
         justifyContent: 'center',
-        alignItems: 'stretch'
+        alignItems: 'center'
     },
-    text:{
-        color: 'white'
+    image: {
+        width: imageSize,
+        height: imageSize,
     },
 });

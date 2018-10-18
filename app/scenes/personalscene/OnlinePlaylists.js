@@ -11,9 +11,6 @@ class OnlinePlaylists extends Component {
     constructor(props)
     {
         super(props);
-        this.state = {
-            playlists: []
-        };
 
         this.userCollection = null;
     }
@@ -41,16 +38,15 @@ class OnlinePlaylists extends Component {
                     songs: songs
                 });
             });
-            this.setState({ 
-                playlists: playlists,
-            });
+
+            this.props.dispatch({type: 'SetOnlinePlaylists', onlinePlaylists: playlists})
         }) 
     }
 
     onCreatePlaylistPress(newPlaylistName)
     {
 
-        if(this.state.playlists.findIndex(playlist=>playlist.name === newPlaylistName.trim()) === -1 && /\S/.test(newPlaylistName))
+        if(this.props.onlinePlaylists.findIndex(playlist=>playlist.name === newPlaylistName.trim()) === -1 && /\S/.test(newPlaylistName))
         {
             this.userCollection.doc("OnlineData").collection('Playlists').doc(newPlaylistName.trim()).set({
                 name: newPlaylistName.trim(),
@@ -97,7 +93,7 @@ class OnlinePlaylists extends Component {
 
         return (
             <Playlists
-                playlists = {this.state.playlists}
+                playlists = {this.props.onlinePlaylists}
                 onCreatePlaylistPress = {this.onCreatePlaylistPress.bind(this)}
                 onDeletePlaylistPress = {this.onDeletePlaylistPress.bind(this)}
                 onPlaylistButtonPress = {this.onPlaylistButtonPress.bind(this)}
@@ -111,7 +107,8 @@ class OnlinePlaylists extends Component {
 function mapStateToProps(state)
 {
     return {
-        user: state.user.user
+        user: state.user.user,
+        onlinePlaylists: state.user.onlinePlaylists
     }
 }
 

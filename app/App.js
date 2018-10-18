@@ -15,18 +15,39 @@ import TestScene from './scenes/testscene/Test'
 import HomeScene from './scenes/homescene/Home'
 import SettingScene from './scenes/settingscene/Setting'
 
+import Loading from './Loading'
+
 export default class App extends Component{
+
+  constructor(props)
+  {
+    super(props);
+
+    this.state = {
+      loading: true
+    }
+  }
+
+  onLoadDone()
+  {
+    setTimeout(() => {
+      this.setState({loading: false});
+    }, 1000);
+  }
 
   render()
   {
     return (
         <Provider store = {reduxStore}>	
-            <View style = {styles.container}>
+            {this.state.loading
+            ?<Loading onLoadDone={this.onLoadDone.bind(this)}></Loading>
+            :<View style = {styles.container}>
               <AppNavigator></AppNavigator>
               <SongPlayer></SongPlayer>
               <SongPlayerMaximizer></SongPlayerMaximizer>
               <SongPlayerMinimizer></SongPlayerMinimizer>
             </View>
+            }
         </Provider>
     );
   }
