@@ -4,6 +4,7 @@ import {Icon} from 'react-native-elements'
 import {connect} from 'react-redux'
 import {getXmlURL, getDataFromXmlURL} from '../../connector/connector'
 import Firebase from 'react-native-firebase'
+import Toast, {DURATION} from 'react-native-easy-toast'
 
 import SongButton from '../_components/SongButton'
 import SongAddView from './SongAddView'
@@ -25,6 +26,7 @@ class APlaylist extends Component{
         }
 
         this.playlist = [];
+        this.toast = React.createRef();
     }
   
     
@@ -48,16 +50,16 @@ class APlaylist extends Component{
         this.props.dispatch({type: 'SetTrackList', tracks: this.playlist})
         this.props.dispatch({type: 'SetSelectedTrackIndex', selectedTrackIndex: index})
         this.props.dispatch({type: 'ShowMaximizer'});
+        this.props.dispatch({type: 'Resume'});
         this.props.navigation.navigate('SongPlayer');
 
         //get track data
         getXmlURL(this.playlist[index].songURL).then(xmlUrl=> {
             getDataFromXmlURL(xmlUrl).then(data => {
-              this.props.dispatch({type: 'SetSelectedTrackInfo', selectedTrackURL: data.URL, selectedTrackImage: data.img})
+                this.props.dispatch({type: 'SetSelectedTrackInfo', selectedTrackURL: data.URL, selectedTrackImage: data.img})
             });
         });
     }
-
 
     onMoreButtonPress(index)
     {
@@ -94,18 +96,36 @@ class APlaylist extends Component{
         this.setState({isAddToPlaylistViewVisible: false});
     }
 
-    onPlaylistButtonPress(playlistName)
+    onPlaylistButtonPress(playlist)
     {
-        Firebase.firestore().collection(this.props.user.email).doc('OnlineData').collection('Playlists').doc(playlistName).set({
-            songs: [{
+        //get song image as playlist image
+        if(playlist.songCount==0)
+        {
+            getXmlURL(this.state.selectedSongURL).then(xmlUrl=> {
+                getDataFromXmlURL(xmlUrl).then(data => {
+                    //store playlist image to firebase
+                    Firebase.firestore().collection(this.props.user.email).doc('OnlineData').collection('Playlists').doc(playlist.name).set({
+                        imgUrl: data.img,
+                    }, { merge: true })
+                });
+            });
+        }
+
+        //store new song to firebase
+        Firebase.firestore().collection(this.props.user.email).doc('OnlineData').collection('Playlists').doc(playlist.name).set({
+            songCount: playlist.songCount + 1,
+            songs: playlist.songs.concat([{
                 songName: this.state.selectedSongName,
                 artist: this.state.selectedArtist,
                 songURL: this.state.selectedSongURL,
-            }]
+            }])
         }, { merge: true })
 
-        this.setState({isAddToPlaylistViewVisible:false});
-        this.setState({isSongMoreViewVisible:false});
+        //hide
+        this.setState({isAddToPlaylistViewVisible:false, isSongMoreViewVisible: false});
+
+        //toast
+        this.toast.current.show('Added to playlist');
     }
 
     renderSongs = ({index, item}) => (
@@ -163,6 +183,13 @@ class APlaylist extends Component{
                     onCloseButtonPress = {this.onCloseAddToPlaylistButtonPress.bind(this)}
                     onPlaylistButtonPress = {this.onPlaylistButtonPress.bind(this)}
                     playlists = {this.props.onlinePlaylists}
+                />
+                <Toast
+                    ref={this.toast}
+                    style={{backgroundColor:'white'}}
+                    position='bottom'
+                    textStyle={{color:'black'}}
+                    positionValue={200}
                 />
             </View>
         )

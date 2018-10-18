@@ -15,32 +15,9 @@ class OnlinePlaylists extends Component {
         this.userCollection = null;
     }
 
-    componentDidMount() {
-        
-    }
-  
-    componentWillUnmount() {
-        this.unsubscribe();
-    }
-
     getUserCollection()
     {
         this.userCollection = Firebase.firestore().collection(this.props.user.email);
-
-        this.unsubscribe = this.userCollection.doc("OnlineData").collection('Playlists').onSnapshot((querySnapshot)=>{
-            const playlists = [];
-            querySnapshot.forEach((doc) => {             
-                const { name, imgUrl, songCount,songs } = doc.data();
-                playlists.push({
-                    name: name,
-                    imgUrl: imgUrl,
-                    songCount: songCount,
-                    songs: songs
-                });
-            });
-
-            this.props.dispatch({type: 'SetOnlinePlaylists', onlinePlaylists: playlists})
-        }) 
     }
 
     onCreatePlaylistPress(newPlaylistName)
@@ -50,7 +27,7 @@ class OnlinePlaylists extends Component {
         {
             this.userCollection.doc("OnlineData").collection('Playlists').doc(newPlaylistName.trim()).set({
                 name: newPlaylistName.trim(),
-                imgUrl: 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg',
+                imgUrl: 'http://www.kensap.org/wp-content/uploads/empty-photo.jpg',
                 songCount: 0,
                 songs: []
             })
@@ -66,14 +43,15 @@ class OnlinePlaylists extends Component {
 
     onDeletePlaylistPress(deletedPlaylistName)
     {
-        this.userCollection.doc(deletedPlaylistName).delete();
+        this.userCollection.doc("OnlineData").collection('Playlists').doc(deletedPlaylistName).delete();
 
         return true;
     }
 
     onPlaylistButtonPress(playlist)
     {
-        this.props.navigation.navigate('APlaylist', {canAddSong: false, songs: playlist.songs})
+        this.props.dispatch({type: 'AddPlaylist', name: 'Personal', playlist: playlist.songs})
+        this.props.navigation.navigate('APlaylist', {canAddSong: false, playlistName: 'Personal'})
     }
 
 
@@ -92,13 +70,15 @@ class OnlinePlaylists extends Component {
         }
 
         return (
-            <Playlists
-                playlists = {this.props.onlinePlaylists}
-                onCreatePlaylistPress = {this.onCreatePlaylistPress.bind(this)}
-                onDeletePlaylistPress = {this.onDeletePlaylistPress.bind(this)}
-                onPlaylistButtonPress = {this.onPlaylistButtonPress.bind(this)}
-            >
-            </Playlists>
+            <View style = {styles.container}>
+                <Playlists
+                    playlists = {this.props.onlinePlaylists}
+                    onCreatePlaylistPress = {this.onCreatePlaylistPress.bind(this)}
+                    onDeletePlaylistPress = {this.onDeletePlaylistPress.bind(this)}
+                    onPlaylistButtonPress = {this.onPlaylistButtonPress.bind(this)}
+                >
+                </Playlists>
+            </View>
         )
 
     }
@@ -115,4 +95,11 @@ function mapStateToProps(state)
 export default connect(mapStateToProps)(OnlinePlaylists);
 
 
+const styles = StyleSheet.create({
+    container:{
+        flex: 1,
+        backgroundColor: 'rgb(4,4,4)'
+    },
+    
+});
 

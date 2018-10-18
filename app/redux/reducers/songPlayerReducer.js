@@ -1,6 +1,8 @@
 import {getXmlURL, getDataFromXmlURL} from '../../connector/connector'
 import store from '../store'
 
+//Bad performance
+//Recommendation: put tracks (since tracks can be very large) into another reducer 
 const initialState = {
     songPlayer: null,
     tracks: [],

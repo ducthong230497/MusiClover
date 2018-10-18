@@ -11,7 +11,7 @@ export default class AddToPlaylistView extends Component{
             imgUrl = {item.imgUrl}
             name = {item.name}
             songCount = {item.songCount}
-            onPlaylistButtonPress = {() => this.props.onPlaylistButtonPress(item.name)}
+            onPlaylistButtonPress = {() => this.props.onPlaylistButtonPress(item)}
         />
     );
 

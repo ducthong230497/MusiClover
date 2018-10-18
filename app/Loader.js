@@ -3,8 +3,14 @@ import {View,StyleSheet, Dimensions, Image} from 'react-native'
 import Firebase from 'react-native-firebase';
 import {connect} from 'react-redux'
 
+//Load Firebase data (User, OnlineData)
 class Loading extends Component{
 
+    constructor(props)
+    {
+        super(props);
+
+    }
 
     /**
      * When the App component mounts, we listen for any authentication
@@ -15,8 +21,14 @@ class Loading extends Component{
     componentDidMount() {
         this.authSubscription = Firebase.auth().onAuthStateChanged((user) => {
             this.props.dispatch({type: 'SetUser', user: user});
-            this.getUserCollection(user.email);
-            this.props.onLoadDone();
+            if(user)
+            {
+                this.getUserCollection(user.email);
+            }
+            else
+            {
+                this.props.onLoadDone();
+            }
         });
     }
 
@@ -46,18 +58,25 @@ class Loading extends Component{
             });
 
             this.props.dispatch({type: 'SetOnlinePlaylists', onlinePlaylists: playlists})
+
+            this.props.onLoadDone();
         }) 
     }
 
     render(){
 
-        let imgFolderPath = '../resources/img/'; 
+        if(!this.props.isVisible)
+        {
+            return null;
+        }
+
+        let imageURI = '../resources/img/logo.png'; 
 
         return(
         <View style = {styles.container}>
             <Image
                 style={styles.image}
-                source={require(imgFolderPath + 'logo.png')}
+                source={require(imageURI)}
             />
         </View>
         )

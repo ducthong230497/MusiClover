@@ -15,7 +15,7 @@ import TestScene from './scenes/testscene/Test'
 import HomeScene from './scenes/homescene/Home'
 import SettingScene from './scenes/settingscene/Setting'
 
-import Loading from './Loading'
+import Loader from './Loader'
 
 export default class App extends Component{
 
@@ -24,30 +24,40 @@ export default class App extends Component{
     super(props);
 
     this.state = {
-      loading: true
+      loading: true,
+      isLoaderVisible: true 
     }
   }
 
   onLoadDone()
   {
     setTimeout(() => {
-      this.setState({loading: false});
+      this.setState({loading: false, isLoaderVisible: false});
     }, 1000);
   }
 
   render()
   {
     return (
-        <Provider store = {reduxStore}>	
-            {this.state.loading
-            ?<Loading onLoadDone={this.onLoadDone.bind(this)}></Loading>
-            :<View style = {styles.container}>
-              <AppNavigator></AppNavigator>
-              <SongPlayer></SongPlayer>
-              <SongPlayerMaximizer></SongPlayerMaximizer>
-              <SongPlayerMinimizer></SongPlayerMinimizer>
+        <Provider store = {reduxStore}>
+          <View style = {styles.container}>	
+          
+              <Loader 
+                onLoadDone={this.onLoadDone.bind(this)}
+                isVisible = {this.state.isLoaderVisible}
+              />
+
+              {this.state.loading
+              ?null
+              :<View style = {styles.container}>
+                <AppNavigator></AppNavigator>
+                <SongPlayer></SongPlayer>
+                <SongPlayerMaximizer></SongPlayerMaximizer>
+                <SongPlayerMinimizer></SongPlayerMinimizer>
+              </View>
+              }
+
             </View>
-            }
         </Provider>
     );
   }
