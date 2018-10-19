@@ -43,21 +43,30 @@ class Loading extends Component{
 
     getUserCollection(email)
     {
-        this.userCollection = Firebase.firestore().collection(email);
+        if(this.databaseSubscription)
+        {
+            //stop listening first for sure
+            this.databaseSubscription();
+            this.databaseSubscription = null;
+        }
 
-        this.databaseSubscription = this.userCollection.doc("OnlineData").collection('Playlists').onSnapshot((querySnapshot)=>{
-            const playlists = [];
+        this.databaseSubscription = Firebase.firestore().collection(email).doc("OnlineData").collection('Playlists').onSnapshot((querySnapshot)=>{
+            const onlinePlaylists = [];
+            const onlineSongs = [];
             querySnapshot.forEach((doc) => {             
                 const { name, imgUrl, songCount,songs } = doc.data();
-                playlists.push({
+
+                onlinePlaylists.push({
                     name: name,
                     imgUrl: imgUrl,
                     songCount: songCount,
                     songs: songs
                 });
+                
+                onlineSongs.push(songs);
             });
 
-            this.props.dispatch({type: 'SetOnlinePlaylists', onlinePlaylists: playlists})
+            this.props.dispatch({type: 'SetOnlinePlaylists', onlinePlaylists: onlinePlaylists, onlineSongs: onlineSongs})
 
             this.props.onLoadDone();
         }) 

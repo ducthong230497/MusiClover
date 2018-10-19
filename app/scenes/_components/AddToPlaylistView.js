@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {View,Text, FlatList, StyleSheet, TouchableHighlight} from 'react-native'
-import PlaylistButton from '../_components/PlaylistButton'
+import PlaylistButton from './PlaylistButton'
 
 
 export default class AddToPlaylistView extends Component{

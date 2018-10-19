@@ -4,14 +4,14 @@ import {Icon} from 'react-native-elements'
 import {connect} from 'react-redux'
 import {getXmlURL, getDataFromXmlURL} from '../../connector/connector'
 import Firebase from 'react-native-firebase'
-import Toast, {DURATION} from 'react-native-easy-toast'
+import Toast from 'react-native-easy-toast'
 
 import SongButton from '../_components/SongButton'
-import SongAddView from './SongAddView'
-import SongMoreView from './SongMoreView'
-import AddToPlaylistView from './AddToPlaylistView'
+import SongAddView from '../_components/SongAddView'
+import SongMoreView from '../_components/SongMoreView'
+import AddToPlaylistView from '../_components/AddToPlaylistView'
 
-class APlaylist extends Component{
+class AHomePlaylist extends Component{
     
     constructor(props)
     {
@@ -151,7 +151,7 @@ class APlaylist extends Component{
         return (
             <View style={styles.container}>
                 {
-                    this.props.navigation.getParam('canAddSong')?
+                    this.props.isAddSongButtonVisible?
                     (<TouchableHighlight underlayColor = 'rgb(150,150,150)' onPress = {this.onOpenAddSongViewButtonPress.bind(this)}>
                         <View style = {styles.button}>
                             <Icon name = 'add-circle' size = {24} color = 'white' containerStyle={{paddingRight:5}}></Icon>
@@ -206,7 +206,7 @@ function mapStateToProps(state)
     }
 }
 
-export default connect(mapStateToProps)(APlaylist);
+export default connect(mapStateToProps)(AHomePlaylist);
 
 const styles = StyleSheet.create({
     container:{

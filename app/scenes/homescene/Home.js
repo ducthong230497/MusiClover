@@ -1,12 +1,12 @@
 import React, {Component} from 'react'
-import {View,Text,StyleSheet, ScrollView, FlatList} from 'react-native'
+import {View,StyleSheet, FlatList} from 'react-native'
 import {connect} from 'react-redux'
 import {createStackNavigator} from 'react-navigation'
 import {Icon} from 'react-native-elements'
 
 import {getTop100, getTop100Avatar} from '../../connector/connector'
 import TopPlaylistButton from './TopPlaylistButton'
-import APlaylist from '../aplaylistscene/APlaylist'
+import AHomePlaylist from './AHomePlaylist'
 
 class Home extends Component{
 
@@ -84,7 +84,7 @@ class Home extends Component{
             this.props.dispatch({type: 'AddPlaylist', name: 'Home', playlist: result})
         })
 
-        this.props.navigation.navigate('APlaylist', {canAddSong: false, playlistName: 'Home'})
+        this.props.navigation.navigate('AHomePlaylist')
     }
 
     renderTopPlaylists = ({item}) => (
@@ -122,8 +122,8 @@ export default StackNavigator = createStackNavigator({
 
         })
     },
-    APlaylist:{
-        screen: APlaylist,
+    AHomePlaylist:{
+        screen: AHomePlaylist,
         navigationOptions: ()=>({
             headerTitle:'Playlist',     
         })

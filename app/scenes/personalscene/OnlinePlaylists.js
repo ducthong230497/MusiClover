@@ -51,7 +51,7 @@ class OnlinePlaylists extends Component {
     onPlaylistButtonPress(playlist)
     {
         this.props.dispatch({type: 'AddPlaylist', name: 'Personal', playlist: playlist.songs})
-        this.props.navigation.navigate('APlaylist', {canAddSong: false, playlistName: 'Personal'})
+        this.props.navigation.navigate('AOnlinePlaylist', {canAddSong: false, playlistName: 'Personal'})
     }
 
 

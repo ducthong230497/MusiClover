@@ -19,8 +19,8 @@ class OnlineSongs extends Component{
 
     onSongButtonPress(trackIndex)
     {
-        this.props.dispatch({type: 'SetupTrackList', tracks: null,initialTrackIndex: trackIndex})
-        this.props.navigation.navigate('SongPlayer');
+        this.props.dispatch({type: 'AddPlaylist', name: 'Personal', playlist: songs})
+        this.props.navigation.navigate('APlaylist', {canAddSong: false, playlistName: 'Personal'})
     }
 
     render(){
