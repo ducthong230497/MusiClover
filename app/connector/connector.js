@@ -130,7 +130,7 @@ export async function getTop100Avatar(url){
         
         avatar = response._bodyInit.toString().match(regexAvatar)[1].toString()
     }).catch(err => console.error(err))
-    console.log("avatar: " + avatar)
+    // console.log("avatar: " + avatar)
     return avatar
 }
 

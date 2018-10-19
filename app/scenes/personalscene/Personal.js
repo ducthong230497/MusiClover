@@ -5,6 +5,7 @@ import {Icon} from 'react-native-elements'
 
 import CategoryButton from './children/CategoryButton'
 import AOnlinePlaylist from './AOnlinePlaylist' 
+import AOfflinePlaylist from './AOfflinePlaylist' 
 import OnlinePlaylists from './OnlinePlaylists'
 import OfflinePlaylists from './OfflinePlaylists'
 import OnlineSongs from './OnlineSongs'
@@ -97,6 +98,12 @@ export default StackNavigator = createStackNavigator({
     },
     AOnlinePlaylist:{
         screen: AOnlinePlaylist,
+        navigationOptions: ()=>({
+            headerTitle:'Playlist',     
+        })
+    },
+    AOfflinePlaylist:{
+        screen: AOfflinePlaylist,
         navigationOptions: ()=>({
             headerTitle:'Playlist',     
         })

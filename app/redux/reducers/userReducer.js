@@ -10,11 +10,15 @@ export default (state=initialState, action) => {
             ...state,
             user: action.user
         }
-        case 'SetOnlineData' :
+        case 'SetOnlinePlaylists' :
         return {
             ...state,
             onlinePlaylists: action.onlinePlaylists,
-            onlineSongs: onlineSongs
+        }
+        case 'SetOnlineSongs' :
+        return {
+            ...state,
+            onlineSongs: action.onlineSongs
         }
         default:
             return state

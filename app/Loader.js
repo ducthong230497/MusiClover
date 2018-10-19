@@ -10,6 +10,10 @@ class Loading extends Component{
     {
         super(props);
 
+        this.state = {
+            isLoadingPlaylists: true,
+            isLoadingSongs: true
+        }
     }
 
     /**
@@ -38,21 +42,23 @@ class Loading extends Component{
      */
     componentWillUnmount() {
         this.authSubscription();
-        this.databaseSubscription();
+
+        this.playlistsSubscription();
+        // this.songsSubscription();
     }
 
     getUserCollection(email)
     {
-        if(this.databaseSubscription)
+        if(this.playlistsSubscription)
         {
             //stop listening first for sure
-            this.databaseSubscription();
-            this.databaseSubscription = null;
+            this.playlistsSubscription();
+            this.playlistsSubscription = null;
         }
 
-        this.databaseSubscription = Firebase.firestore().collection(email).doc("OnlineData").collection('Playlists').onSnapshot((querySnapshot)=>{
-            const onlinePlaylists = [];
-            const onlineSongs = [];
+        this.playlistsSubscription = Firebase.firestore().collection(email).doc("OnlineData").collection('Playlists').onSnapshot((querySnapshot)=>{
+            let onlinePlaylists = [];
+            let onlineSongs = [];
             querySnapshot.forEach((doc) => {             
                 const { name, imgUrl, songCount,songs } = doc.data();
 
@@ -62,17 +68,43 @@ class Loading extends Component{
                     songCount: songCount,
                     songs: songs
                 });
-                
-                onlineSongs.push(songs);
+
+                onlineSongs = onlineSongs.concat(songs);
+
             });
 
-            this.props.dispatch({type: 'SetOnlinePlaylists', onlinePlaylists: onlinePlaylists, onlineSongs: onlineSongs})
+            this.props.dispatch({type: 'SetOnlinePlaylists', onlinePlaylists: onlinePlaylists})
+            this.props.dispatch({type: 'SetOnlineSongs', onlineSongs: onlineSongs})
+            this.setState({isLoadingPlaylists: false});
+        })
+        
 
-            this.props.onLoadDone();
-        }) 
+        // if(this.songsSubscription)
+        // {
+        //     //stop listening first for sure
+        //     this.songsSubscription();
+        //     this.songsSubscription = null;
+        // }
+
+        // this.songsSubscription = Firebase.firestore().collection(email).doc("OnlineData").collection('Songs').onSnapshot((querySnapshot)=>{
+
+        //     const onlineSongs = [];
+        //     querySnapshot.forEach((doc) => {             
+        //         const { songs } = doc.data();        
+        //         onlineSongs.push(songs);
+        //     });
+
+        //     this.props.dispatch({type: 'SetOnlineSongs', onlineSongs: onlineSongs})
+        //     this.setState({isLoadingSongs: false});
+        // })
     }
 
     render(){
+
+        if(!this.state.isLoadingPlaylists)
+        {
+            this.props.onLoadDone();
+        }
 
         if(!this.props.isVisible)
         {

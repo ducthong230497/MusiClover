@@ -1,6 +1,5 @@
 import React, {Component} from 'react'
-import {View,Text, TouchableHighlight, StyleSheet, FlatList} from 'react-native'
-import {Icon} from 'react-native-elements'
+import {View, StyleSheet, FlatList} from 'react-native'
 import {connect} from 'react-redux'
 import {getXmlURL, getDataFromXmlURL} from '../../connector/connector'
 import Firebase from 'react-native-firebase'
@@ -17,7 +16,6 @@ class AHomePlaylist extends Component{
     {
         super(props);
         this.state = {
-            isAddSongViewVisisble: false,
             isSongMoreViewVisible: false,
             isAddToPlaylistViewVisible: false,
             selectedSongName: '',
@@ -29,22 +27,6 @@ class AHomePlaylist extends Component{
         this.toast = React.createRef();
     }
   
-    
-    onOpenAddSongViewButtonPress()
-    {
-        this.setState({isAddSongViewVisisble: true});
-    }
-
-    onCancelAddingSongPress()
-    {
-        this.setState({isAddSongViewVisisble: false});
-    }
-
-    onAddSongButtonPress()
-    {
-        
-    }
-
     onSongButtonPress(index)
     {
         this.props.dispatch({type: 'SetTrackList', tracks: this.playlist})
@@ -111,21 +93,45 @@ class AHomePlaylist extends Component{
             });
         }
 
+        let songs = playlist.songs.concat([{
+            songName: this.state.selectedSongName,
+            artist: this.state.selectedArtist,
+            songURL: this.state.selectedSongURL,
+        }]);
+
         //store new song to firebase
         Firebase.firestore().collection(this.props.user.email).doc('OnlineData').collection('Playlists').doc(playlist.name).set({
             songCount: playlist.songCount + 1,
-            songs: playlist.songs.concat([{
-                songName: this.state.selectedSongName,
-                artist: this.state.selectedArtist,
-                songURL: this.state.selectedSongURL,
-            }])
+            songs: songs
         }, { merge: true })
 
         //hide
         this.setState({isAddToPlaylistViewVisible:false, isSongMoreViewVisible: false});
-
+        //update redux
+        this.props.dispatch({type: 'AddPlaylist', name: 'Personal', playlist: songs})
         //toast
         this.toast.current.show('Added to playlist');
+    }
+
+    onRemoveFromPlaylistButtonPress()
+    {
+        let currentPlaylist = this.props.navigation.getParam('currentPlaylist');
+        let currentSongs = currentPlaylist.songs;
+        let indexToRemove = currentSongs.findIndex(song => song.songURL === this.state.selectedSongURL);
+        currentSongs.splice(indexToRemove, 1);
+  
+        //store new song to firebase
+        Firebase.firestore().collection(this.props.user.email).doc('OnlineData').collection('Playlists').doc(currentPlaylist.name).set({
+            songCount: currentSongs.length,
+            songs: currentSongs
+        }, { merge: true })
+
+        //hide
+        this.setState({isSongMoreViewVisible: false});
+        //update redux
+        this.props.dispatch({type: 'AddPlaylist', name: 'Personal', playlist: currentSongs})
+        //toast
+        this.toast.current.show('Removed from playlist');
     }
 
     renderSongs = ({index, item}) => (
@@ -140,42 +146,27 @@ class AHomePlaylist extends Component{
     );
 
     render(){
-
-        let playlist = this.props.playlists.find(playlist => playlist.name === this.props.navigation.getParam('playlistName'))
+        let playlist = this.props.playlists.find(playlist => playlist.name === 'Personal')
         if(playlist != null)
         {
             this.playlist = Object.values(playlist)
             this.playlist.pop() //pop the final item which is the variable 'name' we have put to playlist (see playlistsReducer)
         }
-        console.log(this.props.playlists);
+
         return (
             <View style={styles.container}>
-                {
-                    this.props.isAddSongButtonVisible?
-                    (<TouchableHighlight underlayColor = 'rgb(150,150,150)' onPress = {this.onOpenAddSongViewButtonPress.bind(this)}>
-                        <View style = {styles.button}>
-                            <Icon name = 'add-circle' size = {24} color = 'white' containerStyle={{paddingRight:5}}></Icon>
-                            <Text style = {styles.buttonText}>Add Songs</Text>
-                        </View>
-                    </TouchableHighlight>)
-                    :null
-                }
                 <FlatList
                     data={this.playlist}
                     renderItem={this.renderSongs.bind(this)}
                     keyExtractor = {(item, index)=>index.toString()}>
                 </FlatList>
-                <SongAddView
-                    isVisible = {this.state.isAddSongViewVisisble}
-                    onAddSongButtonPress = {this.onAddSongButtonPress.bind(this)}
-                    onCancelButtonPress = {this.onCancelAddingSongPress.bind(this)} 
-                />
                 <SongMoreView
                     isVisible = {this.state.isSongMoreViewVisible}
-                    playlist = {false}
+                    canRemoveFromPlaylist = {true}
                     songName = {this.state.selectedSongName}
                     artist = {this.state.selectedArtist}
                     onAddToPlaylistButtonPress = {this.onAddToPlaylistButtonPress.bind(this)}
+                    onRemoveFromPlaylistButtonPress = {this.onRemoveFromPlaylistButtonPress.bind(this)}
                     onCloseButtonPress = {this.onCloseSongMoreViewButtonPress.bind(this)}
                 />
                 <AddToPlaylistView

@@ -94,19 +94,26 @@ class AHomePlaylist extends Component{
             });
         }
 
+        let songs = playlist.songs.concat([{
+            songName: this.state.selectedSongName,
+            artist: this.state.selectedArtist,
+            songURL: this.state.selectedSongURL,
+        }])
+
         //store new song to firebase
         Firebase.firestore().collection(this.props.user.email).doc('OnlineData').collection('Playlists').doc(playlist.name).set({
             songCount: playlist.songCount + 1,
-            songs: playlist.songs.concat([{
-                songName: this.state.selectedSongName,
-                artist: this.state.selectedArtist,
-                songURL: this.state.selectedSongURL,
-            }])
+            songs: songs
         }, { merge: true })
+
+        // Firebase.firestore().collection(this.props.user.email).doc('OnlineData').collection('Songs').doc('Songs').set({
+        //     songs: [...this.props.onlineSongs].push(newSong)
+        // }, { merge: true })
 
         //hide
         this.setState({isAddToPlaylistViewVisible:false, isSongMoreViewVisible: false});
-
+        //update redux
+        this.props.dispatch({type: 'AddPlaylist', name: 'Personal', playlist: songs})
         //toast
         this.toast.current.show('Added to playlist');
     }
@@ -130,7 +137,7 @@ class AHomePlaylist extends Component{
             this.playlist = Object.values(playlist)
             this.playlist.pop() //pop the final item which is the variable 'name' we have put to playlist (see playlistsReducer)
         }
-        console.log(this.props.playlists);
+
         return (
             <View style={styles.container}>
                 <FlatList
@@ -140,7 +147,6 @@ class AHomePlaylist extends Component{
                 </FlatList>
                 <SongMoreView
                     isVisible = {this.state.isSongMoreViewVisible}
-                    playlist = {false}
                     songName = {this.state.selectedSongName}
                     artist = {this.state.selectedArtist}
                     onAddToPlaylistButtonPress = {this.onAddToPlaylistButtonPress.bind(this)}

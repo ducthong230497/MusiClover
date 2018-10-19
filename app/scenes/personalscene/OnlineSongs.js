@@ -1,26 +1,20 @@
 import React, {Component} from 'react'
 import Songs from './children/Songs'
 import LoginButton from './children/LoginButton'
+import AOnlinePlaylist from './AOnlinePlaylist'
 
 import {connect} from 'react-redux'
-import Firebase from 'react-native-firebase'
 
 class OnlineSongs extends Component{
 
     constructor(props)
     {
         super(props);
-        this.state = {
-            songs: [
-               
-            ]
-        }
     }
 
-    onSongButtonPress(trackIndex)
+    componentDidMount()
     {
-        this.props.dispatch({type: 'AddPlaylist', name: 'Personal', playlist: songs})
-        this.props.navigation.navigate('APlaylist', {canAddSong: false, playlistName: 'Personal'})
+        this.props.dispatch({type: 'AddPlaylist', name: 'Personal', playlist: this.props.onlineSongs})
     }
 
     render(){
@@ -33,11 +27,7 @@ class OnlineSongs extends Component{
         }
 
         return (
-            <Songs
-                songs = {this.state.songs}
-                onSongButtonPress = {this.onSongButtonPress.bind(this)}
-            >
-            </Songs>
+            <AOnlinePlaylist></AOnlinePlaylist>
         )
     }
 }
@@ -45,7 +35,8 @@ class OnlineSongs extends Component{
 function mapStateToProps(state)
 {
     return {
-        user: state.user.user
+        user: state.user.user,
+        onlineSongs: state.user.onlineSongs
     }
 }
 
