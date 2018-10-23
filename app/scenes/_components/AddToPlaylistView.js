@@ -28,10 +28,7 @@ export default class AddToPlaylistView extends Component{
                         keyExtractor = {(item)=>item.name}>
                     </FlatList>
                 </View>
-                <TouchableHighlight 
-                style={styles.closeButton} 
-                onPress={this.props.onCloseButtonPress}
-                >
+                <TouchableHighlight style={styles.closeButton} onPress={this.props.onCloseButtonPress}>
                     <Text style = {styles.buttonText}>Close</Text>
                 </TouchableHighlight>   
             </View>    

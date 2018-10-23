@@ -44,7 +44,7 @@ class Loading extends Component{
         this.authSubscription();
 
         this.playlistsSubscription();
-        // this.songsSubscription();
+        this.songsSubscription();
     }
 
     getUserCollection(email)
@@ -56,9 +56,11 @@ class Loading extends Component{
             this.playlistsSubscription = null;
         }
 
-        this.playlistsSubscription = Firebase.firestore().collection(email).doc("OnlineData").collection('Playlists').onSnapshot((querySnapshot)=>{
+        let userCollection = Firebase.firestore().collection(email).doc("OnlineData");
+
+        this.playlistsSubscription = userCollection.collection('Playlists').onSnapshot((querySnapshot)=>{
             let onlinePlaylists = [];
-            let onlineSongs = [];
+            //let onlineSongs = [];
             querySnapshot.forEach((doc) => {             
                 const { name, imgUrl, songCount,songs } = doc.data();
 
@@ -69,39 +71,34 @@ class Loading extends Component{
                     songs: songs
                 });
 
-                onlineSongs = onlineSongs.concat(songs);
+                //onlineSongs = onlineSongs.concat(songs);
 
             });
 
             this.props.dispatch({type: 'SetOnlinePlaylists', onlinePlaylists: onlinePlaylists})
-            this.props.dispatch({type: 'SetOnlineSongs', onlineSongs: onlineSongs})
+            //this.props.dispatch({type: 'SetOnlineSongs', onlineSongs: onlineSongs})
             this.setState({isLoadingPlaylists: false});
         })
         
 
-        // if(this.songsSubscription)
-        // {
-        //     //stop listening first for sure
-        //     this.songsSubscription();
-        //     this.songsSubscription = null;
-        // }
+        if(this.songsSubscription)
+        {
+            //stop listening first for sure
+            this.songsSubscription();
+            this.songsSubscription = null;
+        }
 
-        // this.songsSubscription = Firebase.firestore().collection(email).doc("OnlineData").collection('Songs').onSnapshot((querySnapshot)=>{
-
-        //     const onlineSongs = [];
-        //     querySnapshot.forEach((doc) => {             
-        //         const { songs } = doc.data();        
-        //         onlineSongs.push(songs);
-        //     });
-
-        //     this.props.dispatch({type: 'SetOnlineSongs', onlineSongs: onlineSongs})
-        //     this.setState({isLoadingSongs: false});
-        // })
+        this.songsSubscription = userCollection.onSnapshot((doc)=>{
+            let songs = doc.data().songs;
+            if(songs==null) songs = [];
+            this.props.dispatch({type: 'SetOnlineSongs', onlineSongs: songs})
+            this.setState({isLoadingSongs: false});
+        })
     }
 
     render(){
 
-        if(!this.state.isLoadingPlaylists)
+        if(!this.state.isLoadingPlaylists && !this.state.isLoadingSongs)
         {
             this.props.onLoadDone();
         }

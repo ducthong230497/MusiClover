@@ -27,7 +27,11 @@ class OnlineSongs extends Component{
         }
 
         return (
-            <AOnlinePlaylist></AOnlinePlaylist>
+            <AOnlinePlaylist 
+            navigation = {this.props.navigation}
+            canRemoveFromOnlineSongs = {true}
+            disableRemoveFromPlaylist = {true}
+            ></AOnlinePlaylist>
         )
     }
 }

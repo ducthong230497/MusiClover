@@ -6,11 +6,10 @@ import Firebase from 'react-native-firebase'
 import Toast from 'react-native-easy-toast'
 
 import SongButton from '../_components/SongButton'
-import SongAddView from '../_components/SongAddView'
 import SongMoreView from '../_components/SongMoreView'
 import AddToPlaylistView from '../_components/AddToPlaylistView'
 
-class AHomePlaylist extends Component{
+class AOnlinePlaylist extends Component{
     
     constructor(props)
     {
@@ -80,13 +79,15 @@ class AHomePlaylist extends Component{
 
     onPlaylistButtonPress(playlist)
     {
+        let userCollection = Firebase.firestore().collection(this.props.user.email).doc('OnlineData');
+
         //get song image as playlist image
         if(playlist.songCount==0)
         {
             getXmlURL(this.state.selectedSongURL).then(xmlUrl=> {
                 getDataFromXmlURL(xmlUrl).then(data => {
                     //store playlist image to firebase
-                    Firebase.firestore().collection(this.props.user.email).doc('OnlineData').collection('Playlists').doc(playlist.name).set({
+                    userCollection.collection('Playlists').doc(playlist.name).set({
                         imgUrl: data.img,
                     }, { merge: true })
                 });
@@ -100,15 +101,15 @@ class AHomePlaylist extends Component{
         }]);
 
         //store new song to firebase
-        Firebase.firestore().collection(this.props.user.email).doc('OnlineData').collection('Playlists').doc(playlist.name).set({
+        userCollection.collection('Playlists').doc(playlist.name).set({
             songCount: playlist.songCount + 1,
             songs: songs
         }, { merge: true })
 
         //hide
         this.setState({isAddToPlaylistViewVisible:false, isSongMoreViewVisible: false});
-        //update redux
-        this.props.dispatch({type: 'AddPlaylist', name: 'Personal', playlist: songs})
+        // //update redux
+        // this.props.dispatch({type: 'AddPlaylist', name: 'Personal', playlist: songs})
         //toast
         this.toast.current.show('Added to playlist');
     }
@@ -132,6 +133,44 @@ class AHomePlaylist extends Component{
         this.props.dispatch({type: 'AddPlaylist', name: 'Personal', playlist: currentSongs})
         //toast
         this.toast.current.show('Removed from playlist');
+    }
+
+    onAddToOnlineSongsButtonPress(){
+        let userCollection = Firebase.firestore().collection(this.props.user.email).doc('OnlineData');
+        userCollection.set({
+            songs: this.props.onlineSongs.concat([{
+                songName: this.state.selectedSongName,
+                artist: this.state.selectedArtist,
+                songURL: this.state.selectedSongURL,
+            }])
+        })
+
+        //hide
+        this.setState({isSongMoreViewVisible: false});
+        // //update redux
+        // this.props.dispatch({type: 'AddPlaylist', name: 'Personal', playlist: this.props.onlineSongs})
+        //toast
+        this.toast.current.show('Added to online songs');
+    }
+
+    onRemoveFromOnlineSongsButtonPress()
+    {
+        let userCollection = Firebase.firestore().collection(this.props.user.email).doc('OnlineData');
+
+        let songs = [...this.props.onlineSongs];
+        let indexToRemove = songs.findIndex(song => song.songURL === this.state.selectedSongURL);
+        songs.splice(indexToRemove,1);
+
+        userCollection.set({
+            songs: songs
+        })
+
+        //hide
+        this.setState({isSongMoreViewVisible: false});
+        //update redux
+        this.props.dispatch({type: 'AddPlaylist', name: 'Personal', playlist: songs})
+        //toast
+        this.toast.current.show('Removed from online songs');
     }
 
     renderSongs = ({index, item}) => (
@@ -162,11 +201,14 @@ class AHomePlaylist extends Component{
                 </FlatList>
                 <SongMoreView
                     isVisible = {this.state.isSongMoreViewVisible}
-                    canRemoveFromPlaylist = {true}
+                    canRemoveFromPlaylist = {!this.props.disableRemoveFromPlaylist}
+                    canRemoveFromOnlineSongs = {this.props.canRemoveFromOnlineSongs}
                     songName = {this.state.selectedSongName}
                     artist = {this.state.selectedArtist}
                     onAddToPlaylistButtonPress = {this.onAddToPlaylistButtonPress.bind(this)}
                     onRemoveFromPlaylistButtonPress = {this.onRemoveFromPlaylistButtonPress.bind(this)}
+                    onAddToOnlineSongsButtonPress = {this.onAddToOnlineSongsButtonPress.bind(this)}
+                    onRemoveFromOnlineSongsButtonPress = {this.onRemoveFromOnlineSongsButtonPress.bind(this)}
                     onCloseButtonPress = {this.onCloseSongMoreViewButtonPress.bind(this)}
                 />
                 <AddToPlaylistView
@@ -194,10 +236,11 @@ function mapStateToProps(state)
         playlists: state.playlists.playlists,
         user: state.user.user,
         onlinePlaylists: state.user.onlinePlaylists,
+        onlineSongs: state.user.onlineSongs,
     }
 }
 
-export default connect(mapStateToProps)(AHomePlaylist);
+export default connect(mapStateToProps)(AOnlinePlaylist);
 
 const styles = StyleSheet.create({
     container:{

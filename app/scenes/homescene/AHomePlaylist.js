@@ -81,13 +81,15 @@ class AHomePlaylist extends Component{
 
     onPlaylistButtonPress(playlist)
     {
+        let userCollection = Firebase.firestore().collection(this.props.user.email).doc('OnlineData');
+
         //get song image as playlist image
         if(playlist.songCount==0)
         {
             getXmlURL(this.state.selectedSongURL).then(xmlUrl=> {
                 getDataFromXmlURL(xmlUrl).then(data => {
                     //store playlist image to firebase
-                    Firebase.firestore().collection(this.props.user.email).doc('OnlineData').collection('Playlists').doc(playlist.name).set({
+                    userCollection.collection('Playlists').doc(playlist.name).set({
                         imgUrl: data.img,
                     }, { merge: true })
                 });
@@ -101,21 +103,43 @@ class AHomePlaylist extends Component{
         }])
 
         //store new song to firebase
-        Firebase.firestore().collection(this.props.user.email).doc('OnlineData').collection('Playlists').doc(playlist.name).set({
+        userCollection.collection('Playlists').doc(playlist.name).set({
             songCount: playlist.songCount + 1,
             songs: songs
         }, { merge: true })
 
-        // Firebase.firestore().collection(this.props.user.email).doc('OnlineData').collection('Songs').doc('Songs').set({
-        //     songs: [...this.props.onlineSongs].push(newSong)
-        // }, { merge: true })
+        userCollection.set({
+            songs: this.props.onlineSongs.concat([{
+                songName: this.state.selectedSongName,
+                artist: this.state.selectedArtist,
+                songURL: this.state.selectedSongURL,
+            }])
+        })
 
         //hide
         this.setState({isAddToPlaylistViewVisible:false, isSongMoreViewVisible: false});
-        //update redux
-        this.props.dispatch({type: 'AddPlaylist', name: 'Personal', playlist: songs})
+        // //update redux
+        // this.props.dispatch({type: 'AddPlaylist', name: 'Personal', playlist: songs})
         //toast
         this.toast.current.show('Added to playlist');
+    }
+
+    onAddToOnlineSongsButtonPress(){
+        let userCollection = Firebase.firestore().collection(this.props.user.email).doc('OnlineData');
+        userCollection.set({
+            songs: this.props.onlineSongs.concat([{
+                songName: this.state.selectedSongName,
+                artist: this.state.selectedArtist,
+                songURL: this.state.selectedSongURL,
+            }])
+        })
+
+        //hide
+        this.setState({isSongMoreViewVisible: false});
+        // //update redux
+        // this.props.dispatch({type: 'AddPlaylist', name: 'Personal', playlist: this.props.onlineSongs})
+        //toast
+        this.toast.current.show('Added to online songs');
     }
 
     renderSongs = ({index, item}) => (
@@ -150,6 +174,7 @@ class AHomePlaylist extends Component{
                     songName = {this.state.selectedSongName}
                     artist = {this.state.selectedArtist}
                     onAddToPlaylistButtonPress = {this.onAddToPlaylistButtonPress.bind(this)}
+                    onAddToOnlineSongsButtonPress = {this.onAddToOnlineSongsButtonPress.bind(this)}
                     onCloseButtonPress = {this.onCloseSongMoreViewButtonPress.bind(this)}
                 />
                 <AddToPlaylistView
@@ -177,6 +202,7 @@ function mapStateToProps(state)
         playlists: state.playlists.playlists,
         user: state.user.user,
         onlinePlaylists: state.user.onlinePlaylists,
+        onlineSongs: state.user.onlineSongs
     }
 }
 

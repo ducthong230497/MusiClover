@@ -18,10 +18,24 @@ export default class SongAddView extends Component{
                             <Text style = {styles.text}>Add to playlist</Text>              
                         </View>
                     </TouchableHighlight>
+                    <TouchableHighlight underlayColor = 'rgb(230,230,230)' onPress = {this.props.onAddToOnlineSongsButtonPress}>
+                        <View style = {styles.button}>
+                            <Icon name = 'playlist-add-check' size = {35}></Icon>
+                            <Text style = {styles.text}>Add to online songs</Text>              
+                        </View>
+                    </TouchableHighlight>
+                    {this.props.canRemoveFromOnlineSongs?
+                    <TouchableHighlight underlayColor = 'rgb(230,230,230)' onPress = {this.props.onRemoveFromOnlineSongsButtonPress}>
+                        <View style = {styles.button}>
+                            <Icon name = 'delete-forever' size = {35}></Icon>
+                            <Text style = {styles.text}>Remove from online songs</Text>              
+                        </View>
+                    </TouchableHighlight>
+                    :null}
                     {this.props.canRemoveFromPlaylist?
                     <TouchableHighlight underlayColor = 'rgb(230,230,230)' onPress = {this.props.onRemoveFromPlaylistButtonPress}>
                         <View style = {styles.button}>
-                            <Icon name = 'delete-forever' size = {30}></Icon>
+                            <Icon name = 'delete-sweep' size = {30}></Icon>
                             <Text style = {styles.text}>Remove from playlist</Text>              
                         </View>
                     </TouchableHighlight>
