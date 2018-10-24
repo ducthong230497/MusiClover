@@ -1,5 +1,4 @@
 import React, {Component} from 'react'
-import {View, StyleSheet} from 'react-native'
 import {AsyncStorage} from 'react-native'
 
 import Playlists from './children/Playlists'
@@ -52,7 +51,7 @@ export default class OfflinePlaylists extends Component{
         if(this.state.playlists.findIndex(playlist=>playlist.name === newPlaylistName.trim()) === -1 && /\S/.test(newPlaylistName))
         {
             let newPlaylists = [...this.state.playlists,{
-                imgUrl: 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg',
+                imgUrl: 'http://www.kensap.org/wp-content/uploads/empty-photo.jpg',
                 name: newPlaylistName.trim(),
                 songCount: 0
             }];
@@ -94,7 +93,7 @@ export default class OfflinePlaylists extends Component{
 
     onPlaylistButtonPress(playlist)
     {
-        this.props.navigation.navigate('APlaylist', {canAddSong: true, songs: []})
+        this.props.navigation.navigate('AOfflinePlaylist', {canAddSong: true, songs: []})
     }
 
     render(){

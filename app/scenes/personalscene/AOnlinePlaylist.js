@@ -77,7 +77,7 @@ class AOnlinePlaylist extends Component{
         this.setState({isAddToPlaylistViewVisible: false});
     }
 
-    onPlaylistButtonPress(playlist)
+    onDoneAddToPlaylistButtonPress(playlist)
     {
         let userCollection = Firebase.firestore().collection(this.props.user.email).doc('OnlineData');
 
@@ -214,7 +214,7 @@ class AOnlinePlaylist extends Component{
                 <AddToPlaylistView
                     isVisible = {this.state.isAddToPlaylistViewVisible}
                     onCloseButtonPress = {this.onCloseAddToPlaylistButtonPress.bind(this)}
-                    onPlaylistButtonPress = {this.onPlaylistButtonPress.bind(this)}
+                    onPlaylistButtonPress = {this.onDoneAddToPlaylistButtonPress.bind(this)}
                     playlists = {this.props.onlinePlaylists}
                 />
                 <Toast

@@ -40,6 +40,14 @@ export default class SongAddView extends Component{
                         </View>
                     </TouchableHighlight>
                     :null}
+                    {this.props.canDownload?
+                    <TouchableHighlight underlayColor = 'rgb(230,230,230)' onPress = {this.props.onDownloadButtonPress}>
+                        <View style = {styles.button}>
+                            <Icon name = 'arrow-downward' size = {35}></Icon>
+                            <Text style = {styles.text}>Download</Text>              
+                        </View>
+                    </TouchableHighlight>
+                    :null}
                     <Button title = 'Close' color = '#841584' onPress = {this.props.onCloseButtonPress}>
                     </Button>
                 </View>

@@ -1,7 +1,6 @@
 import React, {Component} from 'react'
-import {StyleSheet} from 'react-native'
-
-import Songs from './children/Songs'
+import AOfflinePlaylist from './AOfflinePlaylist';
+import {AsyncStorage} from 'react-native'
 
 export default class OfflineSongs extends Component{
 
@@ -9,35 +8,35 @@ export default class OfflineSongs extends Component{
     {
         super(props);
         this.state = {
-            songs: [
-                {
-                    imgUrl: 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg',
-                    songName: "FirstSong",
-                    artistName: "Adele"
-                },
-                {
-                    imgUrl: 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg',
-                    songName: "SecondSong",
-                    artistName: "Super"
-                },
-            ]
+            songs: []
         }
     }
 
-    onSongButtonPress(trackIndex)
-    {
-        this.props.dispatch({type: 'SetupTrackList', tracks: null,initialTrackIndex: trackIndex})
-        this.props.navigation.navigate('SongPlayer');
+    componentDidMount(){
+        this.retrieveData();
+    }
+
+    retrieveData = async () => {
+        try {
+          let songs = await AsyncStorage.getItem('songs');
+          console.log(songs)
+          if(songs !==null)
+          {
+            this.setState({songs: JSON.parse(songs)});
+          }
+         } catch (error) {
+            console.log('Something wrong!' + error);
+         }
     }
 
     render(){
 
         return (
-            <Songs
-                songs = {this.state.songs}
-                onSongButtonPress = {this.onSongButtonPress.bind(this)}
+            <AOfflinePlaylist
+            navigation = {this.props.navigation}
+            songs = {this.state.songs}
             >
-            </Songs>
+            </AOfflinePlaylist>
         )
     }
 }

@@ -1,13 +1,13 @@
 import React, {Component} from 'react'
-import {View,Text, TouchableHighlight, StyleSheet, FlatList} from 'react-native'
-import {Icon} from 'react-native-elements'
+import {View, StyleSheet, FlatList} from 'react-native'
 import {connect} from 'react-redux'
 import {getXmlURL, getDataFromXmlURL} from '../../connector/connector'
 import Firebase from 'react-native-firebase'
 import Toast from 'react-native-easy-toast'
+import RNFetchBlob from 'rn-fetch-blob'
+import {AsyncStorage} from 'react-native'
 
 import SongButton from '../_components/SongButton'
-import SongAddView from '../_components/SongAddView'
 import SongMoreView from '../_components/SongMoreView'
 import AddToPlaylistView from '../_components/AddToPlaylistView'
 
@@ -79,7 +79,7 @@ class AHomePlaylist extends Component{
         this.setState({isAddToPlaylistViewVisible: false});
     }
 
-    onPlaylistButtonPress(playlist)
+    onDoneAddToPlaylistButtonPress(playlist)
     {
         let userCollection = Firebase.firestore().collection(this.props.user.email).doc('OnlineData');
 
@@ -142,6 +142,73 @@ class AHomePlaylist extends Component{
         this.toast.current.show('Added to online songs');
     }
 
+    onDownloadButtonPress()
+    {
+
+        //get track data
+        getXmlURL(this.state.selectedSongURL).then(xmlUrl=> {
+            getDataFromXmlURL(xmlUrl).then(data => {
+                let selectedTrackURL = data.URL;
+                let selectedTrackImage = data.img;
+
+                //download song
+                this.downloadData(selectedTrackURL, 'mp3').then(trackPath=>{
+
+                    //download img
+                    this.downloadData(selectedTrackImage, 'png').then(imgPath=>{
+
+                        let song = [{
+                            songName: this.state.selectedSongName,
+                            artist: this.state.selectedArtist,
+                            songUrl: trackPath,
+                            imgUrl: imgPath,
+                        }]
+
+                        console.log(song);
+
+                        //store info to local
+                        this.storeData('songs', JSON.stringify(song));
+                    })
+
+                })
+            });
+        }); 
+
+        //hide
+        this.setState({isSongMoreViewVisible: false});
+        //toast
+        this.toast.current.show('Downloading the song');
+
+    }
+
+    storeData = async (name, value) => {
+        try {
+          await AsyncStorage.setItem(name, value);
+        } catch (error) {
+          console.log('Something went wrong!');
+        }
+    }
+
+    downloadData = async(url, appendExt) =>{
+        let path = null;
+
+        await RNFetchBlob.config({
+            // add this option that makes response data to be stored as a file,
+            // this is much more performant.
+            fileCache : true,
+            // by adding this option, the temp files will have a file extension
+            appendExt : appendExt
+        })
+        .fetch('GET', url, {
+            //some headers ..
+        })
+        .then((res) => {
+            path = res.path();
+        })
+
+        return path;
+    }
+
     renderSongs = ({index, item}) => (
         <SongButton 
             // imgUrl = {item.albumArtUrl}
@@ -173,6 +240,8 @@ class AHomePlaylist extends Component{
                     isVisible = {this.state.isSongMoreViewVisible}
                     songName = {this.state.selectedSongName}
                     artist = {this.state.selectedArtist}
+                    canDownload = {true}
+                    onDownloadButtonPress = {this.onDownloadButtonPress.bind(this)}
                     onAddToPlaylistButtonPress = {this.onAddToPlaylistButtonPress.bind(this)}
                     onAddToOnlineSongsButtonPress = {this.onAddToOnlineSongsButtonPress.bind(this)}
                     onCloseButtonPress = {this.onCloseSongMoreViewButtonPress.bind(this)}
@@ -180,7 +249,7 @@ class AHomePlaylist extends Component{
                 <AddToPlaylistView
                     isVisible = {this.state.isAddToPlaylistViewVisible}
                     onCloseButtonPress = {this.onCloseAddToPlaylistButtonPress.bind(this)}
-                    onPlaylistButtonPress = {this.onPlaylistButtonPress.bind(this)}
+                    onPlaylistButtonPress = {this.onDoneAddToPlaylistButtonPress.bind(this)}
                     playlists = {this.props.onlinePlaylists}
                 />
                 <Toast

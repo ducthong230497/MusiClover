@@ -2,8 +2,6 @@ import React, {Component} from 'react'
 import {View,Text, TouchableHighlight, StyleSheet, FlatList} from 'react-native'
 import {Icon} from 'react-native-elements'
 import {connect} from 'react-redux'
-import {getXmlURL, getDataFromXmlURL} from '../../connector/connector'
-import Firebase from 'react-native-firebase'
 import Toast from 'react-native-easy-toast'
 
 import SongButton from '../_components/SongButton'
@@ -11,7 +9,7 @@ import SongAddView from '../_components/SongAddView'
 import SongMoreView from '../_components/SongMoreView'
 import AddToPlaylistView from '../_components/AddToPlaylistView'
 
-class AHomePlaylist extends Component{
+class AOfflinePlaylist extends Component{
     
     constructor(props)
     {
@@ -22,13 +20,11 @@ class AHomePlaylist extends Component{
             isAddToPlaylistViewVisible: false,
             selectedSongName: '',
             selectedArtist: '',
-            selectedSongURL: ''
+            selectedSongURL: '',
         }
 
-        this.playlist = [];
         this.toast = React.createRef();
     }
-  
     
     onOpenAddSongViewButtonPress()
     {
@@ -47,23 +43,23 @@ class AHomePlaylist extends Component{
 
     onSongButtonPress(index)
     {
-        this.props.dispatch({type: 'SetTrackList', tracks: this.playlist})
+        this.props.dispatch({type: 'SetTrackList', tracks: this.props.songs})
         this.props.dispatch({type: 'SetSelectedTrackIndex', selectedTrackIndex: index})
         this.props.dispatch({type: 'ShowMaximizer'});
         this.props.dispatch({type: 'Resume'});
         this.props.navigation.navigate('SongPlayer');
 
-        //get track data
-        getXmlURL(this.playlist[index].songURL).then(xmlUrl=> {
-            getDataFromXmlURL(xmlUrl).then(data => {
-                this.props.dispatch({type: 'SetSelectedTrackInfo', selectedTrackURL: data.URL, selectedTrackImage: data.img})
-            });
-        });
+        this.props.dispatch({
+            type: 'SetSelectedTrackInfo', 
+            selectedTrackURL: this.props.songs[index].songUrl, 
+            selectedTrackImage: this.props.songs[index].imgUrl
+        })
+        
     }
 
     onMoreButtonPress(index)
     {
-        currentSong = this.playlist[index];
+        currentSong = this.props.songs[index];
         this.setState({
             selectedSongName:currentSong.songName, 
             selectedArtist: currentSong.artist, 
@@ -80,15 +76,7 @@ class AHomePlaylist extends Component{
 
     onAddToPlaylistButtonPress()
     {
-
-        if(!this.props.user) 
-        {
-            this.props.navigation.navigate('Account');
-        }
-        else
-        {
-            this.setState({isAddToPlaylistViewVisible: true});
-        }
+        this.setState({isAddToPlaylistViewVisible: true});
     }
 
     onCloseAddToPlaylistButtonPress()
@@ -96,30 +84,9 @@ class AHomePlaylist extends Component{
         this.setState({isAddToPlaylistViewVisible: false});
     }
 
-    onPlaylistButtonPress(playlist)
+    onDoneAddToPlaylistButtonPress(playlist)
     {
-        //get song image as playlist image
-        if(playlist.songCount==0)
-        {
-            getXmlURL(this.state.selectedSongURL).then(xmlUrl=> {
-                getDataFromXmlURL(xmlUrl).then(data => {
-                    //store playlist image to firebase
-                    Firebase.firestore().collection(this.props.user.email).doc('OnlineData').collection('Playlists').doc(playlist.name).set({
-                        imgUrl: data.img,
-                    }, { merge: true })
-                });
-            });
-        }
-
-        //store new song to firebase
-        Firebase.firestore().collection(this.props.user.email).doc('OnlineData').collection('Playlists').doc(playlist.name).set({
-            songCount: playlist.songCount + 1,
-            songs: playlist.songs.concat([{
-                songName: this.state.selectedSongName,
-                artist: this.state.selectedArtist,
-                songURL: this.state.selectedSongURL,
-            }])
-        }, { merge: true })
+        
 
         //hide
         this.setState({isAddToPlaylistViewVisible:false, isSongMoreViewVisible: false});
@@ -141,13 +108,7 @@ class AHomePlaylist extends Component{
 
     render(){
 
-        let playlist = this.props.playlists.find(playlist => playlist.name === 'Personal')
-        if(playlist != null)
-        {
-            this.playlist = Object.values(playlist)
-            this.playlist.pop() //pop the final item which is the variable 'name' we have put to playlist (see playlistsReducer)
-        }
-        console.log(this.props.playlists);
+
         return (
             <View style={styles.container}>
                 {
@@ -161,7 +122,7 @@ class AHomePlaylist extends Component{
                     :null
                 }
                 <FlatList
-                    data={this.playlist}
+                    data={this.props.songs}
                     renderItem={this.renderSongs.bind(this)}
                     keyExtractor = {(item, index)=>index.toString()}>
                 </FlatList>
@@ -181,8 +142,8 @@ class AHomePlaylist extends Component{
                 <AddToPlaylistView
                     isVisible = {this.state.isAddToPlaylistViewVisible}
                     onCloseButtonPress = {this.onCloseAddToPlaylistButtonPress.bind(this)}
-                    onPlaylistButtonPress = {this.onPlaylistButtonPress.bind(this)}
-                    playlists = {this.props.onlinePlaylists}
+                    onPlaylistButtonPress = {this.onDoneAddToPlaylistButtonPress.bind(this)}
+                    playlists = {this.props.playlists}
                 />
                 <Toast
                     ref={this.toast}
@@ -200,13 +161,11 @@ class AHomePlaylist extends Component{
 function mapStateToProps(state)
 {
     return {
-        playlists: state.playlists.playlists,
-        user: state.user.user,
-        onlinePlaylists: state.user.onlinePlaylists,
+       
     }
 }
 
-export default connect(mapStateToProps)(AHomePlaylist);
+export default connect()(AOfflinePlaylist);
 
 const styles = StyleSheet.create({
     container:{
