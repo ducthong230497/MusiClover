@@ -1,7 +1,9 @@
 const initialState = {
     user: null,
     onlinePlaylists: [],
-    onlineSongs: []
+    onlineSongs: [],
+    offlinePlaylists: [],
+    offlineSongs: []
 }
 export default (state=initialState, action) => {
     switch (action.type) {
@@ -19,6 +21,16 @@ export default (state=initialState, action) => {
         return {
             ...state,
             onlineSongs: action.onlineSongs
+        }
+        case 'SetOfflinePlaylists' :
+        return {
+            ...state,
+            offlinePlaylists: action.offlinePlaylists
+        }
+        case 'SetOfflineSongs' :
+        return {
+            ...state,
+            offlineSongs: action.offlineSongs
         }
         default:
             return state

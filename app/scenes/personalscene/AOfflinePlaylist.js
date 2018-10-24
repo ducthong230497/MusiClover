@@ -3,6 +3,8 @@ import {View,Text, TouchableHighlight, StyleSheet, FlatList} from 'react-native'
 import {Icon} from 'react-native-elements'
 import {connect} from 'react-redux'
 import Toast from 'react-native-easy-toast'
+import RNFetchBlob from 'rn-fetch-blob'
+import {AsyncStorage} from 'react-native'
 
 import SongButton from '../_components/SongButton'
 import SongAddView from '../_components/SongAddView'
@@ -20,12 +22,14 @@ class AOfflinePlaylist extends Component{
             isAddToPlaylistViewVisible: false,
             selectedSongName: '',
             selectedArtist: '',
-            selectedSongURL: '',
+            URL: '',
+            img: '',
         }
 
+        this.songs = [];
         this.toast = React.createRef();
     }
-    
+
     onOpenAddSongViewButtonPress()
     {
         this.setState({isAddSongViewVisisble: true});
@@ -43,27 +47,24 @@ class AOfflinePlaylist extends Component{
 
     onSongButtonPress(index)
     {
-        this.props.dispatch({type: 'SetTrackList', tracks: this.props.songs})
-        this.props.dispatch({type: 'SetSelectedTrackIndex', selectedTrackIndex: index})
-        this.props.dispatch({type: 'ShowMaximizer'});
-        this.props.dispatch({type: 'Resume'});
-        this.props.navigation.navigate('SongPlayer');
-
         this.props.dispatch({
-            type: 'SetSelectedTrackInfo', 
-            selectedTrackURL: this.props.songs[index].songUrl, 
-            selectedTrackImage: this.props.songs[index].imgUrl
+            type: 'Start', 
+            tracks: this.songs, 
+            selectedTrackIndex: index
         })
-        
+
+        this.props.navigation.navigate('SongPlayer');
+     
     }
 
     onMoreButtonPress(index)
     {
-        currentSong = this.props.songs[index];
+        currentSong = this.songs[index];
         this.setState({
             selectedSongName:currentSong.songName, 
             selectedArtist: currentSong.artist, 
-            selectedSongURL: currentSong.songURL,
+            URL: currentSong.URL,
+            img: currentSong.img,
             isSongMoreViewVisible: true
         });
         
@@ -95,6 +96,41 @@ class AOfflinePlaylist extends Component{
         this.toast.current.show('Added to playlist');
     }
 
+    onRemoveFromOfflineSongsButtonPress()
+    {
+        // remove song
+        RNFetchBlob.fs.unlink(this.state.URL).then(() => {
+            console.log('remove successfully');
+        })
+        //remove img
+        RNFetchBlob.fs.unlink(this.state.img).then(() => {
+            console.log('remove successfully');
+        })
+
+        //remove from song list
+        songs = [...this.songs];
+        let indexToRemove = songs.findIndex(song => song.URL === this.state.URL)
+        songs.splice(indexToRemove, 1);
+        this.storeData('songs', JSON.stringify(songs));
+
+        //update redux
+        this.props.dispatch({type: 'AddPlaylist', name: 'Personal', playlist: songs})
+
+        //hide
+        this.setState({isSongMoreViewVisible: false});
+
+        //toast
+        this.toast.current.show('Removed from offline songs');
+    }
+
+    storeData = async (name, value) => {
+        try {
+          await AsyncStorage.setItem(name, value);
+        } catch (error) {
+          console.log('Something went wrong!');
+        }
+    }
+
     renderSongs = ({index, item}) => (
         <SongButton 
             // imgUrl = {item.albumArtUrl}
@@ -108,21 +144,25 @@ class AOfflinePlaylist extends Component{
 
     render(){
 
+        let songs = this.props.playlists.find(playlist => playlist.name === 'Personal')
+        if(songs != null)
+        {
+            this.songs = Object.values(songs)
+            this.songs.pop() //pop the final item which is the variable 'name' we have put to playlist (see playlistsReducer)
+        }
 
         return (
             <View style={styles.container}>
-                {
-                    this.props.isAddSongButtonVisible?
-                    (<TouchableHighlight underlayColor = 'rgb(150,150,150)' onPress = {this.onOpenAddSongViewButtonPress.bind(this)}>
-                        <View style = {styles.button}>
-                            <Icon name = 'add-circle' size = {24} color = 'white' containerStyle={{paddingRight:5}}></Icon>
-                            <Text style = {styles.buttonText}>Add Songs</Text>
-                        </View>
-                    </TouchableHighlight>)
-                    :null
-                }
+                {this.props.isAddSongButtonVisible?
+                (<TouchableHighlight underlayColor = 'rgb(150,150,150)' onPress = {this.onOpenAddSongViewButtonPress.bind(this)}>
+                    <View style = {styles.button}>
+                        <Icon name = 'add-circle' size = {24} color = 'white' containerStyle={{paddingRight:5}}></Icon>
+                        <Text style = {styles.buttonText}>Add Songs</Text>
+                    </View>
+                </TouchableHighlight>)
+                :null}
                 <FlatList
-                    data={this.props.songs}
+                    data={this.songs}
                     renderItem={this.renderSongs.bind(this)}
                     keyExtractor = {(item, index)=>index.toString()}>
                 </FlatList>
@@ -133,9 +173,10 @@ class AOfflinePlaylist extends Component{
                 />
                 <SongMoreView
                     isVisible = {this.state.isSongMoreViewVisible}
-                    playlist = {false}
+                    canRemoveFromOfflineSongs = {true}
                     songName = {this.state.selectedSongName}
                     artist = {this.state.selectedArtist}
+                    onRemoveFromOfflineSongsButtonPress = {this.onRemoveFromOfflineSongsButtonPress.bind(this)}
                     onAddToPlaylistButtonPress = {this.onAddToPlaylistButtonPress.bind(this)}
                     onCloseButtonPress = {this.onCloseSongMoreViewButtonPress.bind(this)}
                 />
@@ -143,7 +184,7 @@ class AOfflinePlaylist extends Component{
                     isVisible = {this.state.isAddToPlaylistViewVisible}
                     onCloseButtonPress = {this.onCloseAddToPlaylistButtonPress.bind(this)}
                     onPlaylistButtonPress = {this.onDoneAddToPlaylistButtonPress.bind(this)}
-                    playlists = {this.props.playlists}
+                    playlists = {this.props.offlinePlaylists}
                 />
                 <Toast
                     ref={this.toast}
@@ -161,11 +202,12 @@ class AOfflinePlaylist extends Component{
 function mapStateToProps(state)
 {
     return {
-       
+        playlists: state.playlists.playlists,
+        offlinePlaylists: state.user.offlinePlaylists
     }
 }
 
-export default connect()(AOfflinePlaylist);
+export default connect(mapStateToProps)(AOfflinePlaylist);
 
 const styles = StyleSheet.create({
     container:{

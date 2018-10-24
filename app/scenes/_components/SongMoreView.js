@@ -18,12 +18,22 @@ export default class SongAddView extends Component{
                             <Text style = {styles.text}>Add to playlist</Text>              
                         </View>
                     </TouchableHighlight>
+                    {this.props.canRemoveFromOfflineSongs?
+                    <TouchableHighlight underlayColor = 'rgb(230,230,230)' onPress = {this.props.onRemoveFromOfflineSongsButtonPress}>
+                        <View style = {styles.button}>
+                            <Icon name = 'delete-forever' size = {35}></Icon>
+                            <Text style = {styles.text}>Remove from offline songs</Text>              
+                        </View>
+                    </TouchableHighlight>
+                    :null}
+                    {this.props.canAddToOnlineSongs?
                     <TouchableHighlight underlayColor = 'rgb(230,230,230)' onPress = {this.props.onAddToOnlineSongsButtonPress}>
                         <View style = {styles.button}>
                             <Icon name = 'playlist-add-check' size = {35}></Icon>
                             <Text style = {styles.text}>Add to online songs</Text>              
                         </View>
                     </TouchableHighlight>
+                    :null}
                     {this.props.canRemoveFromOnlineSongs?
                     <TouchableHighlight underlayColor = 'rgb(230,230,230)' onPress = {this.props.onRemoveFromOnlineSongsButtonPress}>
                         <View style = {styles.button}>

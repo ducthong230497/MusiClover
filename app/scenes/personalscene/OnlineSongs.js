@@ -31,6 +31,7 @@ class OnlineSongs extends Component{
             navigation = {this.props.navigation}
             canRemoveFromOnlineSongs = {true}
             disableRemoveFromPlaylist = {true}
+            disableAddToOnlineSongs = {true}
             ></AOnlinePlaylist>
         )
     }

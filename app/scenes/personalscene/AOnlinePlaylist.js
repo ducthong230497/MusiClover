@@ -28,18 +28,13 @@ class AOnlinePlaylist extends Component{
   
     onSongButtonPress(index)
     {
-        this.props.dispatch({type: 'SetTrackList', tracks: this.playlist})
-        this.props.dispatch({type: 'SetSelectedTrackIndex', selectedTrackIndex: index})
-        this.props.dispatch({type: 'ShowMaximizer'});
-        this.props.dispatch({type: 'Resume'});
-        this.props.navigation.navigate('SongPlayer');
+        this.props.dispatch({
+            type: 'Start', 
+            tracks: this.playlist, 
+            selectedTrackIndex: index
+        })
 
-        //get track data
-        getXmlURL(this.playlist[index].songURL).then(xmlUrl=> {
-            getDataFromXmlURL(xmlUrl).then(data => {
-                this.props.dispatch({type: 'SetSelectedTrackInfo', selectedTrackURL: data.URL, selectedTrackImage: data.img})
-            });
-        });
+        this.props.navigation.navigate('SongPlayer');
     }
 
     onMoreButtonPress(index)
@@ -203,6 +198,7 @@ class AOnlinePlaylist extends Component{
                     isVisible = {this.state.isSongMoreViewVisible}
                     canRemoveFromPlaylist = {!this.props.disableRemoveFromPlaylist}
                     canRemoveFromOnlineSongs = {this.props.canRemoveFromOnlineSongs}
+                    canAddToOnlineSongs = {!this.props.disableAddToOnlineSongs}
                     songName = {this.state.selectedSongName}
                     artist = {this.state.selectedArtist}
                     onAddToPlaylistButtonPress = {this.onAddToPlaylistButtonPress.bind(this)}

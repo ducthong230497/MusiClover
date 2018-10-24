@@ -1,3 +1,4 @@
+import {Platform} from 'react-native'
 import {getXmlURL, getDataFromXmlURL} from '../../connector/connector'
 import store from '../store'
 
@@ -14,7 +15,8 @@ const initialState = {
     paused: false,
     repeatOn: false,
     shuffleOn: false,
-    isMaximizerVisible: false
+    isMaximizerVisible: false,
+    isMinimizerVisible: false,
 }
 
 export default (state=initialState, action) => {
@@ -23,6 +25,16 @@ export default (state=initialState, action) => {
         return {
             ...state,
             songPlayer: action.songPlayer,
+        }
+        case 'Start':
+        getSongData(action.selectedTrackIndex, action.tracks);
+        return {
+            ...state,
+            tracks: action.tracks,
+            selectedTrackIndex: action.selectedTrackIndex,
+            isMaximizerVisible: true,
+            isMinimizerVisible: false,
+            paused: false,
         }
         case 'SetTrackList' :
         return {
@@ -123,9 +135,28 @@ export default (state=initialState, action) => {
 
 function getSongData(index,tracks)
 {
-  getXmlURL(tracks[index].songURL).then(xmlUrl=> {
-    getDataFromXmlURL(xmlUrl).then(data => {
-        store.dispatch({type: 'SetSelectedTrackInfo', selectedTrackURL: data.URL, selectedTrackImage: data.img})
-    });
-  });
+    if(tracks[index].URL && tracks[index].img)
+    {
+        setTimeout(() => {
+            store.dispatch({
+                type: 'SetSelectedTrackInfo', 
+                selectedTrackURL: tracks[index].URL, 
+                selectedTrackImage: Platform.OS === 'android' ? 'file://' + tracks[index].img: tracks[index].img
+            })
+        }, 1); //set time out to avoid a weird redux's error
+    }
+    else
+    {
+        getXmlURL(tracks[index].songURL).then(xmlUrl=> {
+            getDataFromXmlURL(xmlUrl).then(data => {
+
+                store.dispatch({
+                    type: 'SetSelectedTrackInfo', 
+                    selectedTrackURL: data.URL, 
+                    selectedTrackImage: data.img
+                })
+
+            });
+        });
+    }
 }

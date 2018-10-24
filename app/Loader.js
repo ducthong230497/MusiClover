@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import {View,StyleSheet, Dimensions, Image} from 'react-native'
 import Firebase from 'react-native-firebase';
 import {connect} from 'react-redux'
+import {AsyncStorage} from 'react-native'
 
 //Load Firebase data (User, OnlineData)
 class Loading extends Component{
@@ -34,6 +35,26 @@ class Loading extends Component{
                 this.props.onLoadDone();
             }
         });
+        
+        this.retrieveData('playlists').then(playlists=>{
+            this.props.dispatch({type: 'SetOfflinePlaylists', offlinePlaylists: playlists});
+        });
+
+        this.retrieveData('songs').then(songs=>{
+            this.props.dispatch({type: 'SetOfflineSongs', offlineSongs: songs});
+        });
+    }
+
+    retrieveData = async (name) => {
+        try {
+          let data = await AsyncStorage.getItem(name);
+          if(data !==null)
+          {
+            return JSON.parse(data);
+          }
+         } catch (error) {
+            console.log('Something wrong!' + error);
+         }
     }
 
     /**

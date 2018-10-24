@@ -1,32 +1,13 @@
 import React, {Component} from 'react'
-import AOfflinePlaylist from './AOfflinePlaylist';
 import {AsyncStorage} from 'react-native'
+import {connect} from 'react-redux'
 
-export default class OfflineSongs extends Component{
+import AOfflinePlaylist from './AOfflinePlaylist';
 
-    constructor(props)
-    {
-        super(props);
-        this.state = {
-            songs: []
-        }
-    }
+class OfflineSongs extends Component{
 
     componentDidMount(){
-        this.retrieveData();
-    }
-
-    retrieveData = async () => {
-        try {
-          let songs = await AsyncStorage.getItem('songs');
-          console.log(songs)
-          if(songs !==null)
-          {
-            this.setState({songs: JSON.parse(songs)});
-          }
-         } catch (error) {
-            console.log('Something wrong!' + error);
-         }
+        this.props.dispatch({type: 'AddPlaylist', name: 'Personal', playlist: this.props.offlineSongs})
     }
 
     render(){
@@ -34,12 +15,19 @@ export default class OfflineSongs extends Component{
         return (
             <AOfflinePlaylist
             navigation = {this.props.navigation}
-            songs = {this.state.songs}
             >
             </AOfflinePlaylist>
         )
     }
 }
+
+function mapStateToProps(state){
+    return {
+        offlineSongs: state.user.offlineSongs
+    }
+}
+
+export default connect(mapStateToProps)(OfflineSongs);
 
 
 

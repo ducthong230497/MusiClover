@@ -30,18 +30,25 @@ class AHomePlaylist extends Component{
 
     onSongButtonPress(index)
     {
-        this.props.dispatch({type: 'SetTrackList', tracks: this.playlist})
-        this.props.dispatch({type: 'SetSelectedTrackIndex', selectedTrackIndex: index})
-        this.props.dispatch({type: 'ShowMaximizer'});
-        this.props.dispatch({type: 'Resume'});
+        // this.props.dispatch({type: 'SetTrackList', tracks: this.playlist})
+        // this.props.dispatch({type: 'SetSelectedTrackIndex', selectedTrackIndex: index})
+        // this.props.dispatch({type: 'ShowMaximizer'});
+        // this.props.dispatch({type: 'Resume'});
+
+        this.props.dispatch({
+            type: 'Start', 
+            tracks: this.playlist, 
+            selectedTrackIndex: index
+        })
+
         this.props.navigation.navigate('SongPlayer');
 
-        //get track data
-        getXmlURL(this.playlist[index].songURL).then(xmlUrl=> {
-            getDataFromXmlURL(xmlUrl).then(data => {
-                this.props.dispatch({type: 'SetSelectedTrackInfo', selectedTrackURL: data.URL, selectedTrackImage: data.img})
-            });
-        });
+        // //get track data
+        // getXmlURL(this.playlist[index].songURL).then(xmlUrl=> {
+        //     getDataFromXmlURL(xmlUrl).then(data => {
+        //         this.props.dispatch({type: 'SetSelectedTrackInfo', selectedTrackURL: data.URL, selectedTrackImage: data.img})
+        //     });
+        // });
     }
 
     onMoreButtonPress(index)
@@ -145,29 +152,33 @@ class AHomePlaylist extends Component{
     onDownloadButtonPress()
     {
 
+        let songName = this.state.selectedSongName;
+        let artist = this.state.selectedArtist;
+
         //get track data
         getXmlURL(this.state.selectedSongURL).then(xmlUrl=> {
             getDataFromXmlURL(xmlUrl).then(data => {
-                let selectedTrackURL = data.URL;
-                let selectedTrackImage = data.img;
+                let URL = data.URL;
+                let img = data.img;
 
                 //download song
-                this.downloadData(selectedTrackURL, 'mp3').then(trackPath=>{
+                this.downloadData(URL, 'mp3').then(trackPath=>{
 
                     //download img
-                    this.downloadData(selectedTrackImage, 'png').then(imgPath=>{
+                    this.downloadData(img, 'png').then(imgPath=>{
 
                         let song = [{
-                            songName: this.state.selectedSongName,
-                            artist: this.state.selectedArtist,
-                            songUrl: trackPath,
-                            imgUrl: imgPath,
+                            songName: songName,
+                            artist: artist,
+                            URL: trackPath,
+                            img: imgPath,
                         }]
 
-                        console.log(song);
+                        this.retrieveData('songs').then(songs=>{
+                            //store info to local
+                            this.storeData('songs', JSON.stringify(songs.concat(song)));
+                        })
 
-                        //store info to local
-                        this.storeData('songs', JSON.stringify(song));
                     })
 
                 })
@@ -187,6 +198,18 @@ class AHomePlaylist extends Component{
         } catch (error) {
           console.log('Something went wrong!');
         }
+    }
+
+    retrieveData = async (name) => {
+        try {
+          let data = await AsyncStorage.getItem(name);
+          if(data !==null)
+          {
+            return JSON.parse(data);
+          }
+         } catch (error) {
+            console.log('Something wrong!' + error);
+         }
     }
 
     downloadData = async(url, appendExt) =>{
@@ -241,6 +264,7 @@ class AHomePlaylist extends Component{
                     songName = {this.state.selectedSongName}
                     artist = {this.state.selectedArtist}
                     canDownload = {true}
+                    canAddToOnlineSongs = {true}
                     onDownloadButtonPress = {this.onDownloadButtonPress.bind(this)}
                     onAddToPlaylistButtonPress = {this.onAddToPlaylistButtonPress.bind(this)}
                     onAddToOnlineSongsButtonPress = {this.onAddToOnlineSongsButtonPress.bind(this)}
