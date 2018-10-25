@@ -16,12 +16,13 @@ class OfflinePlaylists extends Component{
 
     onCreatePlaylistPress(newPlaylistName)
     {
-        if(this.props.playlists.findIndex(playlist=>playlist.name === newPlaylistName.trim()) === -1 && /\S/.test(newPlaylistName))
+        if(this.props.offlinePlaylists.findIndex(playlist=>playlist.name === newPlaylistName.trim()) === -1 && /\S/.test(newPlaylistName))
         {
-            let newPlaylists = [...this.props.playlists,{
+            let newPlaylists = [...this.props.offlinePlaylists,{
                 imgUrl: 'http://www.kensap.org/wp-content/uploads/empty-photo.jpg',
                 name: newPlaylistName.trim(),
-                songCount: 0
+                songCount: 0,
+                songs: []
             }];
 
             //save to redux
@@ -40,10 +41,10 @@ class OfflinePlaylists extends Component{
 
     onDeletePlaylistPress(deletedPlaylistName)
     {
-        let deletedIndex = this.props.playlists.findIndex(playlist=>playlist.name === deletedPlaylistName);
+        let deletedIndex = this.props.offlinePlaylists.findIndex(playlist=>playlist.name === deletedPlaylistName);
         if(deletedIndex !== -1)
         {
-            let newPlaylists = [...this.props.playlists];
+            let newPlaylists = [...this.props.offlinePlaylists];
             newPlaylists.splice(deletedIndex,1);
             if(newPlaylists.length === 0) newPlaylists = [];
             
@@ -59,7 +60,8 @@ class OfflinePlaylists extends Component{
 
     onPlaylistButtonPress(playlist)
     {
-        this.props.navigation.navigate('AOfflinePlaylist', {canAddSong: true, songs: []})
+        this.props.dispatch({type: 'AddPlaylist', name: 'Personal', playlist: playlist.songs})
+        this.props.navigation.navigate('AOfflinePlaylist', {currentPlaylist: playlist})
     }
 
     render(){

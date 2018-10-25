@@ -15,6 +15,8 @@ class OfflineSongs extends Component{
         return (
             <AOfflinePlaylist
             navigation = {this.props.navigation}
+            canRemoveFromOfflineSongs = {true}
+            disableRemoveFromPlaylist = {true}
             >
             </AOfflinePlaylist>
         )

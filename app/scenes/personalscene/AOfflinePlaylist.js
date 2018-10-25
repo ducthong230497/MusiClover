@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {View,Text, TouchableHighlight, StyleSheet, FlatList} from 'react-native'
+import {View,Text, TouchableHighlight, StyleSheet, FlatList, Platform} from 'react-native'
 import {Icon} from 'react-native-elements'
 import {connect} from 'react-redux'
 import Toast from 'react-native-easy-toast'
@@ -87,7 +87,26 @@ class AOfflinePlaylist extends Component{
 
     onDoneAddToPlaylistButtonPress(playlist)
     {
-        
+        //add new song to playlist     
+        playlist.imgUrl = Platform.OS === 'android' ? 'file://' + this.state.img : this.state.img;
+        playlist.songCount = playlist.songCount + 1;
+        playlist.songs.push({
+            songName: this.state.selectedSongName,
+            artist: this.state.selectedArtist,
+            URL: this.state.URL,
+            img: this.state.img
+        })
+
+        //add new playlist to playlists
+        let newOfflinePlaylists = [...this.props.offlinePlaylists]
+        let indexToChange = this.props.offlinePlaylists.findIndex(p => p.name == playlist.name);
+        newOfflinePlaylists.splice(indexToChange,1,playlist);
+
+        //save to local
+        this.storeData('playlists',JSON.stringify(newOfflinePlaylists));
+
+        //save to redux
+        this.props.dispatch({type: 'SetOfflinePlaylists', offlinePlaylists: newOfflinePlaylists});
 
         //hide
         this.setState({isAddToPlaylistViewVisible:false, isSongMoreViewVisible: false});
@@ -121,6 +140,32 @@ class AOfflinePlaylist extends Component{
 
         //toast
         this.toast.current.show('Removed from offline songs');
+    }
+
+    onRemoveFromPlaylistButtonPress()
+    {
+        let playlist = this.props.navigation.getParam('currentPlaylist');
+        playlist.songCount = playlist.songCount - 1;
+        let indexToRemove = playlist.songs.findIndex(song => song.URL === this.state.URL);
+        playlist.songs.splice(indexToRemove,1);
+
+        //add new playlist to playlists
+        let newOfflinePlaylists = [...this.props.offlinePlaylists]
+        let indexToChange = this.props.offlinePlaylists.findIndex(p => p.name == playlist.name);
+        newOfflinePlaylists.splice(indexToChange,1,playlist);
+
+        //save to local
+        this.storeData('playlists',JSON.stringify(newOfflinePlaylists));
+
+        //update redux
+        this.props.dispatch({type: 'SetOfflinePlaylists', offlinePlaylists: newOfflinePlaylists});
+        this.props.dispatch({type: 'AddPlaylist', name: 'Personal', playlist: playlist.songs})
+
+        //hide
+        this.setState({isSongMoreViewVisible: false});
+
+        //toast
+        this.toast.current.show('Removed from playlist');
     }
 
     storeData = async (name, value) => {
@@ -173,10 +218,12 @@ class AOfflinePlaylist extends Component{
                 />
                 <SongMoreView
                     isVisible = {this.state.isSongMoreViewVisible}
-                    canRemoveFromOfflineSongs = {true}
+                    canRemoveFromOfflineSongs = {this.props.canRemoveFromOfflineSongs}
+                    canRemoveFromPlaylist = {!this.props.disableRemoveFromPlaylist}
                     songName = {this.state.selectedSongName}
                     artist = {this.state.selectedArtist}
                     onRemoveFromOfflineSongsButtonPress = {this.onRemoveFromOfflineSongsButtonPress.bind(this)}
+                    onRemoveFromPlaylistButtonPress = {this.onRemoveFromPlaylistButtonPress.bind(this)}
                     onAddToPlaylistButtonPress = {this.onAddToPlaylistButtonPress.bind(this)}
                     onCloseButtonPress = {this.onCloseSongMoreViewButtonPress.bind(this)}
                 />
