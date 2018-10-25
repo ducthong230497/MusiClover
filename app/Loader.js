@@ -24,6 +24,7 @@ class Loading extends Component{
      * (logged out) or an Object (logged in)
      */
     componentDidMount() {
+        //load online data from firebase
         this.authSubscription = Firebase.auth().onAuthStateChanged((user) => {
             this.props.dispatch({type: 'SetUser', user: user});
             if(user)
@@ -36,10 +37,10 @@ class Loading extends Component{
             }
         });
         
+        //load offline data
         this.retrieveData('playlists').then(playlists=>{
             this.props.dispatch({type: 'SetOfflinePlaylists', offlinePlaylists: playlists});
         });
-
         this.retrieveData('songs').then(songs=>{
             this.props.dispatch({type: 'SetOfflineSongs', offlineSongs: songs});
         });
