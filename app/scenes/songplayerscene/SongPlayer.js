@@ -1,5 +1,4 @@
   import React, { Component } from 'react';
-  import {View} from 'react-native';
   import Video from 'react-native-video';
   import {connect} from 'react-redux'
 

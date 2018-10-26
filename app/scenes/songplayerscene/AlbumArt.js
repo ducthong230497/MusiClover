@@ -26,8 +26,10 @@ const imageSize = width - 48;
 
 const styles = StyleSheet.create({
   container: {
+    flex: 10,
     paddingLeft: 24,
     paddingRight: 24,
+    justifyContent: "center",
   },
   image: {
     width: imageSize,
