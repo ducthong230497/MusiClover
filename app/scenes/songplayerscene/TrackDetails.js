@@ -10,15 +10,17 @@ class TrackDetails extends Component{
 
     return(
       <View style={styles.container}>
-        <TouchableOpacity>
+        <TouchableOpacity onPress = {this.props.onFavoriteButtonPress}>
           {/* <Image style={styles.button} source={require(imgFolderPath +'ic_add_circle_outline_white.png')} /> */}
-          <Icon name = "add-circle-outline" size = {24} color = "white"></Icon>
+          {this.props.inFavoriteList?
+          <Icon name = "favorite" size = {24} color = "white"></Icon>
+          :<Icon name = "favorite-border" size = {24} color = "white"></Icon>}
         </TouchableOpacity>
         <View style = {styles.detailsWrapper}>
           <Text style={styles.title}>{this.props.title}</Text>
           <Text style={styles.artist}>{this.props.artist}</Text>
         </View>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={this.props.onMoreButtonPress}>
           <View style={styles.moreButton}>
             {/* <Image style={styles.moreButtonIcon} source={require(imgFolderPath+'ic_more_horiz_white.png')} /> */}
             <Icon name = "more-horiz" size = {24} color = "white"></Icon>

@@ -81,6 +81,7 @@ class Home extends Component{
     onTopPlaylistPress(link)
     {
         getTop100(link).then(result => {
+            
             this.props.dispatch({type: 'AddPlaylist', name: 'Home', playlist: result})
         })
 
