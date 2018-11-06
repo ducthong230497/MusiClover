@@ -25,9 +25,10 @@ export default class SongButton extends Component{
                             <Text style = {styles.songName}>{this.props.songName}</Text>
                             <Text style = {styles.artistName}>{this.props.artistName}</Text>
                         </View>
+                        {this.props.hideMoreButton?null:
                         <TouchableOpacity  style = {styles.settingButton} onPress ={this.onMoreButtonPress.bind(this)}>
                             <Icon name ='more-horiz' size = {20} color ='white' ></Icon>
-                        </TouchableOpacity>
+                        </TouchableOpacity>}
                     </View>
                 </TouchableHighlight>
             </View>

@@ -174,6 +174,9 @@ class AHomePlaylist extends Component{
                             img: imgPath,
                         }]
 
+                        //toast
+                      this.toast.current.show(songName + ' Downloaded completely');
+
                         this.retrieveData('songs').then(songs=>{
                             //store info to local
                             this.storeData('songs', JSON.stringify(songs.concat(song)));

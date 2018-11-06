@@ -12,7 +12,7 @@ import TrackDetails from './TrackDetails';
 import SeekBar from './SeekBar';
 import Controls from './Controls';
 import SongActionView from './SongActionView';
-import AddToPlaylistView from '../_components/AddToPlaylistView'
+import NowPlaylistView from './NowPlaylistView';
 
 class SongPlayerMaximizer extends Component {
   constructor(props)
@@ -21,7 +21,8 @@ class SongPlayerMaximizer extends Component {
 
     this.state = {
       isSongActionViewVisible: false,
-      isAddToPlaylistViewVisible: false
+      isAddToPlaylistViewVisible: false,
+      isNowPlaylistViewVisible: false
     }
 
     this.toast = React.createRef();
@@ -88,11 +89,6 @@ class SongPlayerMaximizer extends Component {
     this.setState({isAddToPlaylistViewVisible: false})
   }
 
-  onDoneAddToPlaylistButtonPress(playlist)
-  {
-
-  }
-
   onDownloadButtonPress(track)
   {
       //get track data
@@ -113,6 +109,9 @@ class SongPlayerMaximizer extends Component {
                           URL: trackPath,
                           img: imgPath,
                       }]
+
+                      //toast
+                      this.toast.current.show(track.songName + ' Downloaded completely');
 
                       this.retrieveData('songs').then(songs=>{
                           //store info to local
@@ -172,6 +171,22 @@ class SongPlayerMaximizer extends Component {
         return path;
     }
 
+    onNowPlaylistViewClose(){
+      this.setState({isNowPlaylistViewVisible: false})
+    }
+
+    onNowPlaylistButtonPress(){
+      this.setState({isNowPlaylistViewVisible: true})
+    }
+
+    onSongButtonPress(index){
+      this.props.dispatch({
+        type: 'PlayTrack', 
+        trackIndex: index
+      });
+
+      this.setState({isNowPlaylistViewVisible: false});
+    }
 
   render() {
 
@@ -183,8 +198,9 @@ class SongPlayerMaximizer extends Component {
       <View style={styles.container}>
         <StatusBar hidden={true} />
         <Header 
-          message="Playing From Charts"
-          onHideButtonPress = {this.onHideButtonPress.bind(this)} />
+          message="Playing From Playlist"
+          onHideButtonPress = {this.onHideButtonPress.bind(this)}
+          onNowPlaylistButtonPress = {this.onNowPlaylistButtonPress.bind(this)} />
         <AlbumArt url={this.props.selectedTrackImage} />
         <TrackDetails 
           title={track.songName} 
@@ -215,6 +231,14 @@ class SongPlayerMaximizer extends Component {
           onCloseButtonPress = {this.onCloseSongActionView.bind(this)}
           onDownloadButtonPress = {this.onDownloadButtonPress.bind(this, track)}
         />
+
+        <NowPlaylistView
+          songs = {this.props.tracks} 
+          isVisible = {this.state.isNowPlaylistViewVisible}
+          onCloseButtonPress = {this.onNowPlaylistViewClose.bind(this)}
+          onSongButtonPress = {this.onSongButtonPress.bind(this)}
+        />
+
         <Toast
             ref={this.toast}
             style={{backgroundColor:'white'}}

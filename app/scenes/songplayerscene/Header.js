@@ -12,10 +12,10 @@ class Header extends Component{
           {/* <Image style={styles.button} source={require(imgFolderPath + 'ic_keyboard_arrow_down_white.png')} /> */}
           <Icon name = "keyboard-arrow-down" size = {24} color = "white"></Icon>
         </TouchableOpacity>
-        <Text 
-          style={styles.message}>{this.props.message.toUpperCase()}
-        </Text>
-        <TouchableOpacity>
+          <Text 
+            style={styles.message}>{this.props.message.toUpperCase()}
+          </Text>
+        <TouchableOpacity onPress = {this.props.onNowPlaylistButtonPress}>
           {/* <Image style={styles.button} source={require(imgFolderPath + 'ic_queue_music_white.png')} /> */}
           <Icon name = "queue-music" size = {24} color = "white"></Icon>
         </TouchableOpacity>

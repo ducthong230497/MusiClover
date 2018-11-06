@@ -100,6 +100,15 @@ export default (state=initialState, action) => {
             totalLength: 1, 
             selectedTrackIndex: state.selectedTrackIndex - 1
         }
+        case 'PlayTrack':
+        getSongData(action.trackIndex, state.tracks);
+        return {
+            ...state,
+            currentPosition: 0, 
+            paused: false, 
+            totalLength: 1, 
+            selectedTrackIndex: action.trackIndex
+        }
         case 'ToggleRepeat':
         return {
             ...state,
