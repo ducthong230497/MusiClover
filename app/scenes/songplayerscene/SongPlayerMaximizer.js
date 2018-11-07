@@ -97,11 +97,20 @@ class SongPlayerMaximizer extends Component {
               let URL = data.URL;
               let img = data.img;
 
+              //add to downloading list
+              let downloadingSong = {
+                songName: track.songName,
+                artist: track.artist,
+                URL: URL,
+                progress: 0
+              }
+              this.props.dispatch({type: "AddDownloadingSong", downloadingSong: downloadingSong});
+
               //download song
-              this.downloadData(URL, 'mp3').then(trackPath=>{
+              this.downloadData(URL, 'mp3', true).then(trackPath=>{
 
                   //download img
-                  this.downloadData(img, 'png').then(imgPath=>{
+                  this.downloadData(img, 'png', false).then(imgPath=>{
 
                       let song = [{
                           songName: track.songName,
@@ -151,7 +160,7 @@ class SongPlayerMaximizer extends Component {
          }
     }
 
-    downloadData = async(url, appendExt) =>{
+    downloadData = async(url, appendExt, trackProgress) =>{
         let path = null;
 
         await RNFetchBlob.config({
@@ -164,8 +173,17 @@ class SongPlayerMaximizer extends Component {
         .fetch('GET', url, {
             //some headers ..
         })
+        // listen to download progress event
+        .progress((received, total) => {
+          if(trackProgress)
+          {
+              let progress = received / total;
+              this.props.dispatch({type: 'UpdateProgress', url: url, progress: progress});
+          }
+        })
         .then((res) => {
             path = res.path();
+            this.props.dispatch({type: 'UpdateProgress', url: url, progress: 1});
         })
 
         return path;

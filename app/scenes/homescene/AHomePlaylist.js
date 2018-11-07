@@ -161,11 +161,20 @@ class AHomePlaylist extends Component{
                 let URL = data.URL;
                 let img = data.img;
 
+                //add to downloading list
+                let downloadingSong = {
+                    songName: songName,
+                    artist: artist,
+                    URL: URL,
+                    progress: 0
+                }
+                this.props.dispatch({type: "AddDownloadingSong", downloadingSong: downloadingSong});
+
                 //download song
-                this.downloadData(URL, 'mp3').then(trackPath=>{
+                this.downloadData(URL, 'mp3', true).then(trackPath=>{
 
                     //download img
-                    this.downloadData(img, 'png').then(imgPath=>{
+                    this.downloadData(img, 'png', false).then(imgPath=>{
 
                         let song = [{
                             songName: songName,
@@ -215,9 +224,8 @@ class AHomePlaylist extends Component{
          }
     }
 
-    downloadData = async(url, appendExt) =>{
+    downloadData = async(url, appendExt, trackProgress) =>{
         let path = null;
-
         await RNFetchBlob.config({
             // add this option that makes response data to be stored as a file,
             // this is much more performant.
@@ -228,8 +236,17 @@ class AHomePlaylist extends Component{
         .fetch('GET', url, {
             //some headers ..
         })
+        // listen to download progress event
+        .progress((received, total) => {
+            if(trackProgress)
+            {
+                let progress = received / total;
+                this.props.dispatch({type: 'UpdateProgress', url: url, progress: progress});
+            }
+        })
         .then((res) => {
             path = res.path();
+            this.props.dispatch({type: 'UpdateProgress', url: url, progress: 1});
         })
 
         return path;
