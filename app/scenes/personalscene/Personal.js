@@ -10,7 +10,7 @@ import OnlinePlaylists from './OnlinePlaylists'
 import OfflinePlaylists from './OfflinePlaylists'
 import OnlineSongs from './OnlineSongs'
 import OfflineSongs from './OfflineSongs'
-import DownloadingSongs from './DownloadingSongs'
+import DownloadHistory from './DownloadHistory'
 
 class Personal extends Component{
 
@@ -59,9 +59,9 @@ class Personal extends Component{
                         onPress = {()=>this.props.navigation.navigate('OfflineSongs')}>>
                     </CategoryButton>
                     <CategoryButton 
-                        text = 'Downloading' 
+                        text = 'Download History' 
                         iconName = 'cloud-download' 
-                        onPress = {()=>this.props.navigation.navigate('DownloadingSongs')}>>
+                        onPress = {()=>this.props.navigation.navigate('DownloadHistory')}>>
                     </CategoryButton>
                 </View>
             </View>
@@ -102,10 +102,10 @@ export default StackNavigator = createStackNavigator({
             headerTitle:'Offline Songs',     
         })
     },
-    DownloadingSongs: {
-        screen: DownloadingSongs,
+    DownloadHistory: {
+        screen: DownloadHistory,
         navigationOptions: ()=>({
-            headerTitle:'Downloading',     
+            headerTitle:'Download History',     
         })
     },
     AOnlinePlaylist:{

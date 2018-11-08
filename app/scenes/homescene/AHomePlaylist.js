@@ -168,6 +168,8 @@ class AHomePlaylist extends Component{
                     URL: URL,
                     progress: 0
                 }
+                //store info to local
+                this.storeData('downloadSongs', JSON.stringify(this.props.downloadSongs.concat([downloadingSong])));
                 this.props.dispatch({type: "AddDownloadingSong", downloadingSong: downloadingSong});
 
                 //download song
@@ -176,21 +178,20 @@ class AHomePlaylist extends Component{
                     //download img
                     this.downloadData(img, 'png', false).then(imgPath=>{
 
-                        let song = [{
+                        let offlineSongs = this.props.offlineSongs.concat([{
                             songName: songName,
                             artist: artist,
                             URL: trackPath,
                             img: imgPath,
-                        }]
+                        }])
 
                         //toast
-                      this.toast.current.show(songName + ' Downloaded completely');
+                        this.toast.current.show(songName + ' Downloaded completely');
 
-                        this.retrieveData('songs').then(songs=>{
-                            //store info to local
-                            this.storeData('songs', JSON.stringify(songs.concat(song)));
-                        })
-
+                        //store info to local
+                        this.storeData('songs', JSON.stringify(offlineSongs));
+                        this.props.dispatch({type: 'SetOfflineSongs', offlineSongs: offlineSongs});
+                        this.props.dispatch({type: 'UpdateProgress', url: URL, progress: 1});
                     })
 
                 })
@@ -246,7 +247,6 @@ class AHomePlaylist extends Component{
         })
         .then((res) => {
             path = res.path();
-            this.props.dispatch({type: 'UpdateProgress', url: url, progress: 1});
         })
 
         return path;
@@ -315,7 +315,9 @@ function mapStateToProps(state)
         playlists: state.playlists.playlists,
         user: state.user.user,
         onlinePlaylists: state.user.onlinePlaylists,
-        onlineSongs: state.user.onlineSongs
+        onlineSongs: state.user.onlineSongs,
+        downloadSongs: state.download.downloadSongs,
+        offlineSongs: state.user.offlineSongs
     }
 }
 

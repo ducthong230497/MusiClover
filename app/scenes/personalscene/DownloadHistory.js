@@ -4,11 +4,16 @@ import {connect} from 'react-redux'
 import ProgressPie from 'react-native-progress/Pie'
 import {Icon} from 'react-native-elements'
 
-class DownloadingSongs extends Component{
+class DownloadHistory extends Component{
+
+
+    onSongButtonPress(){
+        
+    }
 
     renderSongs = ({index, item}) => (
         <View style={styles.songContainer}>
-                <TouchableHighlight underlayColor = 'rgb(150,150,150)'>
+                <TouchableHighlight underlayColor = 'rgb(150,150,150)' onPress={this.onSongButtonPress.bind(this)}>
                     <View style = {styles.songButton}>
                         <Text style = {styles.songIndex}>{index + 1}</Text>
                         <View style = {styles.songInfo}>
@@ -29,7 +34,7 @@ class DownloadingSongs extends Component{
         return (
             <View style = {styles.container}>
                 <FlatList
-                        data={this.props.downloadingSongs}
+                        data={this.props.downloadSongs}
                         renderItem={this.renderSongs.bind(this)}
                         keyExtractor = {(item, index)=>index.toString()}>
                 </FlatList>
@@ -86,11 +91,11 @@ const styles = StyleSheet.create({
 
 function mapStateToProps(state){
     return {
-        downloadingSongs: state.download.downloadingSongs
+        downloadSongs: state.download.downloadSongs
     }
 }
 
-export default connect(mapStateToProps)(DownloadingSongs);
+export default connect(mapStateToProps)(DownloadHistory);
 
 
 

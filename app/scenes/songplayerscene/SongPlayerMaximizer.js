@@ -104,6 +104,8 @@ class SongPlayerMaximizer extends Component {
                 URL: URL,
                 progress: 0
               }
+              //store info to local
+              this.storeData('downloadSongs', JSON.stringify(this.props.downloadSongs.concat([downloadingSong])));
               this.props.dispatch({type: "AddDownloadingSong", downloadingSong: downloadingSong});
 
               //download song
@@ -112,21 +114,21 @@ class SongPlayerMaximizer extends Component {
                   //download img
                   this.downloadData(img, 'png', false).then(imgPath=>{
 
-                      let song = [{
+                      let offlineSongs = this.props.offlineSongs.concat([{
                           songName: track.songName,
                           artist: track.artist,
                           URL: trackPath,
                           img: imgPath,
-                      }]
+                      }])
 
                       //toast
                       this.toast.current.show(track.songName + ' Downloaded completely');
 
-                      this.retrieveData('songs').then(songs=>{
-                          //store info to local
-                          this.storeData('songs', JSON.stringify(songs.concat(song)));
-                      })
-
+                      //store info to local
+                      this.storeData('songs', JSON.stringify(offlineSongs));
+                      
+                      this.props.dispatch({type: 'SetOfflineSongs', offlineSongs: offlineSongs});
+                      this.props.dispatch({type: 'UpdateProgress', url: URL, progress: 1});
                   })
 
               })
@@ -183,7 +185,6 @@ class SongPlayerMaximizer extends Component {
         })
         .then((res) => {
             path = res.path();
-            this.props.dispatch({type: 'UpdateProgress', url: url, progress: 1});
         })
 
         return path;
@@ -284,6 +285,8 @@ function mapStateToProps(state)
     shuffleOn: state.songPlayer.shuffleOn,
     isMaximizerVisible: state.songPlayer.isMaximizerVisible,
     onlinePlaylists: state.user.onlinePlaylists,
+    offlineSongs: state.user.offlineSongs,
+    downloadSongs: state.download.downloadSongs
   }
 }
 

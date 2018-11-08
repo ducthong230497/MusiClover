@@ -39,11 +39,17 @@ class Loading extends Component{
         
         //load offline data
         this.retrieveData('playlists').then(playlists=>{
+            if(playlists==null) playlists = [];
             this.props.dispatch({type: 'SetOfflinePlaylists', offlinePlaylists: playlists});
         });
         this.retrieveData('songs').then(songs=>{
+            if(songs ==null) songs = [];
             this.props.dispatch({type: 'SetOfflineSongs', offlineSongs: songs});
         });
+        this.retrieveData('downloadSongs').then(downloadSongs=>{
+            if(downloadSongs==null) downloadSongs = [];
+            this.props.dispatch({type: 'SetDownloadSongs', downloadSongs: downloadSongs});
+        })
     }
 
     retrieveData = async (name) => {
