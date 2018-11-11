@@ -7,20 +7,26 @@ import {Icon} from 'react-native-elements'
 class DownloadHistory extends Component{
 
 
-    onSongButtonPress(){
-        
+    onSongButtonPress(index){
+        this.props.dispatch({
+            type: 'Start', 
+            tracks: this.props.downloadSongs, 
+            selectedTrackIndex: index
+        })
+
+        this.props.navigation.navigate('SongPlayer');
     }
 
     renderSongs = ({index, item}) => (
         <View style={styles.songContainer}>
-                <TouchableHighlight underlayColor = 'rgb(150,150,150)' onPress={this.onSongButtonPress.bind(this)}>
+                <TouchableHighlight underlayColor = 'rgb(150,150,150)' onPress={this.onSongButtonPress.bind(this, index)}>
                     <View style = {styles.songButton}>
                         <Text style = {styles.songIndex}>{index + 1}</Text>
                         <View style = {styles.songInfo}>
                             <Text style = {styles.songName}>{item.songName}</Text>
                             <Text style = {styles.artistName}>{item.artist}</Text>
                         </View>
-                        {item.progress===1?
+                        {(item.progress===1 || item.progress==null)?
                         <Icon name ='done' size = {30} color ='green' ></Icon>
                         :<ProgressPie progress={item.progress} size={30} color = "white"></ProgressPie>}
                     </View>

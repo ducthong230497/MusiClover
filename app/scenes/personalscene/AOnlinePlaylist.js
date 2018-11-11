@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {View, StyleSheet, FlatList} from 'react-native'
+import {View, StyleSheet, FlatList, Text, SectionList} from 'react-native'
 import {connect} from 'react-redux'
 import {getXmlURL, getDataFromXmlURL} from '../../connector/connector'
 import Firebase from 'react-native-firebase'
@@ -168,32 +168,93 @@ class AOnlinePlaylist extends Component{
         this.toast.current.show('Removed from online songs');
     }
 
-    renderSongs = ({index, item}) => (
+    renderSectionSongs = ({index, section, item}) => (
         <SongButton 
             // imgUrl = {item.albumArtUrl}
             songName = {item.songName}
             artistName = {item.artist}
-            songIndex = {index}
+            songIndex = {index + section.index}
             onSongButtonPress = {this.onSongButtonPress.bind(this)}
             onMoreButtonPress = {this.onMoreButtonPress.bind(this)}>
         </SongButton>
     );
 
-    render(){
-        let playlist = this.props.playlists.find(playlist => playlist.name === 'Personal')
-        if(playlist != null)
+    convertToStandardEnglish = (str) =>
+    {
+        str = str.toLowerCase();
+        str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
+        str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
+        str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i");
+        str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, "o");
+        str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u");
+        str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y");
+        str = str.replace(/đ/g, "d");
+        // Some system encode vietnamese combining accent as individual utf-8 characters
+        str = str.replace(/\u0300|\u0301|\u0303|\u0309|\u0323/g, ""); // Huyền sắc hỏi ngã nặng 
+        str = str.replace(/\u02C6|\u0306|\u031B/g, ""); // Â, Ê, Ă, Ơ, Ư
+        return str;
+    }
+
+    getSongList(){
+        this.sectionList = [];
+        this.playlist = [];
+
+        let songs = this.props.playlists.find(playlist => playlist.name === 'Personal');
+
+        if(songs != null)
         {
-            this.playlist = Object.values(playlist)
-            this.playlist.pop() //pop the final item which is the variable 'name' we have put to playlist (see playlistsReducer)
+            songs = Object.values(songs)
+            songs.pop() //pop the final item which is the variable 'name' we have put to playlist (see playlistsReducer)
+
+            //convert to section list
+            let sectionList = []
+            songs.forEach(song => {
+                let sectionHeader = this.convertToStandardEnglish(song.songName[0]);
+                if(sectionHeader.charCodeAt(0)<97 || sectionHeader.charCodeAt(0) > 122){
+                    sectionHeader = "#";
+                }
+                let section = sectionList.find(section=>section.title === sectionHeader);
+                if(section)
+                {
+                    section.data.push(song);
+                }
+                else
+                {
+                    let newSection = {title: sectionHeader, data: [song]}
+                    sectionList.push(newSection);
+                }
+            });
+
+            //sort according to alphabet
+            sectionList.sort(function(a, b){return a.title.charCodeAt(0) - b.title.charCodeAt(0)})
+            //set to sectionList to render later
+            this.sectionList = sectionList;
+            //set to song list
+            let index = 0;
+            sectionList.forEach(section => {
+                this.playlist = this.playlist.concat(section.data);
+                section.index = index;
+                index +=section.data.length;
+            });
         }
+    }
+
+    render(){
+        this.getSongList();
 
         return (
             <View style={styles.container}>
-                <FlatList
+                {/* <FlatList
                     data={this.playlist}
                     renderItem={this.renderSongs.bind(this)}
                     keyExtractor = {(item, index)=>index.toString()}>
-                </FlatList>
+                </FlatList> */}
+                <SectionList
+                    sections = {this.sectionList}
+                    renderItem = {this.renderSectionSongs.bind(this)}
+                    renderSectionHeader={({section}) => <Text style={styles.sectionHeader}>{section.title.toUpperCase()}</Text>}
+                    keyExtractor={(item, index) => index}>
+                </SectionList>
                 <SongMoreView
                     isVisible = {this.state.isSongMoreViewVisible}
                     canRemoveFromPlaylist = {!this.props.disableRemoveFromPlaylist}
@@ -254,6 +315,15 @@ const styles = StyleSheet.create({
     buttonText:{
         fontSize: 20,
         color: 'white',
+    },
+    sectionHeader: {
+        paddingTop: 5,
+        paddingLeft: 20,
+        paddingBottom: 2,
+        fontSize: 15,
+        color: "white",
+        fontWeight: 'bold',
+        backgroundColor: 'rgb(20,20,20)',
     }
 });
 

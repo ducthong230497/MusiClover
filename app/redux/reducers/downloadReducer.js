@@ -22,7 +22,18 @@ export default (state=initialState, action) => {
                 ...state,
                 downloadSongs: newDownloadSongs
             }
-
+        case "FinishProgress":
+            let newSongs = [...state.downloadSongs];
+            let foundSong = newSongs.find(song=> song.URL === action.oldURL)
+            if(foundSong) {
+                foundSong.progress = 1;
+                foundSong.URL = action.newURL;
+                foundSong.img = action.imgURL;
+            }
+            return {
+                ...state,
+                downloadSongs: newSongs
+            }
         default:
             return state
     }

@@ -104,8 +104,8 @@ class SongPlayerMaximizer extends Component {
                 URL: URL,
                 progress: 0
               }
-              //store info to local
-              this.storeData('downloadSongs', JSON.stringify(this.props.downloadSongs.concat([downloadingSong])));
+              
+              //add to downloading songs
               this.props.dispatch({type: "AddDownloadingSong", downloadingSong: downloadingSong});
 
               //download song
@@ -128,7 +128,7 @@ class SongPlayerMaximizer extends Component {
                       this.storeData('songs', JSON.stringify(offlineSongs));
                       
                       this.props.dispatch({type: 'SetOfflineSongs', offlineSongs: offlineSongs});
-                      this.props.dispatch({type: 'UpdateProgress', url: URL, progress: 1});
+                      this.props.dispatch({type: 'FinishProgress', oldURL: URL, newURL: trackPath, imgURL: imgPath});
                   })
 
               })
