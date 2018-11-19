@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { View, Text, StyleSheet, TextInput, Button, TouchableHighlight } from 'react-native'
 import Firebase from 'react-native-firebase';
-import { LoginButton, AccessToken, LoginManager  } from 'react-native-fbsdk';
+//import { LoginButton, AccessToken, LoginManager  } from 'react-native-fbsdk';
 
 export default class LoggedOut extends Component {
 
@@ -52,7 +52,7 @@ export default class LoggedOut extends Component {
         // });
 
         // Attempt a login using the Facebook login dialog asking for default permissions.
-        LoginManager.logInWithReadPermissions(["public_profile"])
+        //LoginManager.logInWithReadPermissions(["public_profile"])
     }
 
     onGoogleButtonPress() {
