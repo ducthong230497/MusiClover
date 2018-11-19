@@ -11,7 +11,7 @@ import SongPlayerMinimizer from './scenes/songplayerscene/SongPlayerMinimizer';
 import SongPlayer from './scenes/songplayerscene/SongPlayer';
 import SearchScene from './scenes/searchscene/Search'
 import PersonalScene from './scenes/personalscene/Personal'
-import TestScene from './scenes/testscene/Test'
+import ArtistScene from './scenes/testscene/Artist'
 import HomeScene from './scenes/homescene/Home'
 import SettingScene from './scenes/settingscene/Setting'
 
@@ -75,6 +75,15 @@ const AppNavigator = createBottomTabNavigator(
         )
       }
     },
+    Artist:{
+      screen: ArtistScene,
+      navigationOptions:{
+        tabBarLabel: 'Artist',
+        tabBarIcon: ({tintColor}) => (
+          <Icon name = 'person' color = {tintColor}></Icon>
+        )
+      }
+    },
     Personal: {
       screen: PersonalScene,
       navigationOptions:{
@@ -101,10 +110,6 @@ const AppNavigator = createBottomTabNavigator(
           <Icon name = 'settings' color = {tintColor}></Icon>
         )
       }
-    },
-    Test:{
-      screen: TestScene,
-      
     }
   },
   { //router config
