@@ -10,12 +10,13 @@ All music data is fetched from [nhaccuatui.com](nhaccuatui.com).
 * Save songs to online personal account
 * Download songs to your local device
 * Create online or offline lists
-* background music listening
+* Background music listening
+* ...
 
 # Installation
 Open another terminal window and navigate to project directory and run:
-`npm install` to install all packages needed to run the app.
-`react-native run-android` or `react-native run-ios` to run the application on your virtual device on your computer.
+1. `npm install` to install all packages needed to run the app.
+2. `react-native run-android` or `react-native run-ios` to run the application on your virtual device on your computer.
 
 You can find more information about how to install and run react-native app on the offical react-native [https://facebook.github.io/react-native/](website).
 
