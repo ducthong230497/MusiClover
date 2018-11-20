@@ -161,3 +161,28 @@ export async function getDataForSearching(strSearch){
     }
 }
 
+/*
+===========================================================================================================
+===========================================================================================================
+*/
+
+export async function getListArtist(){
+    let strListArtist
+    let listArtist = []
+    await fetch('https://m.nhaccuatui.com/nghe-si.html').then(response => {
+        //console.log("response: " + response._bodyInit)
+        let regexListArtist = /<ul id="ul_listItem">([\s\S]*?)<\/ul>/ig;
+        //let regexListArtist = /<div class="box_title_genre">([\s\S]*?)<\/div>/ig;
+        
+        //strListArtist = response._bodyInit.toString().match(regexListArtist).toString().replace('<div class="box_title_genre">', "").replace('</div>', '').trim()
+        strListArtist = regexListArtist.exec(response._bodyInit.toString())[1].toString().trim()
+        //console.log(strListArtist)
+
+        let regexArtist = /<li class="artist_item_single">([\s\S]*?)<\/li>/ig
+        let listArtistInString = regexArtist.exec(strListArtist)
+        listArtistInString.forEach(element => {
+            console.log(element)
+        });
+    })
+    return strListArtist
+}
