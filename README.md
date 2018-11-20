@@ -18,15 +18,15 @@ Open another terminal window and navigate to project directory and run:
 1. `npm install` to install all packages needed to run the app.
 2. `react-native run-android` or `react-native run-ios` to run the application on your virtual device on your computer.
 
-You can find more information about how to install and run react-native app on the offical react-native [https://facebook.github.io/react-native/](website).
+You can find more information about how to install and run react-native app on the offical react-native [website](https://facebook.github.io/react-native/).
 
 # Main Technology
-* [https://facebook.github.io/react-native/](React-native) to develop mobile apps by JavaScript. 
-* [https://facebook.github.io/react-native/docs/network](Fetch API) provided by react-native to fetch song data from remote website.
-* [https://facebook.github.io/react-native/docs/asyncstorage] (AsyncStorage) provided by react-native and [https://github.com/joltup/rn-fetch-blob](rn-fetch-blob) make perfect combination to save data to local storage.
-* [https://github.com/invertase/react-native-firebase](React-native-firebase) to create online personal account with Firebase Authentication and also save data remotely with Clound Firestore.
-* [https://github.com/react-native-community/react-native-video](React-native-video) offers a really nice component to play music or video on your device.
-* [https://reactnavigation.org/docs/en/getting-started.html](ReactNavigation) to navigate between application screens.
+* [React-native](https://facebook.github.io/react-native/) to develop mobile apps by JavaScript. 
+* [Fetch API](https://facebook.github.io/react-native/docs/network) provided by react-native to fetch song data from remote website.
+* [AsyncStorage](https://facebook.github.io/react-native/docs/asyncstorage) provided by react-native and [rn-fetch-blob](https://github.com/joltup/rn-fetch-blob) make perfect combination to save data to local storage.
+* [React-native-firebase](https://github.com/invertase/react-native-firebase) to create online personal account with Firebase Authentication and also save data remotely with Clound Firestore.
+* [React-native-video](https://github.com/react-native-community/react-native-video) offers a really nice component to play music or video on your device.
+* [ReactNavigation](https://reactnavigation.org/docs/en/getting-started.html) to navigate between application screens.
 
 # Credit 
 This project was made possible thank to:
