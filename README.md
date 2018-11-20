@@ -27,7 +27,7 @@ You can find more information about how to install and run react-native app on t
 * [React-native-firebase](https://github.com/invertase/react-native-firebase) to create online personal account with Firebase Authentication and also save data remotely with Clound Firestore.
 * [React-native-video](https://github.com/react-native-community/react-native-video) offers a really nice component to play music or video on your device.
 * [ReactNavigation](https://reactnavigation.org/docs/en/getting-started.html) to navigate between application screens.
-
+* [Redux](https://redux.js.org) offers a solution to manage states in a react-native app.
 # Credit 
 This project was made possible thank to:
 * https://facebook.github.io/react-native: React-native official website provides really nice tutorials on basic things about react-native).
