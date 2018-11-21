@@ -1,7 +1,7 @@
 import {Platform} from 'react-native'
 import {getXmlURL, getDataFromXmlURL} from '../../connector/connector'
 import store from '../store'
-
+import MusicControl from 'react-native-music-control';
 //Bad performance
 //Recommendation: put tracks (since tracks can be very large) into another reducer 
 const initialState = {
@@ -63,6 +63,7 @@ export default (state=initialState, action) => {
             paused : false
         }
         case 'SetTotalLength':
+        setupMusicControl(state.tracks[state.selectedTrackIndex],action.totalLength);
         return {
             ...state,
             totalLength: action.totalLength
@@ -168,4 +169,20 @@ function getSongData(index,tracks)
             });
         });
     }
+}
+
+function setupMusicControl(track, length)
+{
+    MusicControl.setNowPlaying({
+        title: track.songName,
+        // artwork: 'https://i.imgur.com/e1cpwdo.png',
+        artist: track.artist,
+        duration: length, // (Seconds)
+        color: 0xFFFFFF, // Notification Color - Android Only
+      })
+
+      // Changes the state to paused
+    MusicControl.updatePlayback({
+        state: MusicControl.STATE_PLAYING,
+    })
 }

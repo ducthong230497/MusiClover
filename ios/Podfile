@@ -12,6 +12,8 @@ target 'MusiClover' do
 
   pod 'rn-fetch-blob', :path => '../node_modules/rn-fetch-blob'
 
+  pod 'react-native-music-control', :path => '../node_modules/react-native-music-control'
+
   target 'MusiCloverTests' do
     inherit! :search_paths
     # Pods for testing

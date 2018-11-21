@@ -70,6 +70,7 @@ class Loading extends Component{
 
         this.playlistsSubscription();
         this.songsSubscription();
+
     }
 
     getUserCollection(email)

@@ -138,6 +138,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-music-control')
     compile project(':rn-fetch-blob')
     compile project(':react-native-firebase')
     compile project(':react-native-vector-icons')
@@ -161,5 +162,6 @@ task copyDownloadableDepsToLibs(type: Copy) {
     from configurations.compile
     into 'libs'
 }
+
 
 apply plugin: 'com.google.gms.google-services'
