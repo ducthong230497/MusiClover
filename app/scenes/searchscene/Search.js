@@ -63,6 +63,8 @@ const styles = StyleSheet.create({
         borderWidth: 0.8,
         borderColor: 'lightgray',    
         backgroundColor: 'white',
+        borderRadius: 20,
+        height: 40,
     },
     label: {
         color: '#2facf9',
