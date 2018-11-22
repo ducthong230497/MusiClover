@@ -1,12 +1,50 @@
 import React, {Component} from 'react'
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet, FlatList } from 'react-native'
 import SearchBar from 'react-native-searchbar'
 import { Icon } from 'react-native-elements'
 import { createStackNavigator } from 'react-navigation'
 import { TagSelect } from 'react-native-tag-select'
-
+import {getDataForSearching, getXmlURL, getDataFromXmlURL} from '../../connector/connector'
 
 export default class Search extends Component{
+
+    constructor(props)
+    {
+        super(props);
+
+        this.state = {
+           songs: [],
+        }
+    }
+
+    componentDidMount()
+    {
+        getDataForSearching("helo").then(result =>{
+            this.setState({songs: result.song});
+            this.getSongInfo(songs[0].url);
+        })
+    }
+
+    getSongInfo(url)
+    {
+        getXmlURL(url).then(xmlUrl=> {
+            getDataFromXmlURL(xmlUrl).then(data => {
+                // data.URL;
+                // data.img;
+
+                this.setState({img: data.img});
+
+            });
+        });
+    }
+
+    renderSongs = ({item}) => (
+        <View>
+            <Text>{item.singer}</Text>
+            <Text>{item.name}</Text>
+        </View>
+    )
+
     render(){
         const data = [
             { id: 1, label: 'Sơn Tùng M-TP' },
@@ -22,6 +60,7 @@ export default class Search extends Component{
                         // ref={(ref) => this.searchBar = ref}
                         // data={items}
                         // handleResults={this._handleResults}
+                        
                         placeholder="Nhập từ khóa"
                         placeholderTextColor='gray'
                         fontSize={14}
@@ -42,6 +81,11 @@ export default class Search extends Component{
                         itemLabelStyleSelected={styles.labelSelected}
                     />
                 </View>
+                <FlatList
+                    data = {this.state.songs}
+                    renderItem = {this.renderSongs.bind(this)}
+                    keyExtractor = {(item,index) => index.toString()}
+                />
             </View> 
             
         )
