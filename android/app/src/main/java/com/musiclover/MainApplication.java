@@ -3,6 +3,13 @@ package com.musiclover;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.tanguyantoine.react.MusicControl;
+import com.RNFetchBlob.RNFetchBlobPackage;
+
+import io.invertase.firebase.RNFirebasePackage;
+import io.invertase.firebase.auth.RNFirebaseAuthPackage;
+import io.invertase.firebase.firestore.RNFirebaseFirestorePackage;
+
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -25,8 +32,13 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-            new VectorIconsPackage(),
-          new ReactVideoPackage()
+            new MusicControl(),
+            new RNFetchBlobPackage(),
+          new RNFirebasePackage(),
+          new VectorIconsPackage(),
+          new ReactVideoPackage(),
+          new RNFirebaseAuthPackage(),
+          new RNFirebaseFirestorePackage()
       );
     }
 

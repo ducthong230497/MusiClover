@@ -4,44 +4,29 @@ import {createStackNavigator} from 'react-navigation'
 import {Icon} from 'react-native-elements'
 
 import CategoryButton from './children/CategoryButton'
-import APlaylist from '../aplaylistscene/APlaylist' 
+import AOnlinePlaylist from './AOnlinePlaylist' 
+import AOfflinePlaylist from './AOfflinePlaylist' 
 import OnlinePlaylists from './OnlinePlaylists'
 import OfflinePlaylists from './OfflinePlaylists'
 import OnlineSongs from './OnlineSongs'
 import OfflineSongs from './OfflineSongs'
+import DownloadHistory from './DownloadHistory'
 
 class Personal extends Component{
 
     constructor(props)
     {
         super(props);
-        this.state = {
-            isLogined: true
-        }
     }
 
     onOnlinePlaylistsButtonPress()
     {
-        if(this.state.isLogined)
-        {
-            this.props.navigation.navigate('OnlinePlaylists');
-        }
-        else
-        {
-            this.props.navigation.navigate('Login');
-        }
+        this.props.navigation.navigate('OnlinePlaylists');
     }
 
     onOnlineSongsButtonPress()
     {
-        if(this.state.isLogined)
-        {
-            this.props.navigation.navigate('OnlineSongs')
-        }
-        else
-        {
-            this.props.navigation.navigate('Login');
-        }
+        this.props.navigation.navigate('OnlineSongs')
     }
 
     render(){
@@ -72,6 +57,11 @@ class Personal extends Component{
                         text = 'Songs' 
                         iconName = 'music-note' 
                         onPress = {()=>this.props.navigation.navigate('OfflineSongs')}>>
+                    </CategoryButton>
+                    <CategoryButton 
+                        text = 'Download History' 
+                        iconName = 'cloud-download' 
+                        onPress = {()=>this.props.navigation.navigate('DownloadHistory')}>>
                     </CategoryButton>
                 </View>
             </View>
@@ -112,8 +102,20 @@ export default StackNavigator = createStackNavigator({
             headerTitle:'Offline Songs',     
         })
     },
-    APlaylist:{
-        screen: APlaylist,
+    DownloadHistory: {
+        screen: DownloadHistory,
+        navigationOptions: ()=>({
+            headerTitle:'Download History',     
+        })
+    },
+    AOnlinePlaylist:{
+        screen: AOnlinePlaylist,
+        navigationOptions: ()=>({
+            headerTitle:'Playlist',     
+        })
+    },
+    AOfflinePlaylist:{
+        screen: AOfflinePlaylist,
         navigationOptions: ()=>({
             headerTitle:'Playlist',     
         })

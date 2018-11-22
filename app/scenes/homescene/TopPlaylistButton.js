@@ -6,7 +6,7 @@ export default class TopPlaylist extends Component{
 
     onPress()
     {
-        this.props.onPress(this.props.songsFetcher);
+        this.props.onPress(this.props.link);
     }
     
 

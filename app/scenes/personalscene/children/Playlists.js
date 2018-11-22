@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {View, StyleSheet, FlatList} from 'react-native'
 
-import PlaylistButton from './PlaylistButton';
+import PlaylistButton from '../../_components/PlaylistButton';
 import PlaylistCreateButton from './PlaylistCreateButton'
 import PlaylistCreateView from './PlaylistCreateView';
 import PlaylistDeleteView from './PlaylistDeleteView';

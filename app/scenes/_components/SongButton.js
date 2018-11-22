@@ -25,9 +25,11 @@ export default class SongButton extends Component{
                             <Text style = {styles.songName}>{this.props.songName}</Text>
                             <Text style = {styles.artistName}>{this.props.artistName}</Text>
                         </View>
+                        {this.props.additionalRender}
+                        {this.props.hideMoreButton?null:
                         <TouchableOpacity  style = {styles.settingButton} onPress ={this.onMoreButtonPress.bind(this)}>
                             <Icon name ='more-horiz' size = {20} color ='white' ></Icon>
-                        </TouchableOpacity>
+                        </TouchableOpacity>}
                     </View>
                 </TouchableHighlight>
             </View>
@@ -39,7 +41,8 @@ export default class SongButton extends Component{
 const styles = StyleSheet.create({
     container:{
         paddingLeft: 20,
-        paddingTop: 20
+        paddingTop: 20,
+        paddingRight: 10
     },
     image:{
         width: 70,

@@ -1,12 +1,12 @@
 import React, {Component} from 'react'
-import {View,Text,StyleSheet, ScrollView, FlatList} from 'react-native'
+import {View,StyleSheet, FlatList} from 'react-native'
 import {connect} from 'react-redux'
 import {createStackNavigator} from 'react-navigation'
 import {Icon} from 'react-native-elements'
 
-import {getTop100} from '../../connector/connector'
+import {getTop100, getTop100Avatar} from '../../connector/connector'
 import TopPlaylistButton from './TopPlaylistButton'
-import APlaylist from '../aplaylistscene/APlaylist'
+import AHomePlaylist from './AHomePlaylist'
 
 class Home extends Component{
 
@@ -14,57 +14,85 @@ class Home extends Component{
     {
         super(props);
         this.state = {
+            currentSongLists: [],
             topPlaylists: [
                 {
                     name : 'Top 100 Nhạc Trẻ Việt',
-                    imgUrl : 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg',
-                    songsFetcher: () => getTop100('https://www.nhaccuatui.com/playlist/top-100-nhac-tre-hay-nhat-va.m3liaiy6vVsF.html?st=1')
+                    imgUrl : 'https://media.giphy.com/media/QyOI0WGW3vY2s/giphy.gif',
+                    link: 'https://www.nhaccuatui.com/playlist/top-100-nhac-tre-hay-nhat-va.m3liaiy6vVsF.html?st=1'
                 },
                 {
                     name : 'Top 100 Pop USUK',
-                    imgUrl : 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg',
-                    songsFetcher: () => getTop100('https://www.nhaccuatui.com/playlist/top-100-pop-usuk-hay-nhat-va.zE23R7bc8e9X.html?st=1')
+                    imgUrl : 'https://media.giphy.com/media/QyOI0WGW3vY2s/giphy.gif',
+                    link: 'https://www.nhaccuatui.com/playlist/top-100-pop-usuk-hay-nhat-va.zE23R7bc8e9X.html?st=1'
                 },
                 {
                     name : 'Top 100 Electronica/Dance USUK',
-                    imgUrl : 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg',
-                    songsFetcher: () => getTop100('https://www.nhaccuatui.com/playlist/top-100-electronicadance-hay-nhat-va.ippIsiqacmnE.html?st=1')
+                    imgUrl : 'https://media.giphy.com/media/QyOI0WGW3vY2s/giphy.gif',
+                    link: 'https://www.nhaccuatui.com/playlist/top-100-electronicadance-hay-nhat-va.ippIsiqacmnE.html?st=1'
                 },
                 {
                     name : 'Top 100 Nhạc Hàn',
-                    imgUrl : 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg',
-                    songsFetcher: () => getTop100('https://www.nhaccuatui.com/playlist/top-100-nhac-han-hay-nhat-va.iciV0mD8L9Ed.html?st=1')
+                    imgUrl : 'https://media.giphy.com/media/QyOI0WGW3vY2s/giphy.gif',
+                    link: 'https://www.nhaccuatui.com/playlist/top-100-nhac-han-hay-nhat-va.iciV0mD8L9Ed.html?st=1'
                 },
                 {
                     name : 'Top 100 Nhạc Hoa',
-                    imgUrl : 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg',
-                    songsFetcher: () => getTop100('https://www.nhaccuatui.com/playlist/top-100-nhac-hoa-hay-nhat-va.g4Y7NTPP9exf.html?st=1')
+                    imgUrl : 'https://media.giphy.com/media/QyOI0WGW3vY2s/giphy.gif',
+                    link: 'https://www.nhaccuatui.com/playlist/top-100-nhac-hoa-hay-nhat-va.g4Y7NTPP9exf.html?st=1'
                 },
                 {
                     name : 'Top 100 Nhạc Nhật',
-                    imgUrl : 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg',
-                    songsFetcher: () => getTop100('https://www.nhaccuatui.com/playlist/top-100-nhac-nhat-hay-nhat-va.aOokfjySrloy.html?st=1')
+                    imgUrl : 'https://media.giphy.com/media/QyOI0WGW3vY2s/giphy.gif',
+                    link: 'https://www.nhaccuatui.com/playlist/top-100-nhac-nhat-hay-nhat-va.aOokfjySrloy.html?st=1'
                 },
                 {
                     name : 'Top 100 Nhạc Không Lời',
-                    imgUrl : 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg',
-                    songsFetcher: () => getTop100('https://www.nhaccuatui.com/top100/top-100-khong-loi.kr9KYNtkzmnA.html')
+                    imgUrl : 'https://media.giphy.com/media/QyOI0WGW3vY2s/giphy.gif',
+                    link: 'https://www.nhaccuatui.com/top100/top-100-khong-loi.kr9KYNtkzmnA.html'
                 },
             ]
         }
+        
     }
 
-    onTopPlaylistPress(songsFetcher)
+    componentDidMount()
     {
-        const songs = songsFetcher()
-        this.props.navigation.navigate('APlaylist', {canAddSong: false, songs: songs});
+        this.getPlaylistWithAvatars().then(result => {
+            this.setState({topPlaylists: result})
+        }).catch(err=> console.log(err));
+    }
+
+    async getPlaylistWithAvatars()
+    {
+        let newTopPlaylists = [...this.state.topPlaylists];
+
+        for(let item of newTopPlaylists)
+        {
+            await getTop100Avatar(item.link)
+            .then(result=>{ 
+                item.imgUrl = result;
+           })
+        }
+
+        return newTopPlaylists;
+    }
+
+    onTopPlaylistPress(link)
+    {
+        getTop100(link).then(result => {
+            
+            this.props.dispatch({type: 'AddPlaylist', name: 'Home', playlist: result})
+        })
+
+        this.props.navigation.navigate('AHomePlaylist')
     }
 
     renderTopPlaylists = ({item}) => (
         <TopPlaylistButton
             name = {item.name}
             imgUrl = {item.imgUrl}
-            songsFetcher = {item.songsFetcher}
+            link = {item.link}
             onPress = {this.onTopPlaylistPress.bind(this)}
         />
     )
@@ -85,14 +113,7 @@ class Home extends Component{
     }
 }
 
-function mapStateToProps(state)
-{
-    return {
-
-    }
-}
-
-const HomeScene =  connect(mapStateToProps)(Home);
+const HomeScene =  connect()(Home);
 
 export default StackNavigator = createStackNavigator({
     Main: {
@@ -102,8 +123,8 @@ export default StackNavigator = createStackNavigator({
 
         })
     },
-    APlaylist:{
-        screen: APlaylist,
+    AHomePlaylist:{
+        screen: AHomePlaylist,
         navigationOptions: ()=>({
             headerTitle:'Playlist',     
         })

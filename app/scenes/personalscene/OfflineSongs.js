@@ -1,46 +1,35 @@
 import React, {Component} from 'react'
-import {StyleSheet} from 'react-native'
+import {AsyncStorage} from 'react-native'
+import {connect} from 'react-redux'
 
-import Songs from './children/Songs'
+import AOfflinePlaylist from './AOfflinePlaylist';
 
-export default class OfflineSongs extends Component{
+class OfflineSongs extends Component{
 
-    constructor(props)
-    {
-        super(props);
-        this.state = {
-            songs: [
-                {
-                    imgUrl: 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg',
-                    songName: "FirstSong",
-                    artistName: "Adele"
-                },
-                {
-                    imgUrl: 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg',
-                    songName: "SecondSong",
-                    artistName: "Super"
-                },
-            ]
-        }
-    }
-
-    onSongButtonPress(trackIndex)
-    {
-        this.props.dispatch({type: 'SetupTrackList', tracks: null,initialTrackIndex: trackIndex})
-        this.props.navigation.navigate('SongPlayer');
+    componentDidMount(){
+        this.props.dispatch({type: 'AddPlaylist', name: 'Personal', playlist: this.props.offlineSongs})
     }
 
     render(){
 
         return (
-            <Songs
-                songs = {this.state.songs}
-                onSongButtonPress = {this.onSongButtonPress.bind(this)}
+            <AOfflinePlaylist
+            navigation = {this.props.navigation}
+            canRemoveFromOfflineSongs = {true}
+            disableRemoveFromPlaylist = {true}
             >
-            </Songs>
+            </AOfflinePlaylist>
         )
     }
 }
+
+function mapStateToProps(state){
+    return {
+        offlineSongs: state.user.offlineSongs
+    }
+}
+
+export default connect(mapStateToProps)(OfflineSongs);
 
 
 

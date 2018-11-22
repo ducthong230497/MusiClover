@@ -54,9 +54,9 @@ const styles = StyleSheet.create({
     marginTop: -12,
   },
   container: {
+    flex: 1,
     paddingLeft: 16,
     paddingRight: 16,
-    paddingTop: 16,
   },
   track: {
     height: 2,

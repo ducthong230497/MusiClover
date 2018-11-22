@@ -1,36 +1,51 @@
 import React, {Component} from 'react'
-
 import Songs from './children/Songs'
+import LoginButton from './children/LoginButton'
+import AOnlinePlaylist from './AOnlinePlaylist'
 
-export default class OnlineSongs extends Component{
+import {connect} from 'react-redux'
+
+class OnlineSongs extends Component{
 
     constructor(props)
     {
         super(props);
-        this.state = {
-            songs: [
-               
-            ]
-        }
     }
 
-    onSongButtonPress(trackIndex)
+    componentDidMount()
     {
-        this.props.dispatch({type: 'SetupTrackList', tracks: null,initialTrackIndex: trackIndex})
-        this.props.navigation.navigate('SongPlayer');
+        this.props.dispatch({type: 'AddPlaylist', name: 'Personal', playlist: this.props.onlineSongs})
     }
 
     render(){
 
+        if(this.props.user===null)
+        {
+            return (
+                <LoginButton navigation = {this.props.navigation}></LoginButton>
+            )
+        }
+
         return (
-            <Songs
-                songs = {this.state.songs}
-                onSongButtonPress = {this.onSongButtonPress.bind(this)}
-            >
-            </Songs>
+            <AOnlinePlaylist 
+            navigation = {this.props.navigation}
+            canRemoveFromOnlineSongs = {true}
+            disableRemoveFromPlaylist = {true}
+            disableAddToOnlineSongs = {true}
+            ></AOnlinePlaylist>
         )
     }
 }
+
+function mapStateToProps(state)
+{
+    return {
+        user: state.user.user,
+        onlineSongs: state.user.onlineSongs
+    }
+}
+
+export default connect(mapStateToProps)(OnlineSongs);
 
 
 
