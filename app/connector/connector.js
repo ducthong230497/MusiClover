@@ -176,13 +176,35 @@ export async function getListArtist(){
         
         //strListArtist = response._bodyInit.toString().match(regexListArtist).toString().replace('<div class="box_title_genre">', "").replace('</div>', '').trim()
         strListArtist = regexListArtist.exec(response._bodyInit.toString())[1].toString().trim()
-        //console.log(strListArtist)
+        //.log(strListArtist)
 
-        let regexArtist = /<li class="artist_item_single">([\s\S]*?)<\/li>/ig
-        let listArtistInString = regexArtist.exec(strListArtist)
+        let regexArtist = /<li class="artist_item_single">([\s\S]*?)<\/li>/gm
+        let listArtistInString = strListArtist.match(regexArtist)
+
+        let regexDefaultImage = /img src="([\s\S]*?)"/igm
+        let regexImage =/data-src="([\s\S]*?)"/igm
+        let regexLink = /href="([\s\S]*?)"/igm
+        let regexName = /<h2 class="name">([\s\S]*?)<\/h2>/igm
+        //console.log(listArtistInString.length)
         listArtistInString.forEach(element => {
-            console.log(element)
+            //console.log(element)
+            let singerName = element.toString().match(regexName).toString().replace('<h2 class="name">', '').replace('<\/h2>', '')
+            //console.log("singer name: " + singerName)
+            let defaultImg = element.toString().match(regexDefaultImage).toString().replace('img src="','').replace('"', '')
+            //console.log(defaultImg)
+            let img = element.toString().match(regexImage).toString().replace('data-src="','').replace('"', '')
+            //console.log(img)
+            let url = element.toString().match(regexLink).toString().replace('href="','').replace('"', '')
+            //console.log(url)
+
+            let artistInfo = {
+                name: singerName,
+                defaultAvatar: defaultImg,
+                image: img,
+                link: url
+            }
+            listArtist.push(artistInfo)
         });
     })
-    return strListArtist
+    return listArtist
 }

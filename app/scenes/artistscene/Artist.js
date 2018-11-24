@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { View, Text, StyleSheet, FlatList } from 'react-native'
 import {getTop100, getListArtist} from '../../connector/connector'
+import ArtistButton from './ArtistButton';
 
 class ArtistScene extends Component {
 
@@ -51,24 +52,32 @@ class ArtistScene extends Component {
 
     componentDidMount() {
         getListArtist().then(result => {
-            //this.setState({listArtist: result})
-            //console.log(result)
+            this.setState({listArtist: [...listArtist].concat(result)})
         })
     }
+    onArtistPress(link){
 
+    }
     renderArtist = ({item}) => (
-        <Text style = {styles.title}>{item.name}</Text>
+        //<Text style = {styles.title}>"aaa"</Text>
+        <ArtistButton
+            name = {item.name}
+            imgUrl = {item.image}
+            link = {item.link}
+            onPress = {this.onArtistPress.bind(this)}
+        />
     )
 
     render() {
         console.log(this.state.topPlaylists.length)
         return (
             <View style = {styles.container}>
-                <Text style = {styles.title}>ASDASDLASJDLKASJD</Text>
+            <Text style = {styles.title}>ASDASDLASJDLKASJD</Text>
                 <FlatList
-                    data = {this.state.topPlaylists}
+                    data = {this.state.listArtist}
                     renderItem = {this.renderArtist.bind(this)}
                     keyExtractor = {item => item.name}
+                    numColumns={2}
                 />
             </View>
         )

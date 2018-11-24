@@ -11,7 +11,7 @@ import SongPlayerMinimizer from './scenes/songplayerscene/SongPlayerMinimizer';
 import SongPlayer from './scenes/songplayerscene/SongPlayer';
 import SearchScene from './scenes/searchscene/Search'
 import PersonalScene from './scenes/personalscene/Personal'
-import ArtistScene from './scenes/testscene/Artist'
+import ArtistScene from './scenes/artistscene/Artist'
 import HomeScene from './scenes/homescene/Home'
 import SettingScene from './scenes/settingscene/Setting'
 
