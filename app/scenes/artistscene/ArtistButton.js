@@ -6,6 +6,7 @@ export default class ArtistButton extends Component{
 
     onPress()
     {
+        console.log("inside artist button")
         this.props.onPress(this.props.link);
     }
     

@@ -88,7 +88,7 @@ export async function getDataFromXmlURL(xmlURL){
 export async function getEncryptKey(url){
     let encryptKey
     await fetch(url).then(response => {
-        let regexEncryptKey = /encryptkey="([\s\S]*?)"/
+        let regexEncryptKey = /songencryptkey="([\s\S]*?)"/
         encryptKey = response._bodyInit.match(regexEncryptKey)[1].toString()
     })
     return encryptKey
@@ -98,17 +98,22 @@ var typeEnum = {
     SONG: 1,
     PLAYLIST: 2,
     VIDEO: 3, // we dont use this for now
+    SINGER: 4 // chưa xử lý
   };
 var mediaInfoUrl = "https://m.nhaccuatui.com/ajax/get-media-info?key1=&key2=&key3=&ip="
 
 export async function getDataFromKeyEncrypt(encryptKey, Enum){
     let url
-    if(Enum == typeEnum.SONG)
+    if(Enum === typeEnum.SONG)
         url = mediaInfoUrl.replace("key1=", "key1="+encryptKey)
-    else if(Enum == typeEnum.PLAYLIST)
+    else if(Enum === typeEnum.PLAYLIST)
         url = mediaInfoUrl.replace("key2=", "key2="+encryptKey)
-    else if(Enum == typeEnum.VIDEO)
+    else if(Enum === typeEnum.VIDEO)
         url = mediaInfoUrl.replace("key3=", "key3="+encryptKey)
+    else if(Enum === typeEnum.SINGER){
+        
+    }
+    
     console.log(url)
 
     try {
@@ -207,4 +212,72 @@ export async function getListArtist(){
         });
     })
     return listArtist
+}
+
+var dictionary = {
+    ugrave: "ù",
+    uacute: "ú",
+    utilde: "ũ",
+    ecirc: "ê",
+    egrave: "è",
+    eacute: "é",
+    etilde: "ẽ",
+    ocirc: "ô",
+    ograve: "ò",
+    oacute: "ó",
+    otilde: "õ",
+    acirc: "â",
+    agrave: "à",
+    aacute: "á",
+    atilde: "ã",
+    igrave: "ì",
+    iacute: "í",
+    itilde: "ĩ",
+    ygrave: "ỳ",
+    yacute: "ý",
+    ytilde: "ỹ",
+    amp: "&"
+}
+
+export async function getArtistInfo(url){
+    let singerInfo = {}
+    await fetch(url).then(response => {
+        let regexImage = /<div class="box_artist_cover detal">([\s\S]*?)<\/div>/ig
+        let match = response._bodyInit.toString().match(regexImage).toString().match(/src="([\s\S]*?)"/ig)
+        let coverImage = match[0].toString().replace('src="', '').replace('"', '')
+        let avatarImage = match[1].toString().replace('src="', '').replace('"', '')
+        //console.log(coverImage)
+        //console.log(avatarImage)
+
+        let regexInfo = /<div class="box_artist_info">([\s\S]*?)<\/div>/ig
+        let matchStr = response._bodyInit.toString().match(regexInfo).toString()
+        let name = matchStr.match(/<h1 class="artist_name">([\s\S]*?)<\/h1>/i)[1].toString()
+        let realName = matchStr.match(/<p class="info"><span class="cap">Tên thật: <\/span>([\s\S]*?)<\/p>/i)[1].toString()
+        let DoB = matchStr.match(/<p class="info"><span class="cap">Ngày sinh: <\/span>([\s\S]*?)<\/p>/i)[1].toString()
+        let nationality = matchStr.match(/<p class="info"><span class="cap">Quốc gia: <\/span>([\s\S]*?)<\/p>/i)[1].toString()
+        //console.log(name)
+        //console.log(realName)
+        //console.log(DoB)
+        //console.log(nationality)
+
+        let regexStory = /<div class="full_profile">([\s\S]*?)<\/div>/i
+        let story = response._bodyInit.toString().match(regexStory)[1].toString()
+        story = story.replace(new RegExp(' style="text-align: justify;"', 'ig'), "")
+        story = story.match(/<p>([\s\S]*?)<\/p>/i)[1].toString()
+        for(let key in dictionary){
+            let str = "&"+key.toString()+";"
+           story = story.replace(new RegExp(str, 'ig'), dictionary[key])
+        }
+        story = story.split("<br />").join("\r\n")
+        console.log(story)
+        
+        singerInfo = {
+            name: name,
+            realName: realName,
+            DoB: DoB,
+            nationality: nationality,
+            story: story
+        }
+    })
+    return singerInfo
 }

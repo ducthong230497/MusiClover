@@ -1,62 +1,38 @@
 import React, { Component } from 'react'
 import { View, Text, StyleSheet, FlatList } from 'react-native'
-import {getTop100, getListArtist} from '../../connector/connector'
+import {getTop100, getListArtist, getArtistInfo} from '../../connector/connector'
 import ArtistButton from './ArtistButton';
+import {connect} from 'react-redux';
+import {createStackNavigator} from 'react-navigation';
+import {Icon} from 'react-native-elements'
+import ArtistInfo from './ArtistInfo';
+
 
 class ArtistScene extends Component {
 
     constructor(props){
         super(props);
         this.state = {
-            listArtist: [],
-            topPlaylists: [
-                {
-                    name : 'Top 100 Nhạc Trẻ Việt',
-                    imgUrl : 'https://media.giphy.com/media/QyOI0WGW3vY2s/giphy.gif',
-                    link: 'https://www.nhaccuatui.com/playlist/top-100-nhac-tre-hay-nhat-va.m3liaiy6vVsF.html?st=1'
-                },
-                {
-                    name : 'Top 100 Pop USUK',
-                    imgUrl : 'https://media.giphy.com/media/QyOI0WGW3vY2s/giphy.gif',
-                    link: 'https://www.nhaccuatui.com/playlist/top-100-pop-usuk-hay-nhat-va.zE23R7bc8e9X.html?st=1'
-                },
-                {
-                    name : 'Top 100 Electronica/Dance USUK',
-                    imgUrl : 'https://media.giphy.com/media/QyOI0WGW3vY2s/giphy.gif',
-                    link: 'https://www.nhaccuatui.com/playlist/top-100-electronicadance-hay-nhat-va.ippIsiqacmnE.html?st=1'
-                },
-                {
-                    name : 'Top 100 Nhạc Hàn',
-                    imgUrl : 'https://media.giphy.com/media/QyOI0WGW3vY2s/giphy.gif',
-                    link: 'https://www.nhaccuatui.com/playlist/top-100-nhac-han-hay-nhat-va.iciV0mD8L9Ed.html?st=1'
-                },
-                {
-                    name : 'Top 100 Nhạc Hoa',
-                    imgUrl : 'https://media.giphy.com/media/QyOI0WGW3vY2s/giphy.gif',
-                    link: 'https://www.nhaccuatui.com/playlist/top-100-nhac-hoa-hay-nhat-va.g4Y7NTPP9exf.html?st=1'
-                },
-                {
-                    name : 'Top 100 Nhạc Nhật',
-                    imgUrl : 'https://media.giphy.com/media/QyOI0WGW3vY2s/giphy.gif',
-                    link: 'https://www.nhaccuatui.com/playlist/top-100-nhac-nhat-hay-nhat-va.aOokfjySrloy.html?st=1'
-                },
-                {
-                    name : 'Top 100 Nhạc Không Lời',
-                    imgUrl : 'https://media.giphy.com/media/QyOI0WGW3vY2s/giphy.gif',
-                    link: 'https://www.nhaccuatui.com/top100/top-100-khong-loi.kr9KYNtkzmnA.html'
-                },
-            ]
+            listArtist: []
         };
         
     }
 
     componentDidMount() {
         getListArtist().then(result => {
-            this.setState({listArtist: [...listArtist].concat(result)})
+            console.log(result.length)
+            this.setState({listArtist: [...this.state.listArtist].concat(result)})
         })
     }
     onArtistPress(link){
+        console.log(link)
 
+        getArtistInfo(link).then(result => {
+            console.log(result)
+            this.props.dispatch({name: 'singerInfo', singerInfo: result})
+        })
+
+        this.props.navigation.navigate('ArtistInfo')
     }
     renderArtist = ({item}) => (
         //<Text style = {styles.title}>"aaa"</Text>
@@ -69,10 +45,9 @@ class ArtistScene extends Component {
     )
 
     render() {
-        console.log(this.state.topPlaylists.length)
+        //let singerInfo = this.props.playlists.find(info => playlist.name === 'Home')
         return (
             <View style = {styles.container}>
-            <Text style = {styles.title}>ASDASDLASJDLKASJD</Text>
                 <FlatList
                     data = {this.state.listArtist}
                     renderItem = {this.renderArtist.bind(this)}
@@ -84,7 +59,39 @@ class ArtistScene extends Component {
     }
 }
 
-export default ArtistScene;
+const Artist =  connect()(ArtistScene);
+
+export default ArtistNavigator = createStackNavigator(
+    {
+    ArtistScene: {
+        screen: ArtistScene,
+        navigationOptions: ()=>({
+            header:null,      
+
+        })
+    },
+    ArtistInfo:{
+        screen: ArtistInfo,
+        navigationOptions: ()=>({
+            headerTitle:'Artist',     
+        })
+    }
+},
+{ //router config
+    navigationOptions:{
+        headerTitleStyle:{
+            color: 'white'
+        },
+        headerStyle:{
+            backgroundColor: 'rgba(30,30,30,255)',
+        },
+        headerBackImage: () => (
+            <Icon name = 'keyboard-arrow-left' color = 'white'></Icon>
+          )     
+    },
+    headerLayoutPreset: 'center' 
+}
+);
 
 const styles = StyleSheet.create({
     container: {

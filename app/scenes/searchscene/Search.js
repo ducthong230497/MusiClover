@@ -21,21 +21,28 @@ export default class Search extends Component{
     {
         getDataForSearching("helo").then(result =>{
             this.setState({songs: result.song});
-            this.getSongInfo(songs[0].url);
+            this.getSongInfo(this.state.songs[0].url);
         })
     }
 
     getSongInfo(url)
     {
-        getXmlURL(url).then(xmlUrl=> {
-            getDataFromXmlURL(xmlUrl).then(data => {
-                // data.URL;
-                // data.img;
+        console.log(url)
+        //chỗ này ko dùng hàm này
+        // getXmlURL(url).then(xmlUrl=> {
+        //     getDataFromXmlURL(xmlUrl).then(data => {
+        //         // data.URL;
+        //         // data.img;
 
-                this.setState({img: data.img});
+        //         this.setState({img: data.img});
 
-            });
-        });
+        //     });
+        // });
+        ///////////////////////////
+        // dùng hàm getEncryptKey(url)
+        // rồi sau khi có encryptKey thì gọi hàm getDataFromKeyEncrypt(encrypt, 1)
+        // hàm này sẽ trả về json data có 'singerTitle' 'avatar' 'title'
+        ///////////////////////////
     }
 
     renderSongs = ({item}) => (
