@@ -28,8 +28,8 @@ class ArtistScene extends Component {
         console.log(link)
 
         getArtistInfo(link).then(result => {
-            console.log(result)
-            this.props.dispatch({name: 'singerInfo', singerInfo: result})
+            //console.log(result)
+            //this.props.dispatch({type: 'SetSinger', singerInfo: result})
         })
 
         this.props.navigation.navigate('ArtistInfo')

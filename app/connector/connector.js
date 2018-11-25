@@ -269,9 +269,11 @@ export async function getArtistInfo(url){
            story = story.replace(new RegExp(str, 'ig'), dictionary[key])
         }
         story = story.split("<br />").join("\r\n")
-        console.log(story)
+        //console.log(story)
         
         singerInfo = {
+            coverImage: coverImage,
+            avatarImage: avatarImage,
             name: name,
             realName: realName,
             DoB: DoB,
