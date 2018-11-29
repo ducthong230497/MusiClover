@@ -19,25 +19,27 @@ class ArtistInfo extends Component {
     render() {
         let singer = this.props.singer
         console.log(singer)
+        //this.props.singer ? this.props.singer.coverImage : 'https://avatar-nct.nixcdn.com/singer/cover/2017/08/14/2/d/6/4/1502709681847.jpg'
         return (
             <View style={styles.container}>
                 <View style={styles.coverContainer}>
                     <Image
                         resizeMode="contain"
-                        source={{ uri: 'https://avatar-nct.nixcdn.com/singer/cover/2017/07/31/c/d/3/d/1501520180697.jpg' }}
+                        //source={{ uri: 'https://avatar-nct.nixcdn.com/singer/cover/2017/07/31/c/d/3/d/1501520180697.jpg' }}
+                        source={{ uri: this.props.singer ? this.props.singer.coverImage : 'https://stc-m.nixcdn.com/touch_v2/images/default-avatar-200.jpg' }}
                         style={styles.coverImage} />
                 </View>
-                <View style={styles.avatarContainer}>
-                    <Image style={styles.avatarImage} source={{ uri: 'https://avatar-nct.nixcdn.com/singer/avatar/2018/05/29/3/6/8/8/1527560526533.jpg' }} />
+                 <View style={styles.avatarContainer}>
+                    <Image style={styles.avatarImage} source={{ uri: this.props.singer ? this.props.singer.avatarImage : 'https://stc-m.nixcdn.com/touch_v2/images/default-avatar-200.jpg' }} />
                 </View>
                 <View style={styles.infoContainer}>
-                    <Text style={styles.text}>Tên: {this.state.name}</Text>
-                    <Text style={styles.text}>Tên thật: {this.state.realName}</Text>
-                    <Text style={styles.text}>Ngày sinh: {this.state.DoB}</Text>
-                    <Text style={styles.text}>Quốc gia: {this.state.nationality}</Text>
+                    <Text style={styles.text}>Tên: {this.props.singer ? this.props.singer.name : ""}</Text>
+                    <Text style={styles.text}>Tên thật: {this.props.singer ? this.props.singer.realName : ""}</Text>
+                    <Text style={styles.text}>Ngày sinh: {this.props.singer ? this.props.singer.DoB : ""}</Text>
+                    <Text style={styles.text}>Quốc gia: {this.props.singer ? this.props.singer.nationality : ""}</Text>
                     <Text style={styles.text}>Tiểu sử</Text>
-                    <Text style={styles.text}>{this.state.story}</Text>
-                    <Text style={styles.text}>Playlist</Text>
+                    <Text style={styles.text}>{this.props.singer ? this.props.singer.story : ""}</Text>
+                    <Text style={styles.text}>Playlist: chua lam</Text>
                 </View>
             </View>
         )
@@ -65,7 +67,6 @@ const styles = StyleSheet.create({
         flex: 2,
         justifyContent: 'flex-start',
         alignItems: 'center',
-        backgroundColor: '#FF5CFF',
     },
     avatarContainer:{
         flex: 1,
@@ -89,12 +90,12 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
         justifyContent: 'center',
-        backgroundColor: '#F5FCFF',
+        backgroundColor: '#FF5CFF',
         alignItems: 'stretch',
         position: 'relative',
       },
       coverImage: {
-          resizeMode: 'stretch',
+        resizeMode: 'stretch',
         position: 'absolute',
         top: 0,
         left: 0,
