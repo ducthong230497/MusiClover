@@ -29,7 +29,7 @@ class ArtistScene extends Component {
 
         getArtistInfo(link).then(result => {
             //console.log(result)
-            //this.props.dispatch({type: 'SetSinger', singerInfo: result})
+            this.props.dispatch({type: 'SetSinger', singerInfo: result})
         })
 
         this.props.navigation.navigate('ArtistInfo')
@@ -64,7 +64,7 @@ const Artist =  connect()(ArtistScene);
 export default ArtistNavigator = createStackNavigator(
     {
     ArtistScene: {
-        screen: ArtistScene,
+        screen: Artist,
         navigationOptions: ()=>({
             header:null,      
 

@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import { View, Text, StyleSheet, FlatList, Image, Dimensions } from 'react-native'
 import ArtistScene from './Artist';
+import {connect} from "react-redux"
 
-export default class ArtistInfo extends Component {
+class ArtistInfo extends Component {
 
     constructor(props) {
         super(props)
@@ -42,6 +43,15 @@ export default class ArtistInfo extends Component {
         )
     }
 }
+
+function mapStateToProps(state)
+{
+    return {
+        singer: state.singer.singer
+    }
+}
+
+export default connect(mapStateToProps)(ArtistInfo);
 
 const SCREEN_WIDTH = Dimensions.get('window').width
 const SCREEN_HEIGHT = Dimensions.get('window').height

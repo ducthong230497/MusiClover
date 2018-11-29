@@ -115,8 +115,12 @@ class Loading extends Component{
         }
 
         this.songsSubscription = userCollection.onSnapshot((doc)=>{
-            let songs = doc.data().songs;
+            let songs = doc.data();
             if(songs==null) songs = [];
+            else
+            {
+                songs = doc.data().songs;
+            }
             this.props.dispatch({type: 'SetOnlineSongs', onlineSongs: songs})
             this.setState({isLoadingSongs: false});
         })

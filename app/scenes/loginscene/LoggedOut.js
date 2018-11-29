@@ -84,13 +84,13 @@ export default class LoggedOut extends Component {
                         <Text style={styles.text}>Login</Text>
                     </TouchableHighlight>
 
-                    <TouchableHighlight style={styles.facebookButton} onPress={this.onFacebookButtonPress.bind(this)}>
+                    {/* <TouchableHighlight style={styles.facebookButton} onPress={this.onFacebookButtonPress.bind(this)}>
                         <Text style={styles.text}>Login With Facebook</Text>
                     </TouchableHighlight>
 
                     <TouchableHighlight style={styles.googleButton} onPress={this.onGoogleButtonPress.bind(this)}>
                         <Text style={styles.text}>Login With Google</Text>
-                    </TouchableHighlight>
+                    </TouchableHighlight> */}
                 </View>
                 <TouchableHighlight style={styles.registerButton} onPress={this.props.onRegisterButtonPress}
                 >

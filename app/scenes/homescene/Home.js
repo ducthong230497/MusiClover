@@ -46,11 +46,11 @@ class Home extends Component{
                     imgUrl : 'https://media.giphy.com/media/QyOI0WGW3vY2s/giphy.gif',
                     link: 'https://www.nhaccuatui.com/playlist/top-100-nhac-nhat-hay-nhat-va.aOokfjySrloy.html?st=1'
                 },
-                {
-                    name : 'Top 100 Nhạc Không Lời',
-                    imgUrl : 'https://media.giphy.com/media/QyOI0WGW3vY2s/giphy.gif',
-                    link: 'https://www.nhaccuatui.com/top100/top-100-khong-loi.kr9KYNtkzmnA.html'
-                },
+                // {
+                //     name : 'Top 100 Nhạc Không Lời',
+                //     imgUrl : 'https://media.giphy.com/media/QyOI0WGW3vY2s/giphy.gif',
+                //     link: 'https://www.nhaccuatui.com/top100/top-100-khong-loi.kr9KYNtkzmnA.html'
+                // },
             ]
         }
         
@@ -107,6 +107,7 @@ class Home extends Component{
                     keyExtractor = {item => item.name}
                     numColumns={2}
                 />
+               
             </View>
         )
 
@@ -149,9 +150,11 @@ export default StackNavigator = createStackNavigator({
 const styles = StyleSheet.create({
     container:{
         backgroundColor: 'rgb(4,4,4)',
-        flex: 1
+        flex: 1,
     },
-    
+    space:{
+        height: 50
+    }
 });
 
 
