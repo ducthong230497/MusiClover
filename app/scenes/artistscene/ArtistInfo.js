@@ -1,30 +1,75 @@
 import React, { Component } from 'react'
-import { View, Text, StyleSheet, ScrollView, Image, Dimensions } from 'react-native'
+import { View, Text, StyleSheet, ScrollView, Image, Dimensions, FlatList } from 'react-native'
 import ArtistScene from './Artist';
+import SongButton from '../_components/SongButton'
 import { connect } from "react-redux"
 import {getListBaiHat} from '../../connector/connector'
 
 class ArtistInfo extends Component {
-
+    
     constructor(props) {
         super(props)
         this.state = {
+            index: 0,
             songs: [],
         }
     }
 
     componentDidMount(){
-        if (this.props.singer != null){
-            console.log(this.props.singer.link)
-            getListBaiHat(this.props.singer.link).then(result => {
-
-            })
-        }
+        
     }
+    onSongButtonPress(index)
+    {
+        console.log("song button pressed")
+        // this.props.dispatch({
+        //     type: 'Start', 
+        //     tracks: this.songs, 
+        //     selectedTrackIndex: index
+        // })
+
+        // this.props.navigation.navigate('SongPlayer');
+    }
+
+    onMoreButtonPress(index)
+    {
+        console.log("more song button press index: " + index)
+        // currentSong = this.playlist[index];
+        // this.setState({
+        //     selectedSongName:currentSong.songName, 
+        //     selectedArtist: currentSong.artist, 
+        //     selectedSongURL: currentSong.songURL,
+        //     isSongMoreViewVisible: true
+        // });
+        
+    }
+    renderSongs = ({index, item}) => (
+        <SongButton 
+            imgUrl = {item.songImage}
+            songName = {item.songName}
+            artistName = {item.artist}
+            songIndex = {index}
+            onSongButtonPress = {this.onSongButtonPress.bind(this)}
+            onMoreButtonPress = {this.onMoreButtonPress.bind(this)}>
+        </SongButton>
+    )
 
     render() {
         let singer = this.props.singer
         console.log(singer)
+        if (singer != null && this.state.index == 0)
+        {
+            console.log("get list song from: "+this.props.singer.link)
+            getListBaiHat(this.props.singer.link).then(result => {
+            //     console.log(result.length)
+            //     for(let i = 0; i < result.length; i++){
+            //         console.log("link bai hát: "+result[i].url)
+            // console.log("link default: "+result[i].defaultImage)
+            // console.log("link Image: "+result[i].songImage)
+            //     }
+            this.setState({songs: [...this.state.songs].concat(result)})
+            })
+            this.state.index++;
+        }
         //this.props.singer ? this.props.singer.coverImage : 'https://avatar-nct.nixcdn.com/singer/cover/2017/08/14/2/d/6/4/1502709681847.jpg'
         return (
             <View style={styles.container}>
@@ -46,7 +91,12 @@ class ArtistInfo extends Component {
                         <Text style={styles.text}>Quốc gia: {this.props.singer ? this.props.singer.nationality : ""}</Text>
                         <Text style={styles.text}>Tiểu sử</Text>
                         <Text style={styles.text}>{this.props.singer ? this.props.singer.story : ""}</Text>
-                        <Text style={styles.text}>Bài hát: chua lam</Text>
+                        <Text style={styles.text}>Bài hát:</Text>
+                        <FlatList
+                            data = {this.state.songs}
+                            renderItem = {this.renderSongs.bind(this)}
+                            keyExtractor = {item => item.songName}
+                        />
                     </ScrollView>
                 </View>
             </View>

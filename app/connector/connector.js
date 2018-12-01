@@ -287,14 +287,36 @@ export async function getArtistInfo(url){
 
 export async function getListBaiHat(url){
     console.log("go here")
+    let listSongs = []
     await fetch(url).then(response => {
         let regexBaiHat = /<div class="song_item">([\s\S]*?)<\/ul>/im
         let matchStr = response._bodyInit.toString().match(regexBaiHat).toString().replace('<div class="song_item">', '')
         let regexListBaiHat = /<li class="song_item_single ">([\s\S]*?)<\/li>/ig
         let listBaiHat = matchStr.match(regexListBaiHat)
         console.log(listBaiHat)
-        for(let song in listBaiHat){
-            console.log(song)
+        for(let i = 0; i < 5; i++){
+            //console.log(listBaiHat[i])
+            let url = listBaiHat[i].toString().match(/href="([\s\S]*?)"/i)[1]
+            let defaultImage = listBaiHat[i].toString().match(/img src="([\s\S]*?)"/i)[1]
+            let songImage = listBaiHat[i].toString().match(/data-src="([\s\S]*?)"/i)[1]
+            // console.log("link bai hát: "+url)
+            // console.log("link default: "+defaultImage)
+            // console.log("link Image: "+songImage)
+
+            let songName = listBaiHat[i].toString().match(/title="([\s\S]*?)"/i)[1].toString().split('-')[0]
+            let artist = listBaiHat[i].toString().match(/title="([\s\S]*?)"/i)[1].toString().split('-')[1]
+            console.log(songName)
+            console.log(artist)
+            let song = {
+                songName: songName,
+                artist: artist,
+                url: url,
+                defaultImage: defaultImage,
+                songImage: songImage
+            }
+
+            listSongs.push(song)
         }
     })
+    return listSongs
 }
