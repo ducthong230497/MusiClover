@@ -114,6 +114,8 @@ const AppNavigator = createBottomTabNavigator(
     }
   },
   { //router config
+    animationEnabled: true,
+    swipeEnabled: true,
     initialRouteName: 'Home',
     navigationOptions:{
       tabBarVisible: true,
@@ -121,6 +123,8 @@ const AppNavigator = createBottomTabNavigator(
     tabBarOptions:{
       activeTintColor: 'white',
       inactiveTintColor: 'grey',
+      showLabel: false,
+      showIcon: true,
       style: {
         backgroundColor: 'rgba(30,30,30,255)',
       },

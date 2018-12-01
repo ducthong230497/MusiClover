@@ -42,10 +42,22 @@ class ArtistInfo extends Component {
         // });
         
     }
+
+    formatSongName(songName){
+        formattedSongName=''
+        console.log(songName + " :" + songName.length)
+        if(songName.length > 25){
+            return songName.substring(0, 23) + "..."
+        }
+        else{
+            return songName
+        }
+    }
+
     renderSongs = ({index, item}) => (
         <SongButton 
             imgUrl = {item.songImage}
-            songName = {item.songName}
+            songName = {this.formatSongName(item.songName)}
             artistName = {item.artist}
             songIndex = {index}
             onSongButtonPress = {this.onSongButtonPress.bind(this)}
@@ -56,21 +68,6 @@ class ArtistInfo extends Component {
     render() {
         let singer = this.props.singer
         console.log(singer)
-        if (singer != null && this.state.index == 0)
-        {
-            console.log("get list song from: "+this.props.singer.link)
-            getListBaiHat(this.props.singer.link).then(result => {
-            //     console.log(result.length)
-            //     for(let i = 0; i < result.length; i++){
-            //         console.log("link bai hát: "+result[i].url)
-            // console.log("link default: "+result[i].defaultImage)
-            // console.log("link Image: "+result[i].songImage)
-            //     }
-            this.setState({songs: [...this.state.songs].concat(result)})
-            })
-            this.state.index++;
-        }
-        //this.props.singer ? this.props.singer.coverImage : 'https://avatar-nct.nixcdn.com/singer/cover/2017/08/14/2/d/6/4/1502709681847.jpg'
         return (
             <View style={styles.container}>
                 <View style={styles.coverContainer}>
@@ -93,7 +90,7 @@ class ArtistInfo extends Component {
                         <Text style={styles.text}>{this.props.singer ? this.props.singer.story : ""}</Text>
                         <Text style={styles.text}>Bài hát:</Text>
                         <FlatList
-                            data = {this.state.songs}
+                            data = {this.props.singer ? this.props.singer.listSongs : this.state.songs}
                             renderItem = {this.renderSongs.bind(this)}
                             keyExtractor = {item => item.songName}
                         />
@@ -149,7 +146,6 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
         justifyContent: 'center',
-        backgroundColor: '#FF5CFF',
         alignItems: 'stretch',
         position: 'relative',
     },

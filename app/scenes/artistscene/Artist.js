@@ -28,7 +28,7 @@ class ArtistScene extends Component {
         console.log(link)
 
         getArtistInfo(link).then(result => {
-            //console.log(result)
+            console.log(result.listSongs.length)
             this.props.dispatch({type: 'SetSinger', singerInfo: result})
         })
 
