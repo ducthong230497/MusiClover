@@ -272,6 +272,7 @@ export async function getArtistInfo(url){
         //console.log(story)
         
         singerInfo = {
+            link: url,
             coverImage: coverImage,
             avatarImage: avatarImage,
             name: name,
@@ -282,4 +283,18 @@ export async function getArtistInfo(url){
         }
     })
     return singerInfo
+}
+
+export async function getListBaiHat(url){
+    console.log("go here")
+    await fetch(url).then(response => {
+        let regexBaiHat = /<div class="song_item">([\s\S]*?)<\/ul>/im
+        let matchStr = response._bodyInit.toString().match(regexBaiHat).toString().replace('<div class="song_item">', '')
+        let regexListBaiHat = /<li class="song_item_single ">([\s\S]*?)<\/li>/ig
+        let listBaiHat = matchStr.match(regexListBaiHat)
+        console.log(listBaiHat)
+        for(let song in listBaiHat){
+            console.log(song)
+        }
+    })
 }

@@ -1,18 +1,24 @@
 import React, { Component } from 'react'
-import { View, Text, StyleSheet, FlatList, Image, Dimensions } from 'react-native'
+import { View, Text, StyleSheet, ScrollView, Image, Dimensions } from 'react-native'
 import ArtistScene from './Artist';
-import {connect} from "react-redux"
+import { connect } from "react-redux"
+import {getListBaiHat} from '../../connector/connector'
 
 class ArtistInfo extends Component {
 
     constructor(props) {
         super(props)
         this.state = {
-            name: 'a',
-            realName: 'b',
-            DoB: 'c',
-            nationality: 'd',
-            story: 'e'
+            songs: [],
+        }
+    }
+
+    componentDidMount(){
+        if (this.props.singer != null){
+            console.log(this.props.singer.link)
+            getListBaiHat(this.props.singer.link).then(result => {
+
+            })
         }
     }
 
@@ -29,25 +35,26 @@ class ArtistInfo extends Component {
                         source={{ uri: this.props.singer ? this.props.singer.coverImage : 'https://stc-m.nixcdn.com/touch_v2/images/default-avatar-200.jpg' }}
                         style={styles.coverImage} />
                 </View>
-                 <View style={styles.avatarContainer}>
+                <View style={styles.avatarContainer}>
                     <Image style={styles.avatarImage} source={{ uri: this.props.singer ? this.props.singer.avatarImage : 'https://stc-m.nixcdn.com/touch_v2/images/default-avatar-200.jpg' }} />
                 </View>
                 <View style={styles.infoContainer}>
-                    <Text style={styles.text}>Tên: {this.props.singer ? this.props.singer.name : ""}</Text>
-                    <Text style={styles.text}>Tên thật: {this.props.singer ? this.props.singer.realName : ""}</Text>
-                    <Text style={styles.text}>Ngày sinh: {this.props.singer ? this.props.singer.DoB : ""}</Text>
-                    <Text style={styles.text}>Quốc gia: {this.props.singer ? this.props.singer.nationality : ""}</Text>
-                    <Text style={styles.text}>Tiểu sử</Text>
-                    <Text style={styles.text}>{this.props.singer ? this.props.singer.story : ""}</Text>
-                    <Text style={styles.text}>Playlist: chua lam</Text>
+                    <ScrollView style={styles.scrollViewContainer}>
+                        <Text style={styles.text}>Tên: {this.props.singer ? this.props.singer.name : ""}</Text>
+                        <Text style={styles.text}>Tên thật: {this.props.singer ? this.props.singer.realName : ""}</Text>
+                        <Text style={styles.text}>Ngày sinh: {this.props.singer ? this.props.singer.DoB : ""}</Text>
+                        <Text style={styles.text}>Quốc gia: {this.props.singer ? this.props.singer.nationality : ""}</Text>
+                        <Text style={styles.text}>Tiểu sử</Text>
+                        <Text style={styles.text}>{this.props.singer ? this.props.singer.story : ""}</Text>
+                        <Text style={styles.text}>Bài hát: chua lam</Text>
+                    </ScrollView>
                 </View>
             </View>
         )
     }
 }
 
-function mapStateToProps(state)
-{
+function mapStateToProps(state) {
     return {
         singer: state.singer.singer
     }
@@ -68,7 +75,7 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         alignItems: 'center',
     },
-    avatarContainer:{
+    avatarContainer: {
         flex: 1,
         flexDirection: 'column',
         justifyContent: 'flex-start',
@@ -80,9 +87,11 @@ const styles = StyleSheet.create({
         marginBottom: 2,
         color: 'white',
     },
-    text:{
+    scrollViewContainer:{
+        marginTop: -30,
+    },
+    text: {
         fontSize: 16,
-        marginTop: -10,
         color: 'white',
         marginBottom: 15,
     },
@@ -93,15 +102,15 @@ const styles = StyleSheet.create({
         backgroundColor: '#FF5CFF',
         alignItems: 'stretch',
         position: 'relative',
-      },
-      coverImage: {
+    },
+    coverImage: {
         resizeMode: 'stretch',
         position: 'absolute',
         top: 0,
         left: 0,
         bottom: 0,
         right: 0,
-      },
+    },
     avatarImage: {
         width: SCREEN_WIDTH / 2 - 30,
         height: SCREEN_WIDTH / 2 - 30,
