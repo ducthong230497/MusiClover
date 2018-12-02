@@ -1,9 +1,28 @@
 import React, { Component } from 'react';
-import {View,StyleSheet,Text, TouchableOpacity} from 'react-native';
+import {View,StyleSheet,Text, TouchableOpacity, Image, Animated, Easing} from 'react-native';
 import {Icon} from 'react-native-elements'
 import {connect} from 'react-redux' 
 
 class SongPlayerMinimizer extends Component{
+    state = {
+        spinValue: new Animated.Value(0),  
+    }
+
+    componentDidMount(){
+        this.spin()
+      }
+      spin () {
+        this.state.spinValue.setValue(0)
+        Animated.timing(                  
+          this.state.spinValue,                                   // The animated value to drive
+          {
+              toValue: this.props.toValue || 1,                   // Animate to 360/value
+              duration: this.props.duration || 8000,              // Make it take a while
+              easing: Easing.linear,
+              useNativeDriver: true,
+          }
+      ).start(() => this.spin());
+      }
 
     onWholeButtonPress()
     {
@@ -44,9 +63,17 @@ class SongPlayerMinimizer extends Component{
 
         const track = this.props.tracks[this.props.selectedTrackIndex];
 
+        let spin = this.state.spinValue.interpolate({
+            inputRange: [0, 1],
+            outputRange: ['0deg', '360deg']
+          })
+
         return(
         <TouchableOpacity style = {styles.container} onPress = {this.onWholeButtonPress.bind(this)}>
             <View style = {styles.subcontainer}>
+            <Animated.Image style={{width: 40, height: 40, borderRadius: 40, marginLeft: 10, transform: [{rotate:spin}]}}
+            source={{uri: 'https://stc-m.nixcdn.com/touch_v2/images/default-avatar-200.jpg'}}/>
+                
                 <View style = {styles.songInfoContainer}>
                     <Text style = {styles.songName}>{track.songName}</Text>
                     <Text style = {styles.artistName}>{track.artist}</Text>
@@ -115,6 +142,12 @@ const styles = StyleSheet.create({
   },
   button:{
       paddingRight: 10
+  },
+  Avatar:{
+      width: 40,
+      height: 40,
+      borderRadius:40,
+      marginLeft: 10,
   }
 
 });
