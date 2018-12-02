@@ -17,7 +17,7 @@ class SongPlayerMinimizer extends Component{
           this.state.spinValue,                                   // The animated value to drive
           {
               toValue: this.props.toValue || 1,                   // Animate to 360/value
-              duration: this.props.duration || 8000,              // Make it take a while
+              duration: this.props.duration || 4000,              // Make it take a while
               easing: Easing.linear,
               useNativeDriver: true,
           }
@@ -72,8 +72,7 @@ class SongPlayerMinimizer extends Component{
         <TouchableOpacity style = {styles.container} onPress = {this.onWholeButtonPress.bind(this)}>
             <View style = {styles.subcontainer}>
             <Animated.Image style={{width: 40, height: 40, borderRadius: 40, marginLeft: 10, transform: [{rotate:spin}]}}
-            source={{uri: 'https://stc-m.nixcdn.com/touch_v2/images/default-avatar-200.jpg'}}/>
-                
+            source={{uri: this.props.selectedTrackImage}}/>
                 <View style = {styles.songInfoContainer}>
                     <Text style = {styles.songName}>{track.songName}</Text>
                     <Text style = {styles.artistName}>{track.artist}</Text>
@@ -103,6 +102,7 @@ function mapStateToProps(state)
     return{
         tracks: state.songPlayer.tracks,
         selectedTrackIndex: state.songPlayer.selectedTrackIndex,
+        selectedTrackImage: state.songPlayer.selectedTrackImage,
         paused: state.songPlayer.paused,
         shuffleOn: state.songPlayer.shuffleOn,
         isMinimizerVisible: state.songPlayer.isMinimizerVisible
