@@ -21,13 +21,13 @@ class ArtistInfo extends Component {
     onSongButtonPress(index)
     {
         console.log("song button pressed")
-        // this.props.dispatch({
-        //     type: 'Start', 
-        //     tracks: this.songs, 
-        //     selectedTrackIndex: index
-        // })
+        this.props.dispatch({
+            type: 'Start', 
+            tracks: this.props.singer.listSongs, 
+            selectedTrackIndex: index
+        })
 
-        // this.props.navigation.navigate('SongPlayer');
+        this.props.navigation.navigate('SongPlayer');
     }
 
     onMoreButtonPress(index)
@@ -56,7 +56,7 @@ class ArtistInfo extends Component {
 
     renderSongs = ({index, item}) => (
         <SongButton 
-            imgUrl = {item.songImage}
+            //imgUrl = {item.songImage}
             songName = {this.formatSongName(item.songName)}
             artistName = {item.artist}
             songIndex = {index}
@@ -67,7 +67,6 @@ class ArtistInfo extends Component {
 
     render() {
         let singer = this.props.singer
-        console.log(singer)
         return (
             <View style={styles.container}>
                 <View style={styles.coverContainer}>

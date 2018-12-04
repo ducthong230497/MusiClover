@@ -94,7 +94,7 @@ export async function getEncryptKey(url){
     return encryptKey
 }
 
-var typeEnum = {
+export const typeEnum = {
     SONG: 1,
     PLAYLIST: 2,
     VIDEO: 3, // we dont use this for now

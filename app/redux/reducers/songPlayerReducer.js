@@ -1,5 +1,5 @@
 import {Platform} from 'react-native'
-import {getXmlURL, getDataFromXmlURL} from '../../connector/connector'
+import {getXmlURL, getDataFromXmlURL, getEncryptKey, getDataFromKeyEncrypt, typeEnum} from '../../connector/connector'
 import store from '../store'
 import MusicControl from 'react-native-music-control';
 //Bad performance
@@ -145,6 +145,7 @@ export default (state=initialState, action) => {
 
 function getSongData(index,tracks)
 {
+    //offine
     if(tracks[index].URL && tracks[index].img)
     {
         setTimeout(() => {
@@ -155,19 +156,40 @@ function getSongData(index,tracks)
             })
         }, 1); //set time out to avoid a weird redux's error
     }
-    else
+    else //online
     {
-        getXmlURL(tracks[index].songURL).then(xmlUrl=> {
-            getDataFromXmlURL(xmlUrl).then(data => {
-
-                store.dispatch({
-                    type: 'SetSelectedTrackInfo', 
-                    selectedTrackURL: data.URL, 
-                    selectedTrackImage: data.img
-                })
-
+        console.log("asdsadadasdadadadasdasd")
+        //alert(JSON.stringify(tracks[index]))
+        if (tracks[index].songURL != null)
+        {
+            //console.log("songURL")
+            getXmlURL(tracks[index].songURL).then(xmlUrl=> {
+                getDataFromXmlURL(xmlUrl).then(data => {
+    
+                    store.dispatch({
+                        type: 'SetSelectedTrackInfo', 
+                        selectedTrackURL: data.URL, 
+                        selectedTrackImage: data.img
+                    })
+    
+                });
             });
-        });
+        }
+        else if (tracks[index].url != null){
+            //console.log("link")
+            getEncryptKey(tracks[index].url).then(result => {
+                //console.log("encrypkey: " + result)
+                getDataFromKeyEncrypt(result, typeEnum.SONG).then(data => {
+                    //console.log("json data: " + data)
+                    //alert(JSON.stringify(data))
+                    store.dispatch({
+                        type: 'SetSelectedTrackInfo',
+                        selectedTrackURL: data.location,
+                        selectedTrackImage: data.thumb,
+                    })
+                })
+            })
+        }
     }
 }
 
