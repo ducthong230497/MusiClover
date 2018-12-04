@@ -5,6 +5,7 @@ import RNFetchBlob from 'rn-fetch-blob'
 import {AsyncStorage} from 'react-native'
 import {connect} from 'react-redux'
 import {getXmlURL, getDataFromXmlURL} from '../../connector/connector'
+import Swiper from 'react-native-swiper';
 
 import Header from './Header';
 import AlbumArt from './AlbumArt';
@@ -220,7 +221,11 @@ class SongPlayerMaximizer extends Component {
           message="Playing From Playlist"
           onHideButtonPress = {this.onHideButtonPress.bind(this)}
           onNowPlaylistButtonPress = {this.onNowPlaylistButtonPress.bind(this)} />
+        {/* <Swiper style={styles.swiper}>
         <AlbumArt url={this.props.selectedTrackImage} />
+        <AlbumArt url={this.props.selectedTrackImage} />
+        </Swiper> */}
+          <AlbumArt url={this.props.selectedTrackImage} />
         <TrackDetails 
           title={track.songName} 
           artist={track.artist}
@@ -302,4 +307,8 @@ const styles = {
     width:'100%',
     height: '100%',
   },
+  swiper:{
+    flex:1,
+    height:400,
+  }
 };
