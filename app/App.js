@@ -81,7 +81,7 @@ const AppNavigator = createBottomTabNavigator(
       navigationOptions:{
         tabBarLabel: 'Artist',
         tabBarIcon: ({tintColor}) => (
-          <Icon name = 'person' color = {tintColor}></Icon>
+          <Icon name = 'contacts' color = {tintColor}></Icon>
         )
       }
     },
@@ -123,7 +123,7 @@ const AppNavigator = createBottomTabNavigator(
     tabBarOptions:{
       activeTintColor: 'white',
       inactiveTintColor: 'grey',
-      showLabel: false,
+      showLabel: true,
       showIcon: true,
       style: {
         backgroundColor: 'rgba(30,30,30,255)',
