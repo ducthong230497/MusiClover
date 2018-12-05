@@ -26,7 +26,7 @@ class SongPlayerMaximizer extends Component {
     }
 
     this.toast = React.createRef();
-
+    this.downlyric = true
   }
 
   onSeek(position) {
@@ -157,7 +157,7 @@ class SongPlayerMaximizer extends Component {
 
   downloadData = async (url, appendExt, trackProgress) => {
     let path = null;
-
+    console.log("lyric url: " + url)
     await RNFetchBlob.config({
       // add this option that makes response data to be stored as a file,
       // this is much more performant.
@@ -202,7 +202,14 @@ class SongPlayerMaximizer extends Component {
   render() {
 
     if (!this.props.isMaximizerVisible) return null;
-
+    if (this.props.selectedLyric != null && this.downlyric == true) {
+      this.downlyric = false
+      console.log("Lyric: " + this.props.selectedLyric)
+      this.downloadData(this.props.selectedLyric, 'lrc', false).then(result => {
+        console.log("download path: " + result)
+      })
+    }
+    else console.log("lyric null")
     const track = this.props.tracks[this.props.selectedTrackIndex];
 
     return (
@@ -277,6 +284,7 @@ function mapStateToProps(state) {
     tracks: state.songPlayer.tracks,
     selectedTrackIndex: state.songPlayer.selectedTrackIndex,
     selectedTrackImage: state.songPlayer.selectedTrackImage,
+    selectedLyric: state.songPlayer.selectedLyric,
     totalLength: state.songPlayer.totalLength,
     currentPosition: state.songPlayer.currentPosition,
     paused: state.songPlayer.paused,

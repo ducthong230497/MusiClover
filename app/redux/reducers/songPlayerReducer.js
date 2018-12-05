@@ -10,6 +10,7 @@ const initialState = {
     selectedTrackIndex: 0,
     selectedTrackURL: 'https://aredir.nixcdn.com/dummy.mp3',
     selectedTrackImage: 'https://media.giphy.com/media/QyOI0WGW3vY2s/giphy.gif',
+    selectedLyric: null,
     totalLength: 1,
     currentPosition: 0,
     paused: false,
@@ -50,7 +51,8 @@ export default (state=initialState, action) => {
         return {
             ...state,
             selectedTrackURL: action.selectedTrackURL,
-            selectedTrackImage: action.selectedTrackImage
+            selectedTrackImage: action.selectedTrackImage,
+            selectedLyric: action.selectedLyric,
         }
         case 'Pause':
         return {
@@ -180,12 +182,13 @@ function getSongData(index,tracks)
             getEncryptKey(tracks[index].url).then(result => {
                 //console.log("encrypkey: " + result)
                 getDataFromKeyEncrypt(result, typeEnum.SONG).then(data => {
-                    //console.log("json data: " + data)
+                    console.log("json data: " + data.lyric)
                     //alert(JSON.stringify(data))
                     store.dispatch({
                         type: 'SetSelectedTrackInfo',
                         selectedTrackURL: data.location,
                         selectedTrackImage: data.thumb,
+                        selectedLyric: data.lyric,
                     })
                 })
             })
