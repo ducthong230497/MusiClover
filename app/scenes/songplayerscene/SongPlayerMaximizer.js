@@ -15,6 +15,7 @@ import Controls from './Controls';
 import SongActionView from './SongActionView';
 import NowPlaylistView from './NowPlaylistView';
 import RNFS from 'react-native-fs'
+import CryptoJS from 'crypto-js'
 
 class SongPlayerMaximizer extends Component {
   constructor(props) {
@@ -209,7 +210,14 @@ class SongPlayerMaximizer extends Component {
       this.downloadData(this.props.selectedLyric, 'lrc', false).then(result => {
         console.log("download path: " + result)
         RNFS.readFile(result, 'utf8').then(content => {
-          console.log("download content: " + content)
+          //console.log("download content: " + content) Lyr1cjust4nct
+          let key = CryptoJS.enc.Hex.parse('Lyr1cjust4nct')
+          console.log("key: " + key)
+          let test = CryptoJS.RC4.decrypt(content, 'Lyr1cjust4nct')
+          if (test != null)
+          console.log(test)
+          else
+          console.log("test is null")
         })
       })
     }
