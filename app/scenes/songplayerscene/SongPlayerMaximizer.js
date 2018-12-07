@@ -14,6 +14,7 @@ import SeekBar from './SeekBar';
 import Controls from './Controls';
 import SongActionView from './SongActionView';
 import NowPlaylistView from './NowPlaylistView';
+import RNFS from 'react-native-fs'
 
 class SongPlayerMaximizer extends Component {
   constructor(props) {
@@ -207,6 +208,9 @@ class SongPlayerMaximizer extends Component {
       console.log("Lyric: " + this.props.selectedLyric)
       this.downloadData(this.props.selectedLyric, 'lrc', false).then(result => {
         console.log("download path: " + result)
+        RNFS.readFile(result, 'utf8').then(content => {
+          console.log("download content: " + content)
+        })
       })
     }
     else console.log("lyric null")
