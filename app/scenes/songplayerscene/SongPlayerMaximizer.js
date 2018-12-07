@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StatusBar, ScrollView, Button } from 'react-native';
+import { View, StatusBar, ScrollView, Text } from 'react-native';
 import Toast from 'react-native-easy-toast'
 import RNFetchBlob from 'rn-fetch-blob'
 import { AsyncStorage } from 'react-native'
@@ -26,7 +26,7 @@ class SongPlayerMaximizer extends Component {
       isAddToPlaylistViewVisible: false,
       isNowPlaylistViewVisible: false
     }
-
+    this.songLyric=''
     this.toast = React.createRef();
     this.downlyric = true
   }
@@ -201,6 +201,85 @@ class SongPlayerMaximizer extends Component {
     this.setState({ isNowPlaylistViewVisible: false });
   }
 
+  hexStringToByteArray(hexString){
+    let result = [];
+    while (hexString.length >= 2) { 
+        result.push(parseInt(hexString.substring(0, 2), 16));
+
+        hexString = hexString.substring(2, hexString.length);
+    }
+    console.log("hex string: " + result)
+    return result;
+  }
+
+  keyStringToByteArray(keyString){
+    let result = []
+    for (let i = 0; i < keyString.length; i++){
+      result.push(keyString.charCodeAt(i))
+    }
+    console.log(result)
+    return result
+  }
+
+Decode(key, data){
+  let cipher = []
+  let S = []
+  let K = []
+  console.log(key)
+  for (let i = 0; i < 256; i++)
+  {
+     S.push(i);
+     console.log(key[i % key.length])
+     K.push(key[i % key.length]);
+  }
+  let j = 0
+  for (let i = 0; i < 256; i++) {
+    j = (j + S[i] + K[i]) % 256; // Formular
+    console.log("i: " + i + " ,j: " + j + " S[i]: " + S[i] + " K[i]: " + K[i])
+    let tmp = S[i];
+    S[i] = S[j];
+    S[j] = tmp;
+    // swap(ref S[i], ref S[j]);
+  }
+  console.log(S)
+  // 2. Find Gramma
+  let Q1 = 0
+  let Q2 = 0
+  let T = 0
+  
+  // Algorithm
+  for (let i = 0; i < data.length; i++)
+  {
+      Q1++;
+      Q1 = (Q1) % 256;
+      Q2 = (Q2 + S[Q1]) % 256;
+
+      let tmp = S[Q1];
+      S[Q1] = S[Q2];
+      S[Q2] = tmp;
+      // swap(ref S[Q1], ref S[Q2]);
+
+      T = (S[Q1] + S[Q2]) % 256;
+
+      let Gamma = S[T];
+      let temp = data[i] ^ Gamma
+      //console.log("temp : " + temp)
+      cipher.push((data[i] ^ Gamma))
+  }
+  console.log(cipher)
+  return cipher
+}
+
+getLyric(cipher){
+  let result = ''
+
+  for(let i = 0;i < cipher.length; i++){
+    result += ( String.fromCharCode(parseInt(cipher[i])))
+    
+  }
+  return result
+}
+
   render() {
 
     if (!this.props.isMaximizerVisible) return null;
@@ -210,14 +289,24 @@ class SongPlayerMaximizer extends Component {
       this.downloadData(this.props.selectedLyric, 'lrc', false).then(result => {
         console.log("download path: " + result)
         RNFS.readFile(result, 'utf8').then(content => {
-          //console.log("download content: " + content) Lyr1cjust4nct
-          let key = CryptoJS.enc.Hex.parse('Lyr1cjust4nct')
-          console.log("key: " + key)
-          let test = CryptoJS.RC4.decrypt(content, 'Lyr1cjust4nct')
-          if (test != null)
-          console.log(test)
-          else
-          console.log("test is null")
+          //console.log("download content: " + content) //Lyr1cjust4nct U2FsdGVkX19M0EUVPECEA2SWxq0wc/s=
+          
+          // let encrypt = CryptoJS.RC4.encrypt('testString', 'testKey')
+          // console.log("encrypt: " + encrypt)
+          // let decrypt = CryptoJS.RC4.decrypt(encrypt, 'testKey')
+          // console.log("decrypt: " + decrypt)
+          // let str = CryptoJS.enc.Utf8.stringify(decrypt)
+          //===============================
+          // let decrypt = CryptoJS.RC4.decrypt('BF24AA05A1C1BB9E3EBAC6AFCEE077A0F2A9018E', 'Lyr1cjust4nct')
+          // console.log(decrypt)
+          // let lyric = CryptoJS.enc.Utf8.stringify(decrypt)
+          // console.log(lyric)
+          //================ BF24AA05A1C1BB9E3EBAC6AFCEE077A0F2A9018E
+          let data = this.hexStringToByteArray(content)
+          let key = this.keyStringToByteArray('Lyr1cjust4nct')
+          let bytes = this.Decode(key, data)
+          this.songLyric = this.getLyric(bytes)
+          //console.log(lyric)
         })
       })
     }
@@ -235,7 +324,7 @@ class SongPlayerMaximizer extends Component {
           <Swiper style={styles.swiper}>
             <AlbumArt url={this.props.selectedTrackImage} />
             <ScrollView>
-              <Button title="asdadasdasd" style={{height: 100}}/>
+              <Text style = {styles.title}>{this.songLyric}</Text> 
             </ScrollView>
           </Swiper>
         </View>
@@ -327,6 +416,12 @@ const styles = {
   swiperContainer: {
     flex: 10,
 
-  }
+  },
+  title:{
+    fontSize: 12,
+    marginTop: 10,
+    marginBottom: 10,
+    color: 'white',
+},
 
 };
