@@ -6,6 +6,7 @@ import { AsyncStorage } from 'react-native'
 import { connect } from 'react-redux'
 import { getXmlURL, getDataFromXmlURL } from '../../connector/connector'
 import Swiper from 'react-native-swiper';
+import {LyricText} from './LyricText'
 
 import Header from './Header';
 import AlbumArt from './AlbumArt';
@@ -15,7 +16,6 @@ import Controls from './Controls';
 import SongActionView from './SongActionView';
 import NowPlaylistView from './NowPlaylistView';
 import RNFS from 'react-native-fs'
-import CryptoJS from 'crypto-js'
 
 class SongPlayerMaximizer extends Component {
   constructor(props) {
@@ -29,13 +29,17 @@ class SongPlayerMaximizer extends Component {
     this.songLyric=''
     this.listLyricTime = []
     this.listLyric  = []
+    this.listLyricAndTime = []
     this.toast = React.createRef();
     this.downlyric = true
   }
 
   onSeek(position) {
+    console.log("onseek")
     this.props.songPlayer.current.seek(position)
     this.props.dispatch({ type: 'SetCurrentPosition', currentPosition: Math.floor(position) })
+    console.log(position)
+    console.log(this.props.totalLength)
   }
 
   onBack() {
@@ -223,7 +227,7 @@ class SongPlayerMaximizer extends Component {
     return result
   }
 
-Decode(key, data){
+  Decode(key, data){
   let cipher = []
   let S = []
   let K = []
@@ -270,9 +274,9 @@ Decode(key, data){
   }
   console.log(cipher)
   return cipher
-}
+  }
 
-getLyric(cipher){
+  getLyric(cipher){
   let result = ''
 
   for(let i = 0;i < cipher.length; i++){
@@ -280,27 +284,35 @@ getLyric(cipher){
     
   }
   return result
-}
+  }
 
-splitLyric(lyric){
+  splitLyric(lyric){
   let listLyricWithTime = lyric.split('\n')
   this.listLyricTime = []
   this.listLyric = []
+  this.listLyricAndTime = []
   for(let i = 0; i < listLyricWithTime.length; i++){
-    console.log(listLyricWithTime[i].substring(1, 9))
+    //console.log(listLyricWithTime[i].substring(1, 9))
     let listTime = listLyricWithTime[i].substring(1, 9).split(':')
     let timeInSecond = parseFloat(listTime[0]) * 60 + parseFloat(listTime[1])
     this.listLyricTime.push(timeInSecond)
     this.listLyric.push(listLyricWithTime[i].substring(10))
-  }
-}
 
-renderLyric= ({item}) => (
+    let lyricAndTime = {
+      lyric: listLyricWithTime[i].substring(10),
+      time: timeInSecond
+    }
+    this.listLyricAndTime.push(lyricAndTime)
+  }
+  }
+
+  renderLyric= ({item}) => (
   //<Text style = {styles.title}>"aaa"</Text>
-  <Text
-      style = {styles.title}
+  <LyricText
+      text= {item.lyric}
+      time= {item.timeInSecond}
   />
-)
+  )
   render() {
 
     if (!this.props.isMaximizerVisible) return null;
@@ -309,7 +321,9 @@ renderLyric= ({item}) => (
       console.log(this.props.loadNewLyric)
       console.log("Lyric: " + this.props.selectedLyric)
       if(this.props.selectedLyric == ""){
+        this.listLyricTime = []
         this.listLyric = []
+        this.listLyricAndTime = []
         return null
       }
       this.downloadData(this.props.selectedLyric, 'lrc', false).then(result => {
@@ -353,8 +367,8 @@ renderLyric= ({item}) => (
             <AlbumArt url={this.props.selectedTrackImage} />
             <ScrollView>
             <FlatList
-                    data = {this.listLyric}
-                    renderItem={({item}) => <Text style={styles.title}>{item}</Text>}
+                    data = {this.listLyricAndTime}
+                    renderItem={this.renderLyric.bind(this)}
                     keyExtractor={(item, index) => index.toString()}
                 />
             </ScrollView>
