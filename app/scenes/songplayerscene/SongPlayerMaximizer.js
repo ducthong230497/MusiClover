@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StatusBar, ScrollView, Text } from 'react-native';
+import { View, StatusBar, ScrollView, Text, FlatList } from 'react-native';
 import Toast from 'react-native-easy-toast'
 import RNFetchBlob from 'rn-fetch-blob'
 import { AsyncStorage } from 'react-native'
@@ -27,6 +27,8 @@ class SongPlayerMaximizer extends Component {
       isNowPlaylistViewVisible: false
     }
     this.songLyric=''
+    this.listLyricTime = []
+    this.listLyric  = []
     this.toast = React.createRef();
     this.downlyric = true
   }
@@ -280,12 +282,36 @@ getLyric(cipher){
   return result
 }
 
+splitLyric(lyric){
+  let listLyricWithTime = lyric.split('\n')
+  this.listLyricTime = []
+  this.listLyric = []
+  for(let i = 0; i < listLyricWithTime.length; i++){
+    console.log(listLyricWithTime[i].substring(1, 9))
+    let listTime = listLyricWithTime[i].substring(1, 9).split(':')
+    let timeInSecond = parseFloat(listTime[0]) * 60 + parseFloat(listTime[1])
+    this.listLyricTime.push(timeInSecond)
+    this.listLyric.push(listLyricWithTime[i].substring(10))
+  }
+}
+
+renderLyric= ({item}) => (
+  //<Text style = {styles.title}>"aaa"</Text>
+  <Text
+      style = {styles.title}
+  />
+)
   render() {
 
     if (!this.props.isMaximizerVisible) return null;
-    if (this.props.selectedLyric != null && this.downlyric == true) {
-      this.downlyric = false
+    if (this.props.selectedLyric != null && this.props.loadNewLyric == true) {
+      this.props.dispatch({ type: 'LoadNewLyricFalse' }) 
+      console.log(this.props.loadNewLyric)
       console.log("Lyric: " + this.props.selectedLyric)
+      if(this.props.selectedLyric == ""){
+        this.listLyric = []
+        return null
+      }
       this.downloadData(this.props.selectedLyric, 'lrc', false).then(result => {
         console.log("download path: " + result)
         RNFS.readFile(result, 'utf8').then(content => {
@@ -305,7 +331,9 @@ getLyric(cipher){
           let data = this.hexStringToByteArray(content)
           let key = this.keyStringToByteArray('Lyr1cjust4nct')
           let bytes = this.Decode(key, data)
-          this.songLyric = this.getLyric(bytes)
+          let lyric = this.getLyric(bytes)
+          this.songLyric = lyric
+          this.splitLyric(lyric)
           //console.log(lyric)
         })
       })
@@ -324,7 +352,11 @@ getLyric(cipher){
           <Swiper style={styles.swiper}>
             <AlbumArt url={this.props.selectedTrackImage} />
             <ScrollView>
-              <Text style = {styles.title}>{this.songLyric}</Text> 
+            <FlatList
+                    data = {this.listLyric}
+                    renderItem={({item}) => <Text style={styles.title}>{item}</Text>}
+                    keyExtractor={(item, index) => index.toString()}
+                />
             </ScrollView>
           </Swiper>
         </View>
@@ -386,6 +418,7 @@ function mapStateToProps(state) {
     selectedTrackIndex: state.songPlayer.selectedTrackIndex,
     selectedTrackImage: state.songPlayer.selectedTrackImage,
     selectedLyric: state.songPlayer.selectedLyric,
+    loadNewLyric: state.songPlayer.loadNewLyric,
     totalLength: state.songPlayer.totalLength,
     currentPosition: state.songPlayer.currentPosition,
     paused: state.songPlayer.paused,
@@ -418,10 +451,14 @@ const styles = {
 
   },
   title:{
-    fontSize: 12,
-    marginTop: 10,
-    marginBottom: 10,
+    fontSize: 15,
+    textAlign: 'center',
     color: 'white',
-},
+  },
+  highlightText:{
+    fontSize: 15,
+    textAlign: 'center',
+    color: '#D269FF',
+  }
 
 };

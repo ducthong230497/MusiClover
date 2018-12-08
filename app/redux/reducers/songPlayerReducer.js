@@ -11,6 +11,7 @@ const initialState = {
     selectedTrackURL: 'https://aredir.nixcdn.com/dummy.mp3',
     selectedTrackImage: 'https://media.giphy.com/media/QyOI0WGW3vY2s/giphy.gif',
     selectedLyric: null,
+    loadNewLyric: false,
     totalLength: 1,
     currentPosition: 0,
     paused: false,
@@ -53,6 +54,12 @@ export default (state=initialState, action) => {
             selectedTrackURL: action.selectedTrackURL,
             selectedTrackImage: action.selectedTrackImage,
             selectedLyric: action.selectedLyric,
+            loadNewLyric: action.loadNewLyric,
+        }
+        case 'LoadNewLyricFalse':
+        return {
+            ...state,
+            loadNewLyric: false,
         }
         case 'Pause':
         return {
@@ -189,6 +196,7 @@ function getSongData(index,tracks)
                         selectedTrackURL: data.location,
                         selectedTrackImage: data.thumb,
                         selectedLyric: data.lyric,
+                        loadNewLyric: true,
                     })
                 })
             })
