@@ -1,23 +1,28 @@
 import React, {Component} from 'react'
 import {View, Text, StyleSheet} from 'react-native'
 import { connect } from 'react-redux'
-export class LyricText extends Component{
+class LyricText extends Component{
     constructor(props){
         super(props)
+        this.state = {
+            textColor: "white"
+        }
     }
     render(){
-        let textColor = 'white'
+        
         if (this.props.currentPosition != null){
-            if (this.props.currentPosition >= this.props.time)
+            //console.log("go here")
+            if ((this.props.currentPosition + 1 >= this.props.lyricTime) && this.state.textColor == "white")
             {
-                textColor = '#D269FF'
+                //console.log(this.props.text + " - " + this.props.currentPosition + " - " + this.props.lyricTime)
+                this.setState({textColor: '#D269FF'})
             }
         }
         else{
             console.log("currentPosition null")
         }
         return(
-            <Text style={{fontSize: 15, textAlign: 'center', color: textColor}}>{this.props.text}</Text>
+            <Text style={{fontSize: 15, textAlign: 'center', color: this.state.textColor}}>{this.props.text}</Text>
         )
     }
 }

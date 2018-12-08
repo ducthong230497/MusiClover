@@ -6,7 +6,7 @@ import { AsyncStorage } from 'react-native'
 import { connect } from 'react-redux'
 import { getXmlURL, getDataFromXmlURL } from '../../connector/connector'
 import Swiper from 'react-native-swiper';
-import {LyricText} from './LyricText'
+import LyricText from './LyricText'
 
 import Header from './Header';
 import AlbumArt from './AlbumArt';
@@ -26,9 +26,9 @@ class SongPlayerMaximizer extends Component {
       isAddToPlaylistViewVisible: false,
       isNowPlaylistViewVisible: false
     }
-    this.songLyric=''
+    this.songLyric = ''
     this.listLyricTime = []
-    this.listLyric  = []
+    this.listLyric = []
     this.listLyricAndTime = []
     this.toast = React.createRef();
     this.downlyric = true
@@ -37,7 +37,7 @@ class SongPlayerMaximizer extends Component {
   onSeek(position) {
     console.log("onseek")
     this.props.songPlayer.current.seek(position)
-    this.props.dispatch({ type: 'SetCurrentPosition', currentPosition: Math.floor(position) })
+    this.props.dispatch({ type: 'SetCurrentPosition', currentPosition: (position) })
     console.log(position)
     console.log(this.props.totalLength)
   }
@@ -207,55 +207,53 @@ class SongPlayerMaximizer extends Component {
     this.setState({ isNowPlaylistViewVisible: false });
   }
 
-  hexStringToByteArray(hexString){
+  hexStringToByteArray(hexString) {
     let result = [];
-    while (hexString.length >= 2) { 
-        result.push(parseInt(hexString.substring(0, 2), 16));
+    while (hexString.length >= 2) {
+      result.push(parseInt(hexString.substring(0, 2), 16));
 
-        hexString = hexString.substring(2, hexString.length);
+      hexString = hexString.substring(2, hexString.length);
     }
-    console.log("hex string: " + result)
+    //console.log("hex string: " + result)
     return result;
   }
 
-  keyStringToByteArray(keyString){
+  keyStringToByteArray(keyString) {
     let result = []
-    for (let i = 0; i < keyString.length; i++){
+    for (let i = 0; i < keyString.length; i++) {
       result.push(keyString.charCodeAt(i))
     }
-    console.log(result)
+    //console.log(result)
     return result
   }
 
-  Decode(key, data){
-  let cipher = []
-  let S = []
-  let K = []
-  console.log(key)
-  for (let i = 0; i < 256; i++)
-  {
-     S.push(i);
-     console.log(key[i % key.length])
-     K.push(key[i % key.length]);
-  }
-  let j = 0
-  for (let i = 0; i < 256; i++) {
-    j = (j + S[i] + K[i]) % 256; // Formular
-    console.log("i: " + i + " ,j: " + j + " S[i]: " + S[i] + " K[i]: " + K[i])
-    let tmp = S[i];
-    S[i] = S[j];
-    S[j] = tmp;
-    // swap(ref S[i], ref S[j]);
-  }
-  console.log(S)
-  // 2. Find Gramma
-  let Q1 = 0
-  let Q2 = 0
-  let T = 0
-  
-  // Algorithm
-  for (let i = 0; i < data.length; i++)
-  {
+  Decode(key, data) {
+    let cipher = []
+    let S = []
+    let K = []
+    //console.log(key)
+    for (let i = 0; i < 256; i++) {
+      S.push(i);
+      //console.log(key[i % key.length])
+      K.push(key[i % key.length]);
+    }
+    let j = 0
+    for (let i = 0; i < 256; i++) {
+      j = (j + S[i] + K[i]) % 256; // Formular
+      //console.log("i: " + i + " ,j: " + j + " S[i]: " + S[i] + " K[i]: " + K[i])
+      let tmp = S[i];
+      S[i] = S[j];
+      S[j] = tmp;
+      // swap(ref S[i], ref S[j]);
+    }
+    //console.log(S)
+    // 2. Find Gramma
+    let Q1 = 0
+    let Q2 = 0
+    let T = 0
+
+    // Algorithm
+    for (let i = 0; i < data.length; i++) {
       Q1++;
       Q1 = (Q1) % 256;
       Q2 = (Q2 + S[Q1]) % 256;
@@ -271,56 +269,57 @@ class SongPlayerMaximizer extends Component {
       let temp = data[i] ^ Gamma
       //console.log("temp : " + temp)
       cipher.push((data[i] ^ Gamma))
-  }
-  console.log(cipher)
-  return cipher
-  }
-
-  getLyric(cipher){
-  let result = ''
-
-  for(let i = 0;i < cipher.length; i++){
-    result += ( String.fromCharCode(parseInt(cipher[i])))
-    
-  }
-  return result
-  }
-
-  splitLyric(lyric){
-  let listLyricWithTime = lyric.split('\n')
-  this.listLyricTime = []
-  this.listLyric = []
-  this.listLyricAndTime = []
-  for(let i = 0; i < listLyricWithTime.length; i++){
-    //console.log(listLyricWithTime[i].substring(1, 9))
-    let listTime = listLyricWithTime[i].substring(1, 9).split(':')
-    let timeInSecond = parseFloat(listTime[0]) * 60 + parseFloat(listTime[1])
-    this.listLyricTime.push(timeInSecond)
-    this.listLyric.push(listLyricWithTime[i].substring(10))
-
-    let lyricAndTime = {
-      lyric: listLyricWithTime[i].substring(10),
-      time: timeInSecond
     }
-    this.listLyricAndTime.push(lyricAndTime)
-  }
+    //console.log(cipher)
+    return cipher
   }
 
-  renderLyric= ({item}) => (
-  //<Text style = {styles.title}>"aaa"</Text>
-  <LyricText
-      text= {item.lyric}
-      time= {item.timeInSecond}
-  />
+  getLyric(cipher) {
+    let result = ''
+
+    for (let i = 0; i < cipher.length; i++) {
+      result += (String.fromCharCode(parseInt(cipher[i])))
+
+    }
+    return result
+  }
+
+  splitLyric(lyric) {
+    let listLyricWithTime = lyric.split('\n')
+    this.listLyricTime = []
+    this.listLyric = []
+    this.listLyricAndTime = []
+    for (let i = 0; i < listLyricWithTime.length; i++) {
+      //console.log(listLyricWithTime[i].substring(1, 9))
+      let listTime = listLyricWithTime[i].substring(1, 9).split(':')
+      let timeInSecond = parseFloat(listTime[0]) * 60 + parseFloat(listTime[1])
+      this.listLyricTime.push(timeInSecond)
+      this.listLyric.push(listLyricWithTime[i].substring(10))
+
+      let lyricAndTime = {
+        lyric: listLyricWithTime[i].substring(10),
+        time: timeInSecond
+      }
+      //console.log("time in second: " + lyricAndTime.time)
+      this.listLyricAndTime.push(lyricAndTime)
+    }
+  }
+
+  renderLyric = ({item}) => (
+
+    <LyricText
+      text={item.lyric}
+      lyricTime={item.time}
+    />
   )
   render() {
 
     if (!this.props.isMaximizerVisible) return null;
     if (this.props.selectedLyric != null && this.props.loadNewLyric == true) {
-      this.props.dispatch({ type: 'LoadNewLyricFalse' }) 
+      this.props.dispatch({ type: 'LoadNewLyricFalse' })
       console.log(this.props.loadNewLyric)
       console.log("Lyric: " + this.props.selectedLyric)
-      if(this.props.selectedLyric == ""){
+      if (this.props.selectedLyric == "") {
         this.listLyricTime = []
         this.listLyric = []
         this.listLyricAndTime = []
@@ -330,7 +329,7 @@ class SongPlayerMaximizer extends Component {
         console.log("download path: " + result)
         RNFS.readFile(result, 'utf8').then(content => {
           //console.log("download content: " + content) //Lyr1cjust4nct U2FsdGVkX19M0EUVPECEA2SWxq0wc/s=
-          
+
           // let encrypt = CryptoJS.RC4.encrypt('testString', 'testKey')
           // console.log("encrypt: " + encrypt)
           // let decrypt = CryptoJS.RC4.decrypt(encrypt, 'testKey')
@@ -352,7 +351,7 @@ class SongPlayerMaximizer extends Component {
         })
       })
     }
-    else console.log("lyric null")
+    //else console.log("lyric null")
     const track = this.props.tracks[this.props.selectedTrackIndex];
 
     return (
@@ -366,11 +365,11 @@ class SongPlayerMaximizer extends Component {
           <Swiper style={styles.swiper}>
             <AlbumArt url={this.props.selectedTrackImage} />
             <ScrollView>
-            <FlatList
-                    data = {this.listLyricAndTime}
-                    renderItem={this.renderLyric.bind(this)}
-                    keyExtractor={(item, index) => index.toString()}
-                />
+              <FlatList
+                data={this.listLyricAndTime}
+                renderItem={this.renderLyric.bind(this)}
+                keyExtractor={(item, index) => index.toString()}
+              />
             </ScrollView>
           </Swiper>
         </View>
@@ -464,12 +463,12 @@ const styles = {
     flex: 10,
 
   },
-  title:{
+  title: {
     fontSize: 15,
     textAlign: 'center',
     color: 'white',
   },
-  highlightText:{
+  highlightText: {
     fontSize: 15,
     textAlign: 'center',
     color: '#D269FF',
