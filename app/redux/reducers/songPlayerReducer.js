@@ -1,5 +1,5 @@
 import {Platform} from 'react-native'
-import {getXmlURL, getDataFromXmlURL} from '../../connector/connector'
+import {getXmlURL, getDataFromXmlURL, getEncryptKey, getDataFromKeyEncrypt, typeEnum} from '../../connector/connector'
 import store from '../store'
 import MusicControl from 'react-native-music-control';
 //Bad performance
@@ -10,6 +10,8 @@ const initialState = {
     selectedTrackIndex: 0,
     selectedTrackURL: 'https://aredir.nixcdn.com/dummy.mp3',
     selectedTrackImage: 'https://media.giphy.com/media/QyOI0WGW3vY2s/giphy.gif',
+    selectedLyric: null,
+    loadNewLyric: false,
     totalLength: 1,
     currentPosition: 0,
     paused: false,
@@ -50,7 +52,14 @@ export default (state=initialState, action) => {
         return {
             ...state,
             selectedTrackURL: action.selectedTrackURL,
-            selectedTrackImage: action.selectedTrackImage
+            selectedTrackImage: action.selectedTrackImage,
+            selectedLyric: action.selectedLyric,
+            loadNewLyric: action.loadNewLyric,
+        }
+        case 'LoadNewLyricFalse':
+        return {
+            ...state,
+            loadNewLyric: false,
         }
         case 'Pause':
         return {
@@ -74,13 +83,20 @@ export default (state=initialState, action) => {
             currentPosition: action.currentPosition
         }
         case 'NextTrack':
-        getSongData(state.selectedTrackIndex+1, state.tracks);
-        return {
-            ...state,
-            currentPosition: 0, 
-            paused: false, 
-            totalLength: 1, 
-            selectedTrackIndex: state.selectedTrackIndex + 1
+        if(state.selectedTrackIndex+1 < state.tracks.length)
+        {
+            getSongData(state.selectedTrackIndex+1, state.tracks);
+            return {
+                ...state,
+                currentPosition: 0, 
+                paused: false, 
+                totalLength: 1, 
+                selectedTrackIndex: state.selectedTrackIndex + 1
+            }
+        }
+        else
+        {
+            return state;
         }
         case 'NextShuffleTrack':
         let randomTrackIndex = Math.floor(Math.random() * state.tracks.length);
@@ -145,6 +161,7 @@ export default (state=initialState, action) => {
 
 function getSongData(index,tracks)
 {
+    //offine
     if(tracks[index].URL && tracks[index].img)
     {
         setTimeout(() => {
@@ -155,19 +172,42 @@ function getSongData(index,tracks)
             })
         }, 1); //set time out to avoid a weird redux's error
     }
-    else
+    else //online
     {
-        getXmlURL(tracks[index].songURL).then(xmlUrl=> {
-            getDataFromXmlURL(xmlUrl).then(data => {
-
-                store.dispatch({
-                    type: 'SetSelectedTrackInfo', 
-                    selectedTrackURL: data.URL, 
-                    selectedTrackImage: data.img
-                })
-
+        //console.log("asdsadadasdadadadasdasd")
+        //alert(JSON.stringify(tracks[index]))
+        if (tracks[index].songURL != null)
+        {
+            //console.log("songURL")
+            getXmlURL(tracks[index].songURL).then(xmlUrl=> {
+                getDataFromXmlURL(xmlUrl).then(data => {
+    
+                    store.dispatch({
+                        type: 'SetSelectedTrackInfo', 
+                        selectedTrackURL: data.URL, 
+                        selectedTrackImage: data.img
+                    })
+    
+                });
             });
-        });
+        }
+        else if (tracks[index].url != null){
+            //console.log("link")
+            getEncryptKey(tracks[index].url).then(result => {
+                //console.log("encrypkey: " + result)
+                getDataFromKeyEncrypt(result, typeEnum.SONG).then(data => {
+                    console.log("json data: " + data.lyric)
+                    //alert(JSON.stringify(data))
+                    store.dispatch({
+                        type: 'SetSelectedTrackInfo',
+                        selectedTrackURL: data.location,
+                        selectedTrackImage: data.thumb,
+                        selectedLyric: data.lyric,
+                        loadNewLyric: true,
+                    })
+                })
+            })
+        }
     }
 }
 

@@ -138,6 +138,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-fs')
     compile project(':react-native-music-control')
     compile project(':rn-fetch-blob')
     compile project(':react-native-firebase')

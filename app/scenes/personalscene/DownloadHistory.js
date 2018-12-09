@@ -14,7 +14,7 @@ class DownloadHistory extends Component{
             selectedTrackIndex: index
         })
 
-        this.props.navigation.navigate('SongPlayer');
+        //this.props.navigation.navigate('SongPlayer');
     }
 
     renderSongs = ({index, item}) => (

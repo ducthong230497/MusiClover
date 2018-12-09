@@ -1,7 +1,7 @@
 export async function getTop100(url)
 {
     //getDataForSearching("lac troi")
-    getDataFromKeyEncrypt("68584e88cf4d193d9a0f6e799c6228e5", typeEnum.SONG)
+    //getDataFromKeyEncrypt("68584e88cf4d193d9a0f6e799c6228e5", typeEnum.SONG)
     let listSong = [];
     url = url == null ? 'https://www.nhaccuatui.com/playlist/top-100-nhac-tre-hay-nhat-va.m3liaiy6vVsF.html' : url 
     await fetch(url).then((response) => {
@@ -94,7 +94,7 @@ export async function getEncryptKey(url){
     return encryptKey
 }
 
-var typeEnum = {
+export const typeEnum = {
     SONG: 1,
     PLAYLIST: 2,
     VIDEO: 3, // we dont use this for now
@@ -271,15 +271,84 @@ export async function getArtistInfo(url){
         story = story.split("<br />").join("\r\n")
         //console.log(story)
         
+        listSongs = []
+        let regexBaiHat = /<div class="song_item">([\s\S]*?)<\/ul>/im
+        let matchSongItem = response._bodyInit.toString().match(regexBaiHat).toString().replace('<div class="song_item">', '')
+        let regexListBaiHat = /<li class="song_item_single ">([\s\S]*?)<\/li>/ig
+        let listBaiHat = matchSongItem.match(regexListBaiHat)
+        //console.log(listBaiHat)
+        for(let i = 0; i < 5; i++){
+            //console.log(listBaiHat[i])
+            let url = listBaiHat[i].toString().match(/href="([\s\S]*?)"/i)[1]
+            let defaultImage = listBaiHat[i].toString().match(/img src="([\s\S]*?)"/i)[1]
+            let songImage = listBaiHat[i].toString().match(/data-src="([\s\S]*?)"/i)[1]
+            // console.log("link bai hát: "+url)
+            // console.log("link default: "+defaultImage)
+            // console.log("link Image: "+songImage)
+
+            let songName = listBaiHat[i].toString().match(/title="([\s\S]*?)"/i)[1].toString().split('-')[0]
+            let artist = listBaiHat[i].toString().match(/title="([\s\S]*?)"/i)[1].toString().split('-')[1]
+            console.log(songName)
+            console.log(artist)
+            let song = {
+                songName: songName,
+                artist: artist,
+                url: url,
+                defaultImage: defaultImage,
+                songImage: songImage
+            }
+
+            listSongs.push(song)
+        }
+
         singerInfo = {
+            link: url,
             coverImage: coverImage,
             avatarImage: avatarImage,
             name: name,
             realName: realName,
             DoB: DoB,
             nationality: nationality,
-            story: story
+            story: story,
+            listSongs: listSongs
         }
     })
+    
     return singerInfo
+}
+
+export async function getListBaiHat(url){
+    console.log("go here")
+    let listSongs = []
+    await fetch(url).then(response => {
+        let regexBaiHat = /<div class="song_item">([\s\S]*?)<\/ul>/im
+        let matchStr = response._bodyInit.toString().match(regexBaiHat).toString().replace('<div class="song_item">', '')
+        let regexListBaiHat = /<li class="song_item_single ">([\s\S]*?)<\/li>/ig
+        let listBaiHat = matchStr.match(regexListBaiHat)
+        console.log(listBaiHat)
+        for(let i = 0; i < 5; i++){
+            //console.log(listBaiHat[i])
+            let url = listBaiHat[i].toString().match(/href="([\s\S]*?)"/i)[1]
+            let defaultImage = listBaiHat[i].toString().match(/img src="([\s\S]*?)"/i)[1]
+            let songImage = listBaiHat[i].toString().match(/data-src="([\s\S]*?)"/i)[1]
+            // console.log("link bai hát: "+url)
+            // console.log("link default: "+defaultImage)
+            // console.log("link Image: "+songImage)
+
+            let songName = listBaiHat[i].toString().match(/title="([\s\S]*?)"/i)[1].toString().split('-')[0]
+            let artist = listBaiHat[i].toString().match(/title="([\s\S]*?)"/i)[1].toString().split('-')[1]
+            console.log(songName)
+            console.log(artist)
+            let song = {
+                songName: songName,
+                artist: artist,
+                url: url,
+                defaultImage: defaultImage,
+                songImage: songImage
+            }
+
+            listSongs.push(song)
+        }
+    })
+    return listSongs
 }

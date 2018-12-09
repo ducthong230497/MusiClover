@@ -52,7 +52,7 @@ class AOfflinePlaylist extends Component{
             selectedTrackIndex: index
         })
 
-        this.props.navigation.navigate('SongPlayer');
+        //this.props.navigation.navigate('SongPlayer');
      
     }
 
