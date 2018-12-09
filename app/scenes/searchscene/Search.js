@@ -5,25 +5,23 @@ import { Icon } from 'react-native-elements'
 import { createStackNavigator } from 'react-navigation'
 import { TagSelect } from 'react-native-tag-select'
 import {getDataForSearching, getXmlURL, getDataFromXmlURL} from '../../connector/connector'
+import SearchResult from "./SearchResult"
 
-export default class Search extends Component{
+export class Search extends Component{
 
     constructor(props)
     {
         super(props);
-
-        this.state = {
-           songs: [],
-        }
+        this.searchBar = React.createRef();
     }
 
-    componentDidMount()
-    {
-        getDataForSearching("helo").then(result =>{
-            this.setState({songs: result.song});
-            this.getSongInfo(this.state.songs[0].url);
-        })
-    }
+    // componentDidMount()
+    // {
+    //     getDataForSearching(this.state.inputSearchBar).then(result =>{
+    //         this.setState({songs: result.song});
+    //         this.getSongInfo(this.state.songs[0].url);
+    //     })
+    // }
 
     getSongInfo(url)
     {
@@ -45,12 +43,23 @@ export default class Search extends Component{
         ///////////////////////////
     }
 
-    renderSongs = ({item}) => (
-        <View>
-            <Text>{item.singer}</Text>
-            <Text>{item.name}</Text>
-        </View>
-    )
+    // renderSongs = ({item}) => (
+    //     <View>
+    //         <Text>{item.singer}</Text>
+    //         <Text>{item.name}</Text>
+    //     </View>
+    // )
+
+    handleSearching(){
+        // console.log("RESULT " + this.inputSearch.current.getValue());
+        // getDataForSearching(this.inputSearch.current.getValue()).then(result =>{
+        //     console.log(result);
+        //     this.setState({songs: result.song});
+        //     // this.getSongInfo(this.state.songs[0].url);
+        // })
+        let text = this.searchBar.current.getValue();
+        this.props.navigation.navigate('SearchResult', {searchText: text});
+    }
 
     render(){
         const data = [
@@ -61,53 +70,66 @@ export default class Search extends Component{
             { id: 5, label: 'the show' },
         ];
         return (
-            <View style={{backgroundColor:'white', flex: 1}}>
-                <View>
-                    <SearchBar
-                        // ref={(ref) => this.searchBar = ref}
-                        // data={items}
-                        // handleResults={this._handleResults}
+            <View style={{backgroundColor:'black', flex: 1}}>
+                <SearchBar         
+                    backgroundColor='black'                                     
+                    placeholder="Nhập từ khóa"
+                    placeholderTextColor='white'
+                    fontSize={14}
+                    heightAdjust={-20}
+                    backCloseSize={20}
+                    textColor='white'
+                    iconColor='white'
                         
-                        placeholder="Nhập từ khóa"
-                        placeholderTextColor='gray'
-                        fontSize={14}
-                        heightAdjust={-20}
-                        backCloseSize={20}
-                        onBack={() => this.props.navigation.goBack()}
-                        showOnLoad
-                    />
-                </View>
+                    onBack={() => this.props.navigation.goBack()}
+
+                    ref = {this.searchBar}                        
+                    onSubmitEditing={this.handleSearching.bind(this)}
+
+                    showOnLoad
+                />
                 <View style={{paddingTop: 60, paddingLeft: 10}}>
-                    <Text style={styles.titleText}>TỪ KHÓA HOT</Text>
-                    <TagSelect
+                    <Text style={styles.titleText}>LỊCH SỬ TÌM KIẾM</Text>
+                    {/* <TagSelect
                         data={data}
                         max={3}
                         itemStyle={styles.container}
                         itemLabelStyle={styles.label}
                         itemStyleSelected={styles.containerSelected}
                         itemLabelStyleSelected={styles.labelSelected}
-                    />
+                    /> */}
                 </View>
-                <FlatList
+                {/* <FlatList
                     data = {this.state.songs}
                     renderItem = {this.renderSongs.bind(this)}
                     keyExtractor = {(item,index) => index.toString()}
-                />
+                /> */}
             </View> 
             
         )
     }
-
-    // _handleResults(results) {
-    //     this.setState({ results });
-    //   }
 }
+
+export default StackNavigator = createStackNavigator({
+    Search: {
+        screen: Search,
+        navigationOptions: ()=>({
+            header:null,      
+        })
+    },
+    SearchResult: {
+        screen: SearchResult,
+        navigationOptions: ()=>({
+            header: null,     
+        })
+    },
+});
 
 const styles = StyleSheet.create({
     titleText: {
         fontSize: 18,
         fontWeight: 'bold',
-        color: 'black',
+        color: 'white',
         paddingBottom: 10,
       },
     container: {
@@ -128,28 +150,3 @@ const styles = StyleSheet.create({
         color: '#2facf9',
     },
 });
-
-// const items = [
-//     1337,
-//     'janeway',
-//     {
-//       lots: 'of',
-//       different: {
-//         types: 0,
-//         data: false,
-//         that: {
-//           can: {
-//             be: {
-//               quite: {
-//                 complex: {
-//                   hidden: [ 'gold!' ],
-//                 },
-//               },
-//             },
-//           },
-//         },
-//       },
-//     },
-//     [ 4, 2, 'tree' ],
-//   ];
-

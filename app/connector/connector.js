@@ -152,14 +152,14 @@ export async function getDataForSearching(strSearch){
     strSearch = strSearch.replace(" ", "%20")
     let result = {}
     let str = "https://m.nhaccuatui.com/ajax/search?q=" + strSearch
-    console.log(str)
+    //console.log(str)
 
     try {
         let response = await fetch(
             str
         );
         let responseJson = await response.json();
-        console.log(responseJson.data.song[0].url)
+        //console.log(responseJson.data.song[0].url)
         return responseJson.data
     } catch (error) {
         console.error(error);
