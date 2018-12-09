@@ -94,53 +94,55 @@ class SongPlayerMaximizer extends Component {
 
   onDownloadButtonPress(track) {
     //get track data
-    getXmlURL(track.songURL).then(xmlUrl => {
-      getDataFromXmlURL(xmlUrl).then(data => {
-        let URL = data.URL;
-        let img = data.img;
+    if(track.songURL!=null) {
+       //toast
+      this.toast.current.show('Downloading the song');
 
-        //add to downloading list
-        let downloadingSong = {
-          songName: track.songName,
-          artist: track.artist,
-          URL: URL,
-          progress: 0
-        }
+      getXmlURL(track.songURL).then(xmlUrl => {
+        getDataFromXmlURL(xmlUrl).then(data => {
+          let URL = data.URL;
+          let img = data.img;
 
-        //add to downloading songs
-        this.props.dispatch({ type: "AddDownloadingSong", downloadingSong: downloadingSong });
+          //add to downloading list
+          let downloadingSong = {
+            songName: track.songName,
+            artist: track.artist,
+            URL: URL,
+            progress: 0
+          }
 
-        //download song
-        this.downloadData(URL, 'mp3', true).then(trackPath => {
+          //add to downloading songs
+          this.props.dispatch({ type: "AddDownloadingSong", downloadingSong: downloadingSong });
 
-          //download img
-          this.downloadData(img, 'png', false).then(imgPath => {
+          //download song
+          this.downloadData(URL, 'mp3', true).then(trackPath => {
 
-            let offlineSongs = this.props.offlineSongs.concat([{
-              songName: track.songName,
-              artist: track.artist,
-              URL: trackPath,
-              img: imgPath,
-            }])
+            //download img
+            this.downloadData(img, 'png', false).then(imgPath => {
 
-            //toast
-            this.toast.current.show(track.songName + ' Downloaded completely');
+              let offlineSongs = this.props.offlineSongs.concat([{
+                songName: track.songName,
+                artist: track.artist,
+                URL: trackPath,
+                img: imgPath,
+              }])
 
-            //store info to local
-            this.storeData('songs', JSON.stringify(offlineSongs));
+              //toast
+              this.toast.current.show(track.songName + ' Downloaded completely');
 
-            this.props.dispatch({ type: 'SetOfflineSongs', offlineSongs: offlineSongs });
-            this.props.dispatch({ type: 'FinishProgress', oldURL: URL, newURL: trackPath, imgURL: imgPath });
+              //store info to local
+              this.storeData('songs', JSON.stringify(offlineSongs));
+
+              this.props.dispatch({ type: 'SetOfflineSongs', offlineSongs: offlineSongs });
+              this.props.dispatch({ type: 'FinishProgress', oldURL: URL, newURL: trackPath, imgURL: imgPath });
+            })
+
           })
-
-        })
+        });
       });
-    });
-
+    }
     //hide
     this.setState({ isSongActionViewVisible: false });
-    //toast
-    this.toast.current.show('Downloading the song');
 
   }
 
@@ -163,7 +165,7 @@ class SongPlayerMaximizer extends Component {
     }
   }
 
-  downloadData = async (url, appendExt, trackProgress) => {
+  downloadData = async (url, appendExt) => {
     let path = null;
     console.log("lyric url: " + url)
     await RNFetchBlob.config({
@@ -175,13 +177,6 @@ class SongPlayerMaximizer extends Component {
     })
       .fetch('GET', url, {
         //some headers ..
-      })
-      // listen to download progress event
-      .progress((received, total) => {
-        if (trackProgress) {
-          let progress = received / total;
-          this.props.dispatch({ type: 'UpdateProgress', url: url, progress: progress });
-        }
       })
       .then((res) => {
         path = res.path();
@@ -317,16 +312,16 @@ class SongPlayerMaximizer extends Component {
     if (!this.props.isMaximizerVisible) return null;
     if (this.props.selectedLyric != null && this.props.loadNewLyric == true) {
       this.props.dispatch({ type: 'LoadNewLyricFalse' })
-      console.log(this.props.loadNewLyric)
-      console.log("Lyric: " + this.props.selectedLyric)
+      //console.log(this.props.loadNewLyric)
+      //console.log("Lyric: " + this.props.selectedLyric)
       if (this.props.selectedLyric == "") {
         this.listLyricTime = []
         this.listLyric = []
         this.listLyricAndTime = []
         return null
       }
-      this.downloadData(this.props.selectedLyric, 'lrc', false).then(result => {
-        console.log("download path: " + result)
+      this.downloadData(this.props.selectedLyric, 'lrc').then(result => {
+        //console.log("download path: " + result)
         RNFS.readFile(result, 'utf8').then(content => {
           //console.log("download content: " + content) //Lyr1cjust4nct U2FsdGVkX19M0EUVPECEA2SWxq0wc/s=
 

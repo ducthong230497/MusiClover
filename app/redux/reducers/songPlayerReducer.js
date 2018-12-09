@@ -83,13 +83,20 @@ export default (state=initialState, action) => {
             currentPosition: action.currentPosition
         }
         case 'NextTrack':
-        getSongData(state.selectedTrackIndex+1, state.tracks);
-        return {
-            ...state,
-            currentPosition: 0, 
-            paused: false, 
-            totalLength: 1, 
-            selectedTrackIndex: state.selectedTrackIndex + 1
+        if(state.selectedTrackIndex+1 < state.tracks.length)
+        {
+            getSongData(state.selectedTrackIndex+1, state.tracks);
+            return {
+                ...state,
+                currentPosition: 0, 
+                paused: false, 
+                totalLength: 1, 
+                selectedTrackIndex: state.selectedTrackIndex + 1
+            }
+        }
+        else
+        {
+            return state;
         }
         case 'NextShuffleTrack':
         let randomTrackIndex = Math.floor(Math.random() * state.tracks.length);
@@ -167,7 +174,7 @@ function getSongData(index,tracks)
     }
     else //online
     {
-        console.log("asdsadadasdadadadasdasd")
+        //console.log("asdsadadasdadadadasdasd")
         //alert(JSON.stringify(tracks[index]))
         if (tracks[index].songURL != null)
         {

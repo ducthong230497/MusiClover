@@ -9,6 +9,7 @@ class SeekBar extends Component{
   }
   
   minutesAndSeconds(position) {
+    position = Math.floor(position);
     return [this.pad(Math.floor(position / 60), 2),this.pad(position % 60, 2)];
   }
 

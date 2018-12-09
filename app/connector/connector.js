@@ -1,7 +1,7 @@
 export async function getTop100(url)
 {
     //getDataForSearching("lac troi")
-    getDataFromKeyEncrypt("68584e88cf4d193d9a0f6e799c6228e5", typeEnum.SONG)
+    //getDataFromKeyEncrypt("68584e88cf4d193d9a0f6e799c6228e5", typeEnum.SONG)
     let listSong = [];
     url = url == null ? 'https://www.nhaccuatui.com/playlist/top-100-nhac-tre-hay-nhat-va.m3liaiy6vVsF.html' : url 
     await fetch(url).then((response) => {

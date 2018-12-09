@@ -20,19 +20,18 @@ class ArtistInfo extends Component {
     }
     onSongButtonPress(index)
     {
-        console.log("song button pressed")
         this.props.dispatch({
             type: 'Start', 
             tracks: this.props.singer.listSongs, 
             selectedTrackIndex: index
         })
 
-        this.props.navigation.navigate('SongPlayer');
+        //this.props.navigation.navigate('SongPlayer');
     }
 
     onMoreButtonPress(index)
     {
-        console.log("more song button press index: " + index)
+        //console.log("more song button press index: " + index)
         // currentSong = this.playlist[index];
         // this.setState({
         //     selectedSongName:currentSong.songName, 
@@ -60,6 +59,7 @@ class ArtistInfo extends Component {
             songName = {this.formatSongName(item.songName)}
             artistName = {item.artist}
             songIndex = {index}
+            hideMoreButton = {true}
             onSongButtonPress = {this.onSongButtonPress.bind(this)}
             onMoreButtonPress = {this.onMoreButtonPress.bind(this)}>
         </SongButton>
@@ -91,7 +91,7 @@ class ArtistInfo extends Component {
                         <FlatList
                             data = {this.props.singer ? this.props.singer.listSongs : this.state.songs}
                             renderItem = {this.renderSongs.bind(this)}
-                            keyExtractor = {item => item.songName}
+                            keyExtractor = {(item, index)=>index.toString()}
                         />
                     </ScrollView>
                 </View>

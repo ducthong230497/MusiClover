@@ -41,7 +41,7 @@ class AHomePlaylist extends Component{
             selectedTrackIndex: index
         })
 
-        this.props.navigation.navigate('SongPlayer');
+        //this.props.navigation.navigate('SongPlayer');
 
         // //get track data
         // getXmlURL(this.playlist[index].songURL).then(xmlUrl=> {
