@@ -1,27 +1,50 @@
 import React, {Component} from 'react'
 import { View, Text, StyleSheet, FlatList } from 'react-native'
 import SearchBar from 'react-native-searchbar'
-import { Icon } from 'react-native-elements'
+import { Icon, List, ListItem } from 'react-native-elements'
 import { createStackNavigator } from 'react-navigation'
 import { TagSelect } from 'react-native-tag-select'
 import {getDataForSearching, getXmlURL, getDataFromXmlURL} from '../../connector/connector'
 import SearchResult from "./SearchResult"
+import {AsyncStorage} from 'react-native'
 
 export class Search extends Component{
 
     constructor(props)
     {
         super(props);
+        this.state= {
+            searchHistory: []
+        }
         this.searchBar = React.createRef();
     }
+    //Ê, cái lịch sử cập nhật lại lúc đã search rồi hiện lên luôn
+    //Bỏ vô chỗ cho lấy dữ liệu 1 lần có đúng hông ?
+    //Chua hieu y ba lam, doi tui noi xong cai nay
 
-    // componentDidMount()
-    // {
-    //     getDataForSearching(this.state.inputSearchBar).then(result =>{
-    //         this.setState({songs: result.song});
-    //         this.getSongInfo(this.state.songs[0].url);
-    //     })
-    // }
+    componentDidMount()
+    {
+        //lay du lieu da luu tu local 
+        this.retrieveData('searchHistory').then(result=>{
+            if(result !=null)
+            {
+                //result la mot dang chuoi nen phai doi thanh object lai
+                let history = JSON.parse(result);
+
+                //nen luu cai searchHistory nay vao state vi chut nua xuong duoi ba se render no
+                //co le ba se nghi la dung this.searchHistory duoc khong? cung duoc nhung ma gia su chut ba cap nhat
+                //cai this.searchHistory nay lai vi du nhu them mot cai ket qua vo thi no khong tu dong goi render lai
+                //dung state thi chut cap nhat no se tu render
+                //doi ten de tranh ba nham lan 
+                //the la lay duoc du lieu da luu roi, gio chi can render cai this.state.searchHistory thoi
+                this.setState({searchHistory: history});
+
+
+            }
+
+
+        })
+    }
 
     getSongInfo(url)
     {
@@ -43,12 +66,13 @@ export class Search extends Component{
         ///////////////////////////
     }
 
-    // renderSongs = ({item}) => (
-    //     <View>
-    //         <Text>{item.singer}</Text>
-    //         <Text>{item.name}</Text>
-    //     </View>
-    // )
+    renderSearchHistory = ({item}) => (
+        <ListItem
+            title={item} 
+            titleStyle={{color: 'white'}}
+            containerStyle={{borderBottomWidth: 0, backgroundColor: 'black'}}
+        />
+    )
 
     handleSearching(){
         // console.log("RESULT " + this.inputSearch.current.getValue());
@@ -58,17 +82,52 @@ export class Search extends Component{
         //     // this.getSongInfo(this.state.songs[0].url);
         // })
         let text = this.searchBar.current.getValue();
+
+        //luu xuong local
+        //value phai la kieu dang string (co le)
+        //quay lai van de o day, neu ba set cai history = [text] nhu nay thoi thi no luu xuong cai local moi cai [text] thoi
+        //chu no khong tu them vao may cai ba da luu truoc do. vay nen truoc khi luu thi phai noi ket qua truoc do voi cai text moi nay
+        //dung ham concat
+        //roi noi chung la het roi do
+        //a quen nho cap nhat lai cai searchHistory nua de cai render no render them cai moi nua
+        let history = this.state.searchHistory.concat([text]);
+        this.setState({searchHistory: history});
+        
+        //roi xong roi do
+        //Ờ, t làm tiếp :))
+        //uk lam di, chut tinh tiep
+
+        //JSON.stringtify de doi object thanh dang chuoi
+        //roi the la save duoc data xong local (tuy nhien can phai chinh mot chut, cho ti)
+        this.storeData('searchHistory', JSON.stringify(history));
+
         this.props.navigation.navigate('SearchResult', {searchText: text});
     }
+    
+    //ham de save xuong 
+    storeData = async (key, value) => {
+        try {
+          await AsyncStorage.setItem(key, value);
+        } catch (error) {
+          // Error saving data
+        }
+      }
+
+      //lay du lieu
+      retrieveData = async (key) => {
+        try {
+          const value = await AsyncStorage.getItem(key);
+          if (value !== null) {
+            // We have data!!
+            console.log(value);
+          }
+         } catch (error) {
+           // Error retrieving data
+         }
+        //  alert(this.state.searchHistory);
+      }
 
     render(){
-        const data = [
-            { id: 1, label: 'Sơn Tùng M-TP' },
-            { id: 2, label: 'bảng xếp hạng' },
-            { id: 3, label: 'có ai thương em như anh' },
-            { id: 4, label: 'way back home' },
-            { id: 5, label: 'the show' },
-        ];
         return (
             <View style={{backgroundColor:'black', flex: 1}}>
                 <SearchBar         
@@ -98,12 +157,15 @@ export class Search extends Component{
                         itemStyleSelected={styles.containerSelected}
                         itemLabelStyleSelected={styles.labelSelected}
                     /> */}
+                    <List containerStyle={{borderTopWidth: 0, borderBottomWidth: 0}}>
+                        <FlatList
+                            data = {this.state.searchHistory}
+                            renderItem = {this.renderSearchHistory.bind(this)}
+                            keyExtractor = {(item,index) => index.toString()}
+                        />
+                    </List>
                 </View>
-                {/* <FlatList
-                    data = {this.state.songs}
-                    renderItem = {this.renderSongs.bind(this)}
-                    keyExtractor = {(item,index) => index.toString()}
-                /> */}
+                
             </View> 
             
         )

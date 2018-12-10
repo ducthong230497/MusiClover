@@ -10,6 +10,7 @@ import VideoTab from './VideoTab'
 import PlaylistTab from './PlaylistTab'
 import SingerTab from './SingerTab'
 
+
 var MainScreenNavigator = TabNavigator(
     {
         Tab1: {screen: SongTab},
@@ -98,11 +99,12 @@ export default class SearchResult extends Component{
         return (
             
             <View style={{backgroundColor:'black', flex: 1}}>   
-                <View style={{backgroundColor:'white', flex: 1, height: 30}}>
+                <View style = {{height: 40}}>
                     <SearchBar                                              
                         placeholder={this.titleResult}
                         placeholderTextColor='white'
                         fontSize={14}
+                        //height = {40}
                         heightAdjust={-20}
                         backCloseSize={20}
                         textColor='white'
