@@ -19,8 +19,8 @@ export default class SongButton extends Component{
             <View style={styles.container}>
                 <TouchableHighlight underlayColor = 'rgb(150,150,150)'  onPress = {this.onPress.bind(this)}>
                     <View style = {styles.songButton}>
-                        <Text style = {styles.songIndex}>{this.props.songIndex + 1}</Text>
-                        {/* <Image source={{uri: this.props.imgUrl}} style={styles.image}></Image> */}
+                        {this.props.imgUrl==null?<Text style = {styles.songIndex}>{this.props.songIndex + 1}</Text>:
+                        <Image source={{uri: this.props.imgUrl}} style={styles.image}></Image>}
                         <View style = {styles.songInfo}>
                             <Text style = {styles.songName}>{this.props.songName}</Text>
                             <Text style = {styles.artistName}>{this.props.artistName}</Text>

@@ -14,9 +14,8 @@ import SingerTab from './SingerTab'
 var MainScreenNavigator = TabNavigator(
     {
         Tab1: {screen: SongTab},
-        Tab2: {screen: VideoTab},
-        Tab3: {screen: PlaylistTab},
-        Tab4: {screen: SingerTab}
+        Tab2: {screen: PlaylistTab},
+        Tab3: {screen: SingerTab}
     },
     {
         tabBarPosition: 'top',

@@ -3,8 +3,9 @@ import { View, Text, StyleSheet, FlatList } from 'react-native'
 import {getDataForSearching, getXmlURL, getDataFromXmlURL, typeEnum} from '../../connector/connector'
 import { Icon, List, ListItem } from 'react-native-elements'
 import {getEncryptKey, getDataFromKeyEncrypt} from '../../connector/connector'
-
-export default class SongTab extends Component{
+import SongButton from '../_components/SongButton'
+import {connect} from 'react-redux'
+class SongTab extends Component{
     static navigationOptions = {
         tabBarLabel: 'Bài hát',
 
@@ -23,7 +24,6 @@ export default class SongTab extends Component{
     componentDidMount()
     {
         this.InitSongs().then(result => {
-            console.log(result.length)
             this.setState({songs: [...result]})
         })
     }
@@ -31,20 +31,16 @@ export default class SongTab extends Component{
     async InitSongs(){
         let listTemp = []
         await getDataForSearching(this.props.screenProps.searchString).then(async(result) =>{
-            //this.setState({songs: result.song});
             if(result.song.length == 0){
                 this.setState({strNotFound: true})
             }
             else {
                 this.setState({strNotFound: false})
             }
-            console.log(result.song.length)
             for (let item of result.song){
-                console.log(item.url)
                 await getEncryptKey(item.url).then(async(key) => {
-                    console.log(key)
                     await getDataFromKeyEncrypt(key, typeEnum.SONG).then(data => {
-                        //console.log(data)
+                        data.url = item.url;
                         listTemp.push(data)
                     })
                 })
@@ -54,31 +50,72 @@ export default class SongTab extends Component{
         return listTemp
     }
 
-    renderSongs = ({item}) => (
-        <ListItem
-            title={item.title} 
-            titleStyle={{color: 'white'}}
-            subtitle={item.singerTitle}
-            avatar={{uri: item.thumb}}
-            containerStyle={{borderBottomWidth: 0, backgroundColor: 'black'}}
-        />
+    onSongButtonPress(index)
+    {
+        
+        let songList = []
+        this.state.songs.forEach(element => {
+            let song = {
+                songName: element.title,
+                artist: element.singerTitle,
+                url: element.url,
+
+            }
+            songList.push(song);
+        });
+
+        this.props.dispatch({
+            type: 'Start', 
+            tracks: songList, 
+            selectedTrackIndex: index
+        })
+    }
+
+    onMoreButtonPress()
+    {
+
+    }
+
+    renderSongs = ({index, item}) => (
+        // <
+        //     title={item.title} 
+        //     titleStyle={{color: 'white'}}
+        //     subtitle={item.singerTitle}
+        //     avatar={{uri: item.thumb}}
+        //     containerStyle={{borderBottomWidth: 0, backgroundColor: 'black'}}
+        // />
+        <View style = {{ backgroundColor: 'black'}}>
+            <SongButton 
+                imgUrl = {item.thumb}
+                songName = {item.title}
+                artistName = {item.singerTitle}
+                songIndex = {index}
+                onSongButtonPress = {this.onSongButtonPress.bind(this)}
+                hideMoreButton = {true}
+                >
+            </SongButton>
+        </View>
     )
 
     render(){
+
         return (
             <View style={styles.container}>
                 <Text style={this.state.strNotFound ? styles.title : styles.titleMinus}>Không có dữ liệu</Text>
-                <List containerStyle={{borderTopWidth: 0, borderBottomWidth: 0}}>
+                {!this.state.strNotFound?<List containerStyle={{borderTopWidth: 0, borderBottomWidth: 0}}>
                     <FlatList
                         data = {this.state.songs}
                         renderItem = {this.renderSongs.bind(this)}
                         keyExtractor = {(item,index) => index.toString()}
                     />
-                </List>
+                </List>:null}
             </View>
         )
     }
 }
+
+
+export default connect()(SongTab);
 
 const styles = StyleSheet.create({
     container:{

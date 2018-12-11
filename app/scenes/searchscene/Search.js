@@ -25,19 +25,17 @@ export class Search extends Component{
     componentDidMount()
     {
         //lay du lieu da luu tu local 
-        this.retrieveData('searchHistory').then(result=>{
+        this.retrieveData('history').then(result=>{
+
             if(result !=null)
             {
-                //result la mot dang chuoi nen phai doi thanh object lai
-                let history = JSON.parse(result);
-
                 //nen luu cai searchHistory nay vao state vi chut nua xuong duoi ba se render no
                 //co le ba se nghi la dung this.searchHistory duoc khong? cung duoc nhung ma gia su chut ba cap nhat
                 //cai this.searchHistory nay lai vi du nhu them mot cai ket qua vo thi no khong tu dong goi render lai
                 //dung state thi chut cap nhat no se tu render
                 //doi ten de tranh ba nham lan 
                 //the la lay duoc du lieu da luu roi, gio chi can render cai this.state.searchHistory thoi
-                this.setState({searchHistory: history});
+                this.setState({searchHistory: result});
 
 
             }
@@ -92,40 +90,39 @@ export class Search extends Component{
         //a quen nho cap nhat lai cai searchHistory nua de cai render no render them cai moi nua
         let history = this.state.searchHistory.concat([text]);
         this.setState({searchHistory: history});
-        
+
         //roi xong roi do
         //Ờ, t làm tiếp :))
         //uk lam di, chut tinh tiep
 
         //JSON.stringtify de doi object thanh dang chuoi
         //roi the la save duoc data xong local (tuy nhien can phai chinh mot chut, cho ti)
-        this.storeData('searchHistory', JSON.stringify(history));
+        this.storeData('history', JSON.stringify(history));
 
         this.props.navigation.navigate('SearchResult', {searchText: text});
     }
     
     //ham de save xuong 
-    storeData = async (key, value) => {
+    storeData = async (name, value) => {
         try {
-          await AsyncStorage.setItem(key, value);
+          await AsyncStorage.setItem(name, value);
         } catch (error) {
-          // Error saving data
+          console.log('Something went wrong!');
         }
-      }
+    }
 
       //lay du lieu
-      retrieveData = async (key) => {
+      retrieveData = async (name) => {
         try {
-          const value = await AsyncStorage.getItem(key);
-          if (value !== null) {
-            // We have data!!
-            console.log(value);
+          let data = await AsyncStorage.getItem(name);
+          if(data !==null)
+          {
+            return JSON.parse(data);
           }
          } catch (error) {
-           // Error retrieving data
+            console.log('Something wrong!' + error);
          }
-        //  alert(this.state.searchHistory);
-      }
+    }
 
     render(){
         return (
@@ -159,7 +156,7 @@ export class Search extends Component{
                     /> */}
                     <List containerStyle={{borderTopWidth: 0, borderBottomWidth: 0}}>
                         <FlatList
-                            data = {this.state.searchHistory}
+                            data = {this.state.searchHistory.reverse()}
                             renderItem = {this.renderSearchHistory.bind(this)}
                             keyExtractor = {(item,index) => index.toString()}
                         />
