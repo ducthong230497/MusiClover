@@ -2,8 +2,10 @@ import React, {Component} from 'react'
 import { View, Text, StyleSheet, FlatList } from 'react-native'
 import {getDataForSearching, getXmlURL, getDataFromXmlURL} from '../../connector/connector'
 import { Icon, List, ListItem } from 'react-native-elements'
+import {getTop100, getListArtist, getArtistInfo} from '../../connector/connector'
+import {connect} from 'react-redux'
 
-export default class SingerTab extends Component{
+class SingerTab extends Component{
     static navigationOptions={
         tabBarLabel: 'Ca sĩ'
     }
@@ -29,7 +31,16 @@ export default class SingerTab extends Component{
             }
         });
     }
+    onArtistPress(link){
+        console.log(link)
 
+        getArtistInfo(link).then(result => {
+            console.log(result.listSongs.length)
+            this.props.dispatch({type: 'SetSinger', singerInfo: result})
+        })
+
+        this.props.screenProps.parentNavigation.navigate('ArtistInfo')
+    }
     renderSingers = ({item}) => (
         <ListItem
             roundAvatar
@@ -37,6 +48,7 @@ export default class SingerTab extends Component{
             titleStyle={{color: 'white'}}
             avatar={{uri: item.img}}
             containerStyle={{borderBottomWidth: 0, backgroundColor: 'black'}}
+            onPress = {this.onArtistPress.bind(this, item.url)}
         />
     )
 
@@ -55,6 +67,8 @@ export default class SingerTab extends Component{
         )
     }
 }
+
+export default connect()(SingerTab);
 
 const styles = StyleSheet.create({
     container:{
