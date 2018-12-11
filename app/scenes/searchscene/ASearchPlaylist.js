@@ -6,7 +6,6 @@ import Firebase from 'react-native-firebase'
 import Toast from 'react-native-easy-toast'
 import RNFetchBlob from 'rn-fetch-blob'
 import {AsyncStorage} from 'react-native'
-
 import SongButton from '../_components/SongButton'
 import SongMoreView from '../_components/SongMoreView'
 import AddToPlaylistView from '../_components/AddToPlaylistView'
@@ -30,25 +29,11 @@ class ASearchPlaylist extends Component{
 
     onSongButtonPress(index)
     {
-        // this.props.dispatch({type: 'SetTrackList', tracks: this.playlist})
-        // this.props.dispatch({type: 'SetSelectedTrackIndex', selectedTrackIndex: index})
-        // this.props.dispatch({type: 'ShowMaximizer'});
-        // this.props.dispatch({type: 'Resume'});
-
         this.props.dispatch({
             type: 'Start', 
             tracks: this.playlist, 
             selectedTrackIndex: index
         })
-
-        //this.props.navigation.navigate('SongPlayer');
-
-        // //get track data
-        // getXmlURL(this.playlist[index].songURL).then(xmlUrl=> {
-        //     getDataFromXmlURL(xmlUrl).then(data => {
-        //         this.props.dispatch({type: 'SetSelectedTrackInfo', selectedTrackURL: data.URL, selectedTrackImage: data.img})
-        //     });
-        // });
     }
 
     onMoreButtonPress(index)

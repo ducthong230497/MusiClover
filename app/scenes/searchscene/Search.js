@@ -33,7 +33,6 @@ export class Search extends Component{
     onSearchPress(text)
     {
         this.searchBar.current.setValue(text);
-        //this.forceUpdate();
         this.handleSearching(text);
     }
 

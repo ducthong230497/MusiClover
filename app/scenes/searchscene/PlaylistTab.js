@@ -35,11 +35,6 @@ class PlaylistTab extends Component {
             this.props.dispatch({type: 'AddPlaylist', name: 'Search', playlist: result})
         })
 
-        // getTop100(link).then(result => {
-            
-        //     this.props.dispatch({type: 'AddPlaylist', name: 'Home', playlist: result})
-        // })
-
         this.props.screenProps.parentNavigation.navigate('ASearchPlaylist'); 
 
     }
@@ -50,7 +45,6 @@ class PlaylistTab extends Component {
             titleStyle={{ color: 'white' }}
             subtitle={item.singer}
             onPress = {this.onPlaylistPress.bind(this, item)}
-            //avatar={{uri: <link_image>}}
             containerStyle={{ borderBottomWidth: 0, backgroundColor: 'black' }}
         />
     )
@@ -72,21 +66,6 @@ class PlaylistTab extends Component {
 }
 
 export default connect()(PlaylistTab);
-
-// export default StackNavigator = createStackNavigator({
-//     PlaylistTab: {
-//         screen: PLTab,
-//         navigationOptions: ()=>({
-//             header:null,      
-//         })
-//     },
-//     ASearchPlaylist: {
-//         screen: ASearchPlaylist,
-//         navigationOptions: ()=>({
-//             header: null,     
-//         })
-//     },
-// });
 
 const styles = StyleSheet.create({
     container: {

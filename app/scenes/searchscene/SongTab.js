@@ -71,19 +71,7 @@ class SongTab extends Component{
         })
     }
 
-    onMoreButtonPress()
-    {
-
-    }
-
     renderSongs = ({index, item}) => (
-        // <
-        //     title={item.title} 
-        //     titleStyle={{color: 'white'}}
-        //     subtitle={item.singerTitle}
-        //     avatar={{uri: item.thumb}}
-        //     containerStyle={{borderBottomWidth: 0, backgroundColor: 'black'}}
-        // />
         <View style = {{ backgroundColor: 'black'}}>
             <SongButton 
                 imgUrl = {item.thumb}
@@ -113,7 +101,6 @@ class SongTab extends Component{
         )
     }
 }
-
 
 export default connect()(SongTab);
 
