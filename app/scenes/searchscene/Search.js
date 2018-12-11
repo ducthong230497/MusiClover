@@ -7,6 +7,7 @@ import { TagSelect } from 'react-native-tag-select'
 import {getDataForSearching, getXmlURL, getDataFromXmlURL} from '../../connector/connector'
 import SearchResult from "./SearchResult"
 import {AsyncStorage} from 'react-native'
+import ASearchPlaylist from './ASearchPlaylist'
 
 export class Search extends Component{
 
@@ -61,7 +62,13 @@ export class Search extends Component{
         // dùng hàm getEncryptKey(url)
         // rồi sau khi có encryptKey thì gọi hàm getDataFromKeyEncrypt(encrypt, 1)
         // hàm này sẽ trả về json data có 'singerTitle' 'avatar' 'title'
-        ///////////////////////////
+        ///////////////////////////r
+    }
+
+    onSearchPress(text)
+    {
+        this.searchBar.current.value = text;
+        this.forceUpdate();
     }
 
     renderSearchHistory = ({item}) => (
@@ -69,6 +76,7 @@ export class Search extends Component{
             title={item} 
             titleStyle={{color: 'white'}}
             containerStyle={{borderBottomWidth: 0, backgroundColor: 'black'}}
+            onPress = {this.onSearchPress.bind(this, item)}
         />
     )
 
@@ -136,7 +144,7 @@ export class Search extends Component{
                     backCloseSize={20}
                     textColor='white'
                     iconColor='white'
-                        
+                    
                     onBack={() => this.props.navigation.goBack()}
 
                     ref = {this.searchBar}                        
@@ -181,7 +189,7 @@ export default StackNavigator = createStackNavigator({
         navigationOptions: ()=>({
             header: null,     
         })
-    },
+    }
 });
 
 const styles = StyleSheet.create({

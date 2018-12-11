@@ -44,13 +44,13 @@ export default class SingerTab extends Component{
         return (
             <View style={styles.container}>
                 <Text style={this.state.strNotFound ? styles.title : styles.titleMinus}>Không có dữ liệu</Text>
-                <List containerStyle={{borderTopWidth: 0, borderBottomWidth: 0}}>
+                {!this.state.strNotFound?<List containerStyle={{borderTopWidth: 0, borderBottomWidth: 0}}>
                     <FlatList
                         data = {this.state.singers}
                         renderItem = {this.renderSingers.bind(this)}
                         keyExtractor = {(item,index) => index.toString()}
                     />
-                </List>
+                </List>:null}
             </View>
         )
     }

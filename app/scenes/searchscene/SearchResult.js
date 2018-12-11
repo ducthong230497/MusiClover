@@ -2,16 +2,16 @@ import React, {Component} from 'react'
 import { View, Text, StyleSheet, FlatList } from 'react-native'
 import SearchBar from 'react-native-searchbar'
 import { Icon } from 'react-native-elements'
-import { createStackNavigator, TabNavigator } from 'react-navigation'
+import { createStackNavigator, createMaterialTopTabNavigator } from 'react-navigation'
 import { TagSelect } from 'react-native-tag-select'
 import {getDataForSearching, getXmlURL, getDataFromXmlURL} from '../../connector/connector'
 import SongTab from './SongTab'
 import VideoTab from './VideoTab'
 import PlaylistTab from './PlaylistTab'
 import SingerTab from './SingerTab'
+import ASearchPlaylist from './ASearchPlaylist'
 
-
-var MainScreenNavigator = TabNavigator(
+var MainScreenNavigator = createMaterialTopTabNavigator(
     {
         Tab1: {screen: SongTab},
         Tab2: {screen: PlaylistTab},
@@ -38,7 +38,7 @@ var MainScreenNavigator = TabNavigator(
     }
 );
 
-export default class SearchResult extends Component{
+class SearchResult extends Component{
 
     constructor(props)
     {
@@ -108,15 +108,15 @@ export default class SearchResult extends Component{
                         backCloseSize={20}
                         textColor='white'
                         iconColor='white'
-                        onBack={() => this.props.navigation.goBack()}
+                        onBack={() => this.props.navigation.pop()}
                         backgroundColor='black'
-
+                        
                         // ref = {this.searchBar}
                         
                         showOnLoad
                     />
                 </View>
-                <MainScreenNavigator screenProps={{ searchString: this.props.navigation.getParam('searchText')}} />
+                <MainScreenNavigator screenProps={{ searchString: this.props.navigation.getParam('searchText'), parentNavigation: this.props.navigation}} />
                 
                 
                 
@@ -126,3 +126,31 @@ export default class SearchResult extends Component{
     }
 }
 
+export default StackNavigator = createStackNavigator({
+    SearchResult: {
+        screen: SearchResult,
+        navigationOptions: ()=>({
+            header:null,      
+        })
+    },
+    ASearchPlaylist: {
+        screen: ASearchPlaylist,
+        navigationOptions: ()=>({
+            headerTitle: "Playlist",     
+        })
+    }
+},
+{ //router config
+    navigationOptions:{
+        headerTitleStyle:{
+            color: 'white'
+        },
+        headerStyle:{
+            backgroundColor: 'rgba(30,30,30,255)',
+        },
+        headerBackImage: () => (
+            <Icon name = 'keyboard-arrow-left' color = 'white'></Icon>
+          )     
+    },
+    headerLayoutPreset: 'center' 
+});

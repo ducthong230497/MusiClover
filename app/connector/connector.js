@@ -318,7 +318,7 @@ export async function getArtistInfo(url){
 }
 
 export async function getListBaiHat(url){
-    console.log("go here")
+    //console.log("go here")
     let listSongs = []
     await fetch(url).then(response => {
         let regexBaiHat = /<div class="song_item">([\s\S]*?)<\/ul>/im
@@ -337,8 +337,8 @@ export async function getListBaiHat(url){
 
             let songName = listBaiHat[i].toString().match(/title="([\s\S]*?)"/i)[1].toString().split('-')[0]
             let artist = listBaiHat[i].toString().match(/title="([\s\S]*?)"/i)[1].toString().split('-')[1]
-            console.log(songName)
-            console.log(artist)
+            // console.log(songName)
+            // console.log(artist)
             let song = {
                 songName: songName,
                 artist: artist,

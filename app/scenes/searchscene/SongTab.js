@@ -5,6 +5,7 @@ import { Icon, List, ListItem } from 'react-native-elements'
 import {getEncryptKey, getDataFromKeyEncrypt} from '../../connector/connector'
 import SongButton from '../_components/SongButton'
 import {connect} from 'react-redux'
+
 class SongTab extends Component{
     static navigationOptions = {
         tabBarLabel: 'Bài hát',
@@ -52,7 +53,6 @@ class SongTab extends Component{
 
     onSongButtonPress(index)
     {
-        
         let songList = []
         this.state.songs.forEach(element => {
             let song = {

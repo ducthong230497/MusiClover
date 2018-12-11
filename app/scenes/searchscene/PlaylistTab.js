@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
-import { View, Text, StyleSheet, FlatList } from 'react-native'
-import { getDataForSearching, getXmlURL, getDataFromXmlURL } from '../../connector/connector'
+import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native'
+import { getDataForSearching, getXmlURL, getDataFromXmlURL, getListArtist } from '../../connector/connector'
 import { Icon, List, ListItem } from 'react-native-elements'
+import {getListBaiHat} from '../../connector/connector'
+import {connect} from 'react-redux'
 
-export default class PlaylistTab extends Component {
+class PlaylistTab extends Component {
     static navigationOptions = {
         tabBarLabel: 'Playlist'
     }
@@ -27,11 +29,27 @@ export default class PlaylistTab extends Component {
         });
     }
 
+    onPlaylistPress(playlist)
+    {
+        getListBaiHat(playlist.url).then(result=>{
+            this.props.dispatch({type: 'AddPlaylist', name: 'Search', playlist: result})
+        })
+
+        // getTop100(link).then(result => {
+            
+        //     this.props.dispatch({type: 'AddPlaylist', name: 'Home', playlist: result})
+        // })
+
+        this.props.screenProps.parentNavigation.navigate('ASearchPlaylist'); 
+
+    }
+
     renderPlaylists = ({ item }) => (
         <ListItem
             title={item.name}
             titleStyle={{ color: 'white' }}
             subtitle={item.singer}
+            onPress = {this.onPlaylistPress.bind(this, item)}
             //avatar={{uri: <link_image>}}
             containerStyle={{ borderBottomWidth: 0, backgroundColor: 'black' }}
         />
@@ -41,17 +59,34 @@ export default class PlaylistTab extends Component {
         return (
             <View style={styles.container}>
                 <Text style={this.state.strNotFound ? styles.title : styles.titleMinus}>Không có dữ liệu</Text>
-                <List containerStyle={{ borderTopWidth: 0, borderBottomWidth: 0 }}>
+                {!this.state.strNotFound?<List containerStyle={{ borderTopWidth: 0, borderBottomWidth: 0 }}>
                     <FlatList
                         data={this.state.playlists}
                         renderItem={this.renderPlaylists.bind(this)}
                         keyExtractor={(item, index) => index.toString()}
                     />
-                </List>
+                </List>:null}
             </View>
         )
     }
 }
+
+export default connect()(PlaylistTab);
+
+// export default StackNavigator = createStackNavigator({
+//     PlaylistTab: {
+//         screen: PLTab,
+//         navigationOptions: ()=>({
+//             header:null,      
+//         })
+//     },
+//     ASearchPlaylist: {
+//         screen: ASearchPlaylist,
+//         navigationOptions: ()=>({
+//             header: null,     
+//         })
+//     },
+// });
 
 const styles = StyleSheet.create({
     container: {
